@@ -21,6 +21,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('tahun') }}">Tahun</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('user') }}">User</a>
+                    </li>
                 </ul>
             </div>
         </li>

@@ -35,3 +35,10 @@ Route::get('/data-tahun', 'App\Http\Controllers\TahunController@data');
 Route::post('/store-tahun', 'App\Http\Controllers\TahunController@store');
 Route::post('/update-tahun', 'App\Http\Controllers\TahunController@update');
 Route::post('/delete-tahun', 'App\Http\Controllers\TahunController@delete');
+
+//USER
+Route::get('/user', 'App\Http\Controllers\UserController@index');
+Route::get('/data-user', 'App\Http\Controllers\UserController@data');
+Route::post('/store-user', 'App\Http\Controllers\UserController@store');
+Route::post('/update-user', 'App\Http\Controllers\UserController@update');
+Route::post('/delete-user', 'App\Http\Controllers\UserController@delete');
