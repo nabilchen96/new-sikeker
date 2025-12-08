@@ -55,6 +55,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/store-approval', 'App\Http\Controllers\ApprovalController@store');
     Route::post('/update-approval', 'App\Http\Controllers\ApprovalController@update');
     Route::post('/delete-approval', 'App\Http\Controllers\ApprovalController@delete');
+
+
+    //PROKER
+    Route::get('/proker', 'App\Http\Controllers\ProkerController@index');
+    Route::get('/data-proker', 'App\Http\Controllers\ProkerController@data');
+    Route::post('/store-proker', 'App\Http\Controllers\ProkerController@store');
+    Route::post('/update-proker', 'App\Http\Controllers\ProkerController@update');
+    Route::post('/delete-proker', 'App\Http\Controllers\ProkerController@delete');
     
 });
 

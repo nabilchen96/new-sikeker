@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Proker extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'id_unit',
+        'id_tahun',
+        'status_approval',
+        'keterangan_ditolak'
+    ];
+}

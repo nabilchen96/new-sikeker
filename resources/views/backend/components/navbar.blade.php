@@ -39,7 +39,7 @@
             <div class="collapse" id="aktivitas">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="">Rencana Proker</a>
+                        <a class="nav-link" href="{{ url('proker') }}">Rencana Proker</a>
                     </li>
                 </ul>
             </div>
