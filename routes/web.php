@@ -13,32 +13,55 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//LOGIN
+Route::get('/login', 'App\Http\Controllers\AuthController@login')->name('login');
+Route::post('/loginProses', 'App\Http\Controllers\AuthController@loginProses');
+
 Route::get('/', function () {
     return view('frontend.welcome');
 });
 
+//BACKEND
+Route::group(['middleware' => 'auth'], function () {
 
-//DASHBOARD
-Route::get('/dashboard', 'App\Http\Controllers\DashboardController@index');
+    //DASHBOARD
+    Route::get('/dashboard', 'App\Http\Controllers\DashboardController@index');
+    
+    //UNIT
+    Route::get('/unit', 'App\Http\Controllers\UnitController@index');
+    Route::get('/data-unit', 'App\Http\Controllers\UnitController@data');
+    Route::post('/store-unit', 'App\Http\Controllers\UnitController@store');
+    Route::post('/update-unit', 'App\Http\Controllers\UnitController@update');
+    Route::post('/delete-unit', 'App\Http\Controllers\UnitController@delete');
+    
+    
+    //TAHUN
+    Route::get('/tahun', 'App\Http\Controllers\TahunController@index');
+    Route::get('/data-tahun', 'App\Http\Controllers\TahunController@data');
+    Route::post('/store-tahun', 'App\Http\Controllers\TahunController@store');
+    Route::post('/update-tahun', 'App\Http\Controllers\TahunController@update');
+    Route::post('/delete-tahun', 'App\Http\Controllers\TahunController@delete');
+    
+    //USER
+    Route::get('/user', 'App\Http\Controllers\UserController@index');
+    Route::get('/data-user', 'App\Http\Controllers\UserController@data');
+    Route::post('/store-user', 'App\Http\Controllers\UserController@store');
+    Route::post('/update-user', 'App\Http\Controllers\UserController@update');
+    Route::post('/delete-user', 'App\Http\Controllers\UserController@delete');
+    
+    //APPROVAL
+    Route::get('/approval', 'App\Http\Controllers\ApprovalController@index');
+    Route::get('/data-approval', 'App\Http\Controllers\ApprovalController@data');
+    Route::post('/store-approval', 'App\Http\Controllers\ApprovalController@store');
+    Route::post('/update-approval', 'App\Http\Controllers\ApprovalController@update');
+    Route::post('/delete-approval', 'App\Http\Controllers\ApprovalController@delete');
+    
+});
 
-//UNIT
-Route::get('/unit', 'App\Http\Controllers\UnitController@index');
-Route::get('/data-unit', 'App\Http\Controllers\UnitController@data');
-Route::post('/store-unit', 'App\Http\Controllers\UnitController@store');
-Route::post('/update-unit', 'App\Http\Controllers\UnitController@update');
-Route::post('/delete-unit', 'App\Http\Controllers\UnitController@delete');
 
 
-//TAHUN
-Route::get('/tahun', 'App\Http\Controllers\TahunController@index');
-Route::get('/data-tahun', 'App\Http\Controllers\TahunController@data');
-Route::post('/store-tahun', 'App\Http\Controllers\TahunController@store');
-Route::post('/update-tahun', 'App\Http\Controllers\TahunController@update');
-Route::post('/delete-tahun', 'App\Http\Controllers\TahunController@delete');
-
-//USER
-Route::get('/user', 'App\Http\Controllers\UserController@index');
-Route::get('/data-user', 'App\Http\Controllers\UserController@data');
-Route::post('/store-user', 'App\Http\Controllers\UserController@store');
-Route::post('/update-user', 'App\Http\Controllers\UserController@update');
-Route::post('/delete-user', 'App\Http\Controllers\UserController@delete');
+//LOGOUT
+Route::get('/logout', function () {
+    Auth::logout();
+    return redirect('login');
+})->name('logout');
