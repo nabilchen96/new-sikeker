@@ -41,9 +41,9 @@ function getData() {
             {
                 render: function (data, type, row, meta) {
                     return `
-                    Persentase ${row.total_progress}%
+                    Persentase ${row.total_progress ?? 0}%
                     <div class="progress" style="border: grey 1px solid;">
-                        <div class="progress-bar" role="progressbar" style="width: 25%;" ></div>
+                        <div class="progress-bar" role="progressbar" style="width: ${row.total_progress}%;"></div>
                     </div>`;
                 }
             },
@@ -138,6 +138,46 @@ form.onsubmit = function (e) {
                 $("#modal").modal("hide");
                 table.destroy();
                 getData();
+            } else {
+                let err = "";
+                Object.entries(res.data.respon).forEach(([field, msg]) => {
+                    msg.forEach(m => err += `<li>${m}</li>`);
+                });
+                $("#respon_error").html(err);
+            }
+        })
+        .catch(err => {
+            $("#tombol_kirim").prop("disabled", false);
+            console.error(err);
+        });
+}
+
+formUbahStatusProker.onsubmit = function (e) {
+    e.preventDefault();
+
+    let formData = new FormData(formUbahStatusProker);
+
+    $("#respon_error").html("");
+    $("#tombol_kirim").prop("disabled", true);
+
+    axios.post(
+        "/ubah-status-proker",
+        formData
+    )
+        .then(res => {
+            $("#tombol_kirim").prop("disabled", false);
+
+            if (res.data.responCode == 1) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Sukses",
+                    text: res.data.respon,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+
+                location.reload();
+
             } else {
                 let err = "";
                 Object.entries(res.data.respon).forEach(([field, msg]) => {

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('id_unit');
             $table->string('id_tahun');
             $table->string('status_approval');
-            $table->text('keterangan_ditolak');
+            $table->text('keterangan_ditolak')->nullable();
             $table->timestamps();
         });
     }

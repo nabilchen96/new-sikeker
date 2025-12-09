@@ -7,9 +7,9 @@
                     <h3 class="font-weight-bold">Data Rencana Proker</h3>
                     <h4>Unit {{ $proker->unit }} Tahun {{ $proker->tahun }}</h4>
                     <div class="alert bg-info p-2">
-                        <strong>Status Proker!</strong> 
-                        Status proker anda saat ini adalah: {{ $proker->status_approval }}
-                        {{ $proker->keterangan_ditolak != '-' ? 'Keterangan Ditolak:'.$proker->keterangan_ditolak : ''}}
+                        <strong>Status Proker!</strong>
+                        Status proker anda saat ini adalah: {{ $proker->status_approval }}.
+                        {{ $proker->keterangan_ditolak != '-' ? 'Keterangan Ditolak: ' . $proker->keterangan_ditolak : '' }}
                     </div>
                 </div>
             </div>
@@ -26,11 +26,20 @@
                         Tambah
                     </button>
 
-                    @if($proker->status_approval != 'Dalam Pengajuan')
-                        <button type="button" onclick="ajukanProker({{ $proker->id }})" class="btn btn-info btn-md mb-4 d-none d-md-inline-block" >
+                    @if (
+                        $proker->status_approval == 'Belum Mengajukan' ||
+                        $proker->status_approval == 'Ditolak'
+                    )
+                        <button type="button" onclick="ajukanProker({{ $proker->id }})"
+                            class="btn btn-info btn-md mb-4 d-none d-md-inline-block">
                             Ajukan Proker
                         </button>
                     @endif
+
+                    <button type="button" data-toggle="modal" data-target="#modalUbahStatusProker"
+                        class="btn btn-info btn-md mb-4 d-none d-md-inline-block">
+                        Ubah Status Pengajuan
+                    </button>
 
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="searchInput" placeholder="Cari ...">
@@ -138,6 +147,44 @@
                                 <option>3</option>
                                 <option>4</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer p-3">
+                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                        <button id="tombol_kirim" class="btn btn-primary btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalUbahStatusProker" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="formUbahStatusProker">
+                    <div class="modal-header p-3">
+                        <h5 class="modal-title m-2">Ubah Status Pengajuan</h5>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input type="hidden" name="id_proker" id="id_proker" value="{{ Request('id_proker') }}">
+
+                        <div class="form-group">
+                            <label>Status Proker</label>
+                            <select name="status_approval" id="status_approval" class="form-control" required>
+                                <option value="">Pilih Status ...</option>
+                                <option>Ditolak</option>
+                                <option>Diterima</option>
+                            </select>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Keterangan Ditolak</label>
+                            <textarea name="keterangan_ditolak" id="keterangan_ditolak" cols="10" class="form-control" rows="10"
+                            placeholder="Keterangan Hanya Jika Ditolak"></textarea>
                         </div>
                     </div>
 

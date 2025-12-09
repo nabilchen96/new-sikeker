@@ -101,7 +101,21 @@ class ProkerController extends Controller
     public function ajukanProker(Request $request)
     {
         Proker::find($request->id)->update([
-            'status_approval' => 'Dalam Pengajuan'
+            'status_approval' => 'Dalam Pengajuan',
+            'keterangan_ditolak' => '-'
+        ]);
+
+        return response()->json([
+            'responCode' => 1,
+            'respon' => 'Data berhasil diupdate'
+        ]);
+    }
+
+    public function ubahStatusProker(Request $request)
+    {
+        Proker::find($request->id_proker)->update([
+            'status_approval' => $request->status_approval,
+            'keterangan_ditolak' => $request->keterangan_ditolak ?? '-'
         ]);
 
         return response()->json([

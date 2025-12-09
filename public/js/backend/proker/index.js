@@ -33,7 +33,9 @@ function getData() {
                 data: 'tahun'
             },
             {
-                data: 'status_approval'
+                render: function (data, type, row, meta) {
+                    return `<div class="badge bg-info text-white">${row.status_approval}</div>`;
+                }
             },
             {
                 data: 'keterangan_ditolak'

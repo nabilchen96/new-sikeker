@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/update-proker', 'App\Http\Controllers\ProkerController@update');
     Route::post('/delete-proker', 'App\Http\Controllers\ProkerController@delete');
     Route::post('/ajukan-proker', 'App\Http\Controllers\ProkerController@ajukanProker');
+    Route::post('/ubah-status-proker', 'App\Http\Controllers\ProkerController@ubahStatusProker');
     
     //RENCANA PROKER
     Route::get('/rencana-proker', 'App\Http\Controllers\RencanaProkerController@index');
