@@ -18,7 +18,10 @@ class RencanaProkerController extends Controller
                 ->leftjoin('units', 'units.id', '=', 'prokers.id_unit')
                 ->select(
                     'tahuns.tahun',
-                    'units.unit'
+                    'units.unit',
+                    'prokers.status_approval',
+                    'prokers.keterangan_ditolak',
+                    'prokers.id'
                 )->where('prokers.id', Request('id_proker'))->first();
 
         return view('backend.rencana_proker.index', [
@@ -31,14 +34,21 @@ class RencanaProkerController extends Controller
         $keyword = $request->keyword;
 
         $query = DB::table('rencana_prokers')
-                ->leftjoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
-                ->leftjoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
-                ->leftjoin('units', 'units.id', '=', 'prokers.id_unit')
+                ->leftJoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
+                ->leftJoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
+                ->leftJoin('units', 'units.id', '=', 'prokers.id_unit')
+                ->leftJoin('aksi_prokers', 'aksi_prokers.id_rencana_proker', '=', 'rencana_prokers.id')
                 ->select(
                     'rencana_prokers.*',
                     'tahuns.tahun',
-                    'units.unit'
-                )->where('rencana_prokers.id_proker', Request('id_proker'));
+                    'units.unit',
+                    DB::raw('SUM(aksi_prokers.progress) as total_progress')
+                )
+                ->where('rencana_prokers.id_proker', $request->id_proker)
+                ->groupBy(
+                    'rencana_prokers.id', 
+                );
+
 
         if ($keyword) {
             $query->where('rencana_prokers.rencana_proker', 'like', "%$keyword%");

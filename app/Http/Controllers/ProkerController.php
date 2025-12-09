@@ -97,4 +97,16 @@ class ProkerController extends Controller
             'respon' => 'Data berhasil dihapus'
         ]);
     }
+
+    public function ajukanProker(Request $request)
+    {
+        Proker::find($request->id)->update([
+            'status_approval' => 'Dalam Pengajuan'
+        ]);
+
+        return response()->json([
+            'responCode' => 1,
+            'respon' => 'Data berhasil diupdate'
+        ]);
+    }
 }

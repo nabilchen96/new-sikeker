@@ -3,16 +3,21 @@
     <div class="row" style="margin-top: -200px;">
         <div class="col-md-12 text-white">
             <div class="row">
-                <div class="col-12 col-xl-8 mb-xl-0">
+                <div class="col-12">
                     <h3 class="font-weight-bold">Data Rencana Proker</h3>
                     <h4>Unit {{ $proker->unit }} Tahun {{ $proker->tahun }}</h4>
+                    <div class="alert bg-info p-2">
+                        <strong>Status Proker!</strong> 
+                        Status proker anda saat ini adalah: {{ $proker->status_approval }}
+                        {{ $proker->keterangan_ditolak != '-' ? 'Keterangan Ditolak:'.$proker->keterangan_ditolak : ''}}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-12 mt-4">
+        <div class="col-12">
             <div class="card w-100">
                 <div class="card-body">
 
@@ -20,6 +25,12 @@
                         data-target="#modal">
                         Tambah
                     </button>
+
+                    @if($proker->status_approval != 'Dalam Pengajuan')
+                        <button type="button" onclick="ajukanProker({{ $proker->id }})" class="btn btn-info btn-md mb-4 d-none d-md-inline-block" >
+                            Ajukan Proker
+                        </button>
+                    @endif
 
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="searchInput" placeholder="Cari ...">

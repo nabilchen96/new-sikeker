@@ -19,7 +19,7 @@ function getData() {
         searching: false,
         lengthChange: false,
         ajax: {
-            url: '/data-rencana-proker?id_proker='+id_proker,
+            url: '/data-rencana-proker?id_proker=' + id_proker,
             data: function (d) {
                 d.keyword = $("#searchInput").val();
             }
@@ -40,7 +40,11 @@ function getData() {
             },
             {
                 render: function (data, type, row, meta) {
-                    return `-`;
+                    return `
+                    Persentase ${row.total_progress}%
+                    <div class="progress" style="border: grey 1px solid;">
+                        <div class="progress-bar" role="progressbar" style="width: 25%;" ></div>
+                    </div>`;
                 }
             },
             {
@@ -166,8 +170,8 @@ hapusData = (id) => {
 
         if (result.value) {
 
-            axios.post("/delete-rencana-proker", { 
-                id 
+            axios.post("/delete-rencana-proker", {
+                id
             })
                 .then(res => {
 
@@ -181,6 +185,48 @@ hapusData = (id) => {
 
                         table.destroy();
                         getData();
+
+                    } else {
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Gagal",
+                            text: res.data.respon,
+                        });
+                    }
+
+                });
+        }
+    });
+}
+
+ajukanProker = (id) => {
+
+    Swal.fire({
+        title: "Ajukan Proker?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        confirmButtonText: "Ya",
+        cancelButtonColor: "#3085d6",
+        cancelButtonText: "Batal"
+    }).then((result) => {
+
+        if (result.value) {
+
+            axios.post("/ajukan-proker", {
+                id
+            })
+                .then(res => {
+
+                    if (res.data.responCode == 1) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        location.reload();
 
                     } else {
                         Swal.fire({
