@@ -9,13 +9,17 @@ $("#btnCari").click(function () {
 var table = null;
 
 function getData() {
+
+    const params = new URLSearchParams(window.location.search);
+    const id_proker = params.get('id_proker');
+
     table = $("#myTable").DataTable({
         ordering: true,
         processing: true,
         searching: false,
         lengthChange: false,
         ajax: {
-            url: '/data-proker',
+            url: '/data-rencana-proker?id_proker='+id_proker,
             data: function (d) {
                 d.keyword = $("#searchInput").val();
             }
@@ -27,16 +31,17 @@ function getData() {
                 }
             },
             {
-                data: 'unit'
+                data: 'rencana_proker'
             },
             {
-                data: 'tahun'
+                render: function (data, type, row, meta) {
+                    return `Bulan ${row.bulan_mulai}, Minggu ${row.minggu_mulai} → Bulan ${row.bulan_akhir}, Minggu ${row.minggu_akhir}`;
+                }
             },
             {
-                data: 'status_approval'
-            },
-            {
-                data: 'keterangan_ditolak'
+                render: function (data, type, row, meta) {
+                    return `-`;
+                }
             },
             {
                 data: 'created_at'
@@ -52,9 +57,6 @@ function getData() {
                             <a class="dropdown-item text-success" data-toggle="modal" data-target="#modal"
                                 href="javascript:void(0)" data-bs-id="${row.id}">
                                 <i class="bi bi-grid"></i> &nbsp; Edit
-                            </a>
-                            <a href="/rencana-proker?id_proker=${row.id}" class="dropdown-item text-info">
-                                <i class="bi bi-box-seam"></i> &nbsp; Detail
                             </a>
                             <a class="dropdown-item text-danger" onclick="hapusData(${row.id})">
                                 <i class="bi bi-trash"></i> &nbsp; Hapus
@@ -90,8 +92,12 @@ $('#modal').on('show.bs.modal', function (event) {
         var modal = $(this);
 
         modal.find('#id').val(cokData[0].id);
-        modal.find('#id_unit').val(cokData[0].id_unit);
-        modal.find('#id_tahun').val(cokData[0].id_tahun);
+        modal.find('#id_proker').val(cokData[0].id_proker);
+        modal.find('#bulan_mulai').val(cokData[0].bulan_mulai);
+        modal.find('#minggu_mulai').val(cokData[0].minggu_mulai);
+        modal.find('#bulan_akhir').val(cokData[0].bulan_akhir);
+        modal.find('#minggu_akhir').val(cokData[0].minggu_akhir);
+        modal.find('#rencana_proker').val(cokData[0].rencana_proker);
     }
 });
 
@@ -110,7 +116,7 @@ form.onsubmit = function (e) {
     $("#tombol_kirim").prop("disabled", true);
 
     axios.post(
-        formData.get('id') == "" ? "/store-proker" : "/update-proker",
+        formData.get('id') == "" ? "/store-rencana-proker" : "/update-rencana-proker",
         formData
     )
         .then(res => {
@@ -160,7 +166,7 @@ hapusData = (id) => {
 
         if (result.value) {
 
-            axios.post("/delete-proker", { 
+            axios.post("/delete-rencana-proker", { 
                 id 
             })
                 .then(res => {

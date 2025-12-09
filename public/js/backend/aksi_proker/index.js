@@ -2,23 +2,20 @@ document.addEventListener('DOMContentLoaded', function () {
     getData();
 });
 
-$("#btnCari").click(function () {
-    table.ajax.reload();
-});
-
 var table = null;
 
 function getData() {
+
+    const params = new URLSearchParams(window.location.search);
+    const id_rencana_proker = params.get('id_rencana_proker');
+
     table = $("#myTable").DataTable({
         ordering: true,
         processing: true,
         searching: false,
         lengthChange: false,
         ajax: {
-            url: '/data-proker',
-            data: function (d) {
-                d.keyword = $("#searchInput").val();
-            }
+            url: '/data-aksi-proker?id_rencana_proker='+id_rencana_proker,
         },
         columns: [
             {
@@ -27,19 +24,30 @@ function getData() {
                 }
             },
             {
-                data: 'unit'
+                render: function (data, type, row, meta) {
+                    return `<b>Rencana Proker: </b><br>
+                    ${row.rencana_proker}<br><br>
+                    <b>Kegiatan: </b><br>
+                    ${row.kegiatan_proker}`;
+                }
             },
             {
-                data: 'tahun'
+                render: function (data, type, row, meta) {
+                    return `<b>File Kegiatan: </b><br>
+                    <a href="/storage/${row.bukti_kegiatan}"><i class="bi bi-file-earmark-text"></i> Download File</a> <br><br>
+                    <b>Penambahan Progress: </b><br>
+                    ${row.progress}%`;
+                }
             },
             {
-                data: 'status_approval'
-            },
-            {
-                data: 'keterangan_ditolak'
-            },
-            {
-                data: 'created_at'
+                render: function (data, type, row, meta) {
+                    return `<b>Waktu Pengerjaan: </b>
+                    <br>Bulan ${row.bulan_mulai}, Minggu ${row.minggu_mulai} 
+                    → Bulan ${row.bulan_akhir}, Minggu ${row.minggu_akhir}<br><br>
+                    <b>Unit:</b><br>
+                    ${row.unit}, Tahun ${row.tahun}
+                    `;
+                }
             },
             {
                 render: function (data, type, row, meta) {
@@ -52,9 +60,6 @@ function getData() {
                             <a class="dropdown-item text-success" data-toggle="modal" data-target="#modal"
                                 href="javascript:void(0)" data-bs-id="${row.id}">
                                 <i class="bi bi-grid"></i> &nbsp; Edit
-                            </a>
-                            <a href="/rencana-proker?id_proker=${row.id}" class="dropdown-item text-info">
-                                <i class="bi bi-box-seam"></i> &nbsp; Detail
                             </a>
                             <a class="dropdown-item text-danger" onclick="hapusData(${row.id})">
                                 <i class="bi bi-trash"></i> &nbsp; Hapus
@@ -90,8 +95,9 @@ $('#modal').on('show.bs.modal', function (event) {
         var modal = $(this);
 
         modal.find('#id').val(cokData[0].id);
-        modal.find('#id_unit').val(cokData[0].id_unit);
-        modal.find('#id_tahun').val(cokData[0].id_tahun);
+        modal.find('#id_rencana_proker').val(cokData[0].id_rencana_proker);
+        modal.find('#kegiatan_proker').val(cokData[0].kegiatan_proker);
+        modal.find('#progress').val(cokData[0].progress);
     }
 });
 
@@ -110,7 +116,7 @@ form.onsubmit = function (e) {
     $("#tombol_kirim").prop("disabled", true);
 
     axios.post(
-        formData.get('id') == "" ? "/store-proker" : "/update-proker",
+        formData.get('id') == "" ? "/store-aksi-proker" : "/update-aksi-proker",
         formData
     )
         .then(res => {
@@ -160,7 +166,7 @@ hapusData = (id) => {
 
         if (result.value) {
 
-            axios.post("/delete-proker", { 
+            axios.post("/delete-aksi-proker", { 
                 id 
             })
                 .then(res => {

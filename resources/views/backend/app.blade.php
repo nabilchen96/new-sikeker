@@ -77,11 +77,11 @@
                 style="box-shadow: 0px 5px 21px -5px #CDD1E1;">
                 <a class="navbar-brand brand-logo mr-5" style="font-size: 16px; margin-left: 20px;"
                     href="{{ url('/') }}">
-                    <h3><b> <img style="height: 65px;" src="" alt=""> </b></h3>
+                    <h3><b>🚀 SIKEKER</b></h3>
                 </a>
                 <a class="navbar-brand brand-logo-mini" href="{{ url('/') }}">
-                    <!-- <h4><b>🚀</b></h4> -->
-                    <img src="" alt="">
+                    <h4><b>🚀</b></h4>
+                    {{-- <img src="" alt=""> --}}
                 </a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">

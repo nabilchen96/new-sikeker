@@ -64,6 +64,24 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/update-proker', 'App\Http\Controllers\ProkerController@update');
     Route::post('/delete-proker', 'App\Http\Controllers\ProkerController@delete');
     
+    //RENCANA PROKER
+    Route::get('/rencana-proker', 'App\Http\Controllers\RencanaProkerController@index');
+    Route::get('/data-rencana-proker', 'App\Http\Controllers\RencanaProkerController@data');
+    Route::post('/store-rencana-proker', 'App\Http\Controllers\RencanaProkerController@store');
+    Route::post('/update-rencana-proker', 'App\Http\Controllers\RencanaProkerController@update');
+    Route::post('/delete-rencana-proker', 'App\Http\Controllers\RencanaProkerController@delete');
+
+    //AKSI PROKER
+    Route::get('/aksi-proker', 'App\Http\Controllers\AksiProkerController@index');
+    Route::get('/data-aksi-proker', 'App\Http\Controllers\AksiProkerController@data');
+    Route::post('/store-aksi-proker', 'App\Http\Controllers\AksiProkerController@store');
+    Route::post('/update-aksi-proker', 'App\Http\Controllers\AksiProkerController@update');
+    Route::post('/delete-aksi-proker', 'App\Http\Controllers\AksiProkerController@delete');
+
+
+    Route::get('file-manager', function(){
+        return view('backend.file_manager.index');
+    });
 });
 
 
