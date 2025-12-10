@@ -15,21 +15,22 @@ class DashboardController extends Controller
 
         // Ambil semua rencana proker
         $prokers = DB::table('rencana_prokers')
-                ->leftJoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
-                ->leftJoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
-                ->leftJoin('units', 'units.id', '=', 'prokers.id_unit')
-                ->leftJoin('aksi_prokers', 'aksi_prokers.id_rencana_proker', '=', 'rencana_prokers.id')
-                ->select(
-                    'rencana_prokers.*',
-                    'tahuns.tahun',
-                    'units.unit',
-                    DB::raw('SUM(aksi_prokers.progress) as total_progress')
-                )
-                ->where('units.id', $id_unit)
-                ->where('tahuns.id', $id_tahun)
-                ->groupBy(
-                    'rencana_prokers.id', 
-                )->get();
+                    ->leftJoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
+                    ->leftJoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
+                    ->leftJoin('units', 'units.id', '=', 'prokers.id_unit')
+                    ->leftJoin('aksi_prokers', 'aksi_prokers.id_rencana_proker', '=', 'rencana_prokers.id')
+                    ->select(
+                        DB::raw('ANY_VALUE(rencana_prokers.id) as id'),
+                        DB::raw('ANY_VALUE(rencana_prokers.nama) as nama'),
+                        DB::raw('ANY_VALUE(tahuns.tahun) as tahun'),
+                        DB::raw('ANY_VALUE(units.unit) as unit'),
+                        DB::raw('SUM(aksi_prokers.progress) as total_progress')
+                    )
+                    ->where('units.id', $id_unit)
+                    ->where('tahuns.id', $id_tahun)
+                    ->groupBy('rencana_prokers.id')
+                    ->get();
+
 
         // Daftar bulan (gunakan key angka)
         $bulanList = [
