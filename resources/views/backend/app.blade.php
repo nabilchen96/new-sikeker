@@ -98,12 +98,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                             aria-labelledby="profileDropdown">
-                            <a class="dropdown-item" style="padding-top: 0; padding-bottom: 0;">
-                                <i class="bi bi-envelope"></i>
-
-                            </a>
-                            <a class="dropdown-item" style="padding-top: 0; padding-bottom: 0;">
-                                <i class="bi bi-person-circle"></i>
+                            
 
                             </a>
                             <a class="dropdown-item" href="{{ url('logout') }}">

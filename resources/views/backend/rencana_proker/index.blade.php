@@ -6,7 +6,9 @@
                 <div class="col-12">
                     <h3 class="font-weight-bold">Data Rencana Proker</h3>
                     <h4>Unit {{ $proker->unit }} Tahun {{ $proker->tahun }}</h4>
-                    <div class="alert bg-info p-2">
+                    <div style="background-color: #fff3cd;
+                        border-color: #ffeeba;"
+                        class="alert alert-warning p-2">
                         <strong>Status Proker!</strong>
                         Status proker anda saat ini adalah: {{ $proker->status_approval }}.
                         {{ $proker->keterangan_ditolak != '-' ? 'Keterangan Ditolak: ' . $proker->keterangan_ditolak : '' }}
@@ -26,20 +28,19 @@
                         Tambah
                     </button>
 
-                    @if (
-                        $proker->status_approval == 'Belum Mengajukan' ||
-                        $proker->status_approval == 'Ditolak'
-                    )
+                    @if ($proker->status_approval == 'Belum Mengajukan' || $proker->status_approval == 'Ditolak')
                         <button type="button" onclick="ajukanProker({{ $proker->id }})"
                             class="btn btn-info btn-md mb-4 d-none d-md-inline-block">
                             Ajukan Proker
                         </button>
                     @endif
 
-                    <button type="button" data-toggle="modal" data-target="#modalUbahStatusProker"
-                        class="btn btn-info btn-md mb-4 d-none d-md-inline-block">
-                        Ubah Status Pengajuan
-                    </button>
+                    @if (Auth::user()->role == 'Approval')
+                        <button type="button" data-toggle="modal" data-target="#modalUbahStatusProker"
+                            class="btn btn-info btn-md mb-4 d-none d-md-inline-block">
+                            Ubah Status Pengajuan
+                        </button>
+                    @endif
 
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="searchInput" placeholder="Cari ...">
@@ -184,7 +185,7 @@
                         <div class="form-group">
                             <label>Keterangan Ditolak</label>
                             <textarea name="keterangan_ditolak" id="keterangan_ditolak" cols="10" class="form-control" rows="10"
-                            placeholder="Keterangan Hanya Jika Ditolak"></textarea>
+                                placeholder="Keterangan Hanya Jika Ditolak"></textarea>
                         </div>
                     </div>
 

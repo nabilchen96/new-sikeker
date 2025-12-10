@@ -42,6 +42,10 @@ class AksiProkerController extends Controller
             $query->where('rencana_prokers.id', $keyword);
         }
 
+        if(Auth::user()->role == 'Anggota'){
+            $query->where('units.id', Auth::user()->id_unit);
+        }
+
         return response()->json(['data' => $query->get()]);
     }
 

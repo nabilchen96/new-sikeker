@@ -33,6 +33,7 @@
                                     ->leftjoin('units', 'units.id', '=', 'prokers.id_unit')
                                     ->select('rencana_prokers.*', 'units.unit')
                                     ->where('tahuns.status', 'Aktif')
+                                    ->where('prokers.status_approval', 'Diterima')
                                     ->get();
                             @endphp
                             <select name="id_rencana_proker" class="form-control" id="id_rencana_proker">

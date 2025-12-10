@@ -42,6 +42,7 @@ class RencanaProkerController extends Controller
                     'rencana_prokers.*',
                     'tahuns.tahun',
                     'units.unit',
+                    'prokers.status_approval',
                     DB::raw('SUM(aksi_prokers.progress) as total_progress')
                 )
                 ->where('rencana_prokers.id_proker', $request->id_proker)

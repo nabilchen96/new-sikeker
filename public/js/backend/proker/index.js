@@ -45,25 +45,40 @@ function getData() {
             },
             {
                 render: function (data, type, row, meta) {
-                    return `
-                    <div class="dropdown">
-                        <a class="text-success" href="#" data-toggle="dropdown">
-                            <i class="bi bi-three-dots" style="font-size:1.5rem"></i>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item text-success" data-toggle="modal" data-target="#modal"
-                                href="javascript:void(0)" data-bs-id="${row.id}">
-                                <i class="bi bi-grid"></i> &nbsp; Edit
+                    if (row.status_approval == 'Dalam Pengajuan' || row.status_approval == 'Diterima') {
+                        return `
+                        <div class="dropdown">
+                            <a class="text-success" href="#" data-toggle="dropdown">
+                                <i class="bi bi-three-dots" style="font-size:1.5rem"></i>
                             </a>
-                            <a href="/rencana-proker?id_proker=${row.id}" class="dropdown-item text-info">
-                                <i class="bi bi-box-seam"></i> &nbsp; Detail
-                            </a>
-                            <a class="dropdown-item text-danger" onclick="hapusData(${row.id})">
-                                <i class="bi bi-trash"></i> &nbsp; Hapus
-                            </a>
+                            <div class="dropdown-menu">
+                                <a href="/rencana-proker?id_proker=${row.id}" class="dropdown-item text-info">
+                                    <i class="bi bi-box-seam"></i> &nbsp; Detail
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    `;
+                        `;
+                    } else {
+                        return `
+                        <div class="dropdown">
+                            <a class="text-success" href="#" data-toggle="dropdown">
+                                <i class="bi bi-three-dots" style="font-size:1.5rem"></i>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item text-success" data-toggle="modal" data-target="#modal"
+                                    href="javascript:void(0)" data-bs-id="${row.id}">
+                                    <i class="bi bi-grid"></i> &nbsp; Edit
+                                </a>
+                                <a href="/rencana-proker?id_proker=${row.id}" class="dropdown-item text-info">
+                                    <i class="bi bi-box-seam"></i> &nbsp; Detail
+                                </a>
+                                <a class="dropdown-item text-danger" onclick="hapusData(${row.id})">
+                                    <i class="bi bi-trash"></i> &nbsp; Hapus
+                                </a>
+                            </div>
+                        </div>
+                        `;
+                    }
                 }
             }
         ],
@@ -162,8 +177,8 @@ hapusData = (id) => {
 
         if (result.value) {
 
-            axios.post("/delete-proker", { 
-                id 
+            axios.post("/delete-proker", {
+                id
             })
                 .then(res => {
 
