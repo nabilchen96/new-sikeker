@@ -100,13 +100,16 @@
                         <div class="form-group">
                             <label>Kegiatan Proker</label>
                             <textarea name="kegiatan_proker" id="kegiatan_proker" cols="10" rows="10" required class="form-control"
-                                placeholder="Kegiatan Proker"></textarea>
+                                placeholder="Jelaskan Kegiatan Proker"></textarea>
                         </div>
 
                         <div class="form-group">
                             <label>File Kegiatan</label>
                             <input type="file" class="form-control" name="bukti_kegiatan" id="bukti_kegiatan">
                             {{-- <div id="previewFile" class="mt-2"></div> --}}
+                            <span class="text-info" style="font-size: 13px;">
+                                *Hanya file pdf, maksimal: 2MB
+                            </span>
                         </div>
 
                         <div class="form-group">

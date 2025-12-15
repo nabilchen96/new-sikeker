@@ -35,29 +35,31 @@
             </a>
 
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <i class="icon-layout menu-icon"></i>
-                <span class="menu-title">Master</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="ui-basic">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('unit') }}">Unit</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('tahun') }}">Tahun</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('user') }}">User</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('approval') }}">Approval</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+        @if(Auth::user()->role == 'Admin')
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                    <i class="icon-layout menu-icon"></i>
+                    <span class="menu-title">Master</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="ui-basic">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('unit') }}">Unit</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('tahun') }}">Tahun</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('user') }}">User</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('approval') }}">Approval</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        @endif
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#aktivitas" aria-expanded="false" aria-controls="ui-basic">
                 <i class="icon-layout bi bi-box-seam menu-icon"></i>
@@ -79,7 +81,7 @@
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/">
+            <a class="nav-link" href="{{ asset('panduan.pdf') }}" target="blank">
                 <i class="bi bi-file-earmark-text menu-icon"></i>
                 <span class="menu-title">Panduan</span>
             </a>
