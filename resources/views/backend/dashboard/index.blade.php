@@ -1,148 +1,115 @@
 @extends('backend.app')
+
 @section('content')
+
     <div class="row" style="margin-top: -200px;">
         <div class="col-md-12 text-white">
-            <div class="row">
-                <div class="col-12 col-xl-8 mb-xl-0">
-                    <h3 class="font-weight-bold">Dashboard</h3>
-                </div>
-            </div>
+            <h3 class="font-weight-bold">Dashboard Rencana Proker</h3>
         </div>
     </div>
+
     <div class="row">
         <div class="col-12 mt-4">
-            @php
-                // Mapping nama bulan ke angka
-                function bulanIndex()
-                {
-                    return [
-                        'Januari' => 1,
-                        'Februari' => 2,
-                        'Maret' => 3,
-                        'April' => 4,
-                        'Mei' => 5,
-                        'Juni' => 6,
-                        'Juli' => 7,
-                        'Agustus' => 8,
-                        'September' => 9,
-                        'Oktober' => 10,
-                        'November' => 11,
-                        'Desember' => 12,
-                    ];
-                }
-
-                // Fungsi menentukan apakah cell aktif
-                function checkActive($proker, $bulanNama, $minggu)
-                {
-                    $bulan = bulanIndex()[$bulanNama]; // convert nama → angka
-
-                    if ($bulan < intval($proker->bulan_mulai)) {
-                        return false;
-                    }
-
-                    if ($bulan > intval($proker->bulan_akhir)) {
-                        return false;
-                    }
-
-                    if ($bulan == intval($proker->bulan_mulai) && $minggu < intval($proker->minggu_mulai)) {
-                        return false;
-                    }
-
-                    if ($bulan == intval($proker->bulan_akhir) && $minggu > intval($proker->minggu_akhir)) {
-                        return false;
-                    }
-
-                    return true;
-                }
-            @endphp
-
             <div class="card">
                 <div class="card-body">
-                    <form action="" method="GET">
+
+                    {{-- FILTER --}}
+                    <form method="GET" class="mb-3">
                         <div class="input-group mb-3">
                             @php
                                 $unit = DB::table('units')->get();
-                                $tahun = DB::table('tahuns')->get();
                             @endphp
-                            <select name="id_unit" id="id_unit" class="form-control" required>
+
+                            <select name="id_unit" class="form-control" required>
                                 <option value="">Pilih Unit ...</option>
                                 @foreach ($unit as $item)
-                                    <option {{ Request('id_unit') == $item->id ? 'selected' : '' }}
-                                        value="{{ $item->id }}">{{ $item->unit }}</option>
+                                    <option value="{{ $item->id }}"
+                                        {{ request('id_unit') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->unit }}
+                                    </option>
                                 @endforeach
                             </select>
-                            <select name="id_tahun" id="id_tahun" class="form-control" required>
-                                <option value="">Pilih Tahun ...</option>
-                                @foreach ($tahun as $t)
-                                    <option {{ Request('id_tahun') == $t->id ? 'selected' : '' }}
-                                        value="{{ $t->id }}">{{ $t->tahun }}</option>
+
+                            <select name="bulan" class="form-control" required>
+                                <option value="">Pilih Bulan</option>
+                                @foreach ([1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'] as $i => $b)
+                                    <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
+                                        {{ $b }}
+                                    </option>
                                 @endforeach
                             </select>
+
                             <div class="input-group-append">
-                                <button style="height: 38px;" class="input-group-text" id="btnCari">
-                                    <i class="bi bi-search"></i> &nbsp; Cari
+                                <button class="input-group-text" style="height:38px">
+                                    <i class="bi bi-search"></i>&nbsp;Cari
                                 </button>
                             </div>
                         </div>
                     </form>
-                    <div class="table-responsive" style="height: 500px;">
-                        <table class="table table-bordered">
-                            <thead class="table-secondary">
-                                <tr>
-                                    <th rowspan="2" class="p-3">Rencana Proker</th>
 
-                                    {{-- Header Bulan --}}
-                                    @foreach ($bulanList as $bulan)
-                                        <th colspan="4" class="text-center p-2">{{ $bulan }}</th>
-                                    @endforeach
-                                </tr>
+                    {{-- TABEL --}}
+                    <div class="table-responsive" style="height:500px;">
+                        <table class="table table-bordered">
+                            <thead class="table-secondary sticky-top">
                                 <tr>
-                                    {{-- Header Minggu --}}
-                                    @foreach ($bulanList as $bulan)
-                                        @foreach ($bulanMinggu[$bulan] as $mg)
-                                            <th class="p-2 text-center">M{{ $mg }}</th>
-                                        @endforeach
-                                    @endforeach
+                                    <th class="p-3" style="min-width:300px">Rencana Proker</th>
+                                    <th class="p-3">Jenis Proker</th>
+                                    @for ($tgl = 1; $tgl <= $jumlahHari; $tgl++)
+                                        <th class="text-center p-3">{{ $tgl }}</th>
+                                    @endfor
                                 </tr>
                             </thead>
 
                             <tbody>
                                 @forelse ($prokers as $proker)
                                     <tr>
-                                        <td class="text-start p-3"
-                                            style="width: 350px !important; min-width: 350px !important; max-width: 350px !important;">
+                                        <td class="p-3">
                                             <a href="#" style="font-size: 14px;" data-toggle="modal"
                                                 data-target="#modal" data-rencana-proker="{{ $proker->rencana_proker }}"
-                                                data-waktu-pengerjaan="Bulan {{ $proker->bulan_mulai }}, Minggu {{ $proker->minggu_mulai }} → Bulan {{ $proker->bulan_akhir }}, Minggu {{ $proker->minggu_akhir }}"
+                                                data-waktu-pengerjaan="{{ $proker->tgl_mulai }} → {{ $proker->tgl_selesai }}"
+                                                data-jenis-proker="{{ $proker->jenis_proker }}"
+                                                data-id-rencana-proker="{{ $proker->id }}"
                                                 data-total-progress="{{ $proker->total_progress }}">
                                                 {{ $proker->rencana_proker }}
                                             </a>
                                         </td>
+                                        <td class="p-3">{{ $proker->jenis_proker }}</td>
+                                        @for ($tgl = 1; $tgl <= $jumlahHari; $tgl++)
+                                            @php
+                                                /*
+                                                 * Karena tidak pakai tahun,
+                                                 * maka ambil tahun dari tgl_mulai
+                                                 */
+                                                $year = \Carbon\Carbon::parse($proker->tgl_mulai)->year;
 
-                                        {{-- Generate kotak minggu --}}
-                                        @foreach ($bulanList as $bulan)
-                                            @foreach ($bulanMinggu[$bulan] as $mg)
-                                                @php
-                                                    $active = checkActive($proker, $bulan, $mg);
-                                                @endphp
+                                                $current = \Carbon\Carbon::create($year, $bulan, $tgl);
 
-                                                <td class="p-1">
-                                                    @if ($active)
-                                                        {!! $proker->total_progress == 100
-                                                            ? '<div class="bg-success" style="border-radius: 8px; width: 35px; height: 35px;"></div>'
-                                                            : '<div class="bg-warning" style="border-radius: 8px; width: 35px; height: 35px;"></div>' !!}
-                                                    @endif
-                                                </td>
-                                            @endforeach
-                                        @endforeach
+                                                $active = $current->between(
+                                                    \Carbon\Carbon::parse($proker->tgl_mulai),
+                                                    \Carbon\Carbon::parse($proker->tgl_selesai),
+                                                );
+                                            @endphp
 
+                                            <td class="text-start p-1">
+                                                @if ($active)
+                                                    <div class="{{ $proker->total_progress == 100 ? 'bg-success' : 'bg-warning' }}"
+                                                        style="width:35px; height:35px; border-radius:8px;">
+                                                    </div>
+                                                @endif
+                                            </td>
+                                        @endfor
                                     </tr>
                                 @empty
-                                    <td colspan="48" class="text-center"><i>Tidak Ada Data yang Ditampilkan</i></td>
+                                    <tr>
+                                        <td colspan="{{ $jumlahHari + 1 }}" class="text-center">
+                                            <i>Tidak ada data</i>
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -166,11 +133,21 @@
                             <input type="text" id="waktu_pengerjaan" readonly class="form-control">
                         </div>
                         <div class="form-group">
+                            <label>Jenis Proker</label>
+                            <input type="text" id="jenis_proker" readonly class="form-control">
+                        </div>
+                        <div class="form-group">
                             <label>Status Progress</label>
                             <div class="progress" style="height: 30px;">
                                 <div class="progress-bar" role="progressbar"></div>
                             </div>
                             <label id="progress_label">Persentase Kegiatan</label>
+                        </div>
+                        <div class="form-group">
+                            <label>Detail Pekerjaan</label>
+                            <br>
+                            <a href="#" id="link-detail"><i class="bi bi-arrow-right"></i> Lihat Detail Pekerjaan
+                                Proker ini</a>
                         </div>
                     </div>
                     <div class="modal-footer p-3">
@@ -190,6 +167,8 @@
             var a = button.data('rencana-proker');
             var b = button.data('waktu-pengerjaan');
             var c = button.data('total-progress');
+            var d = button.data('jenis-proker');
+            var e = button.data('id-rencana-proker');
 
             var modal = $(this);
 
@@ -203,6 +182,13 @@
             modal.find('.progress-bar')
                 .css('width', c + '%')
                 .attr('aria-valuenow', c);
+
+            // Set input waktu pengerjaan
+            modal.find('#jenis_proker').val(d);
+
+            // Set input waktu pengerjaan
+            modal.find('#link-detail')
+                .attr('href', "{{ url('aksi-proker') }}?id_rencana_proker=" + e);
 
             // Set label persentase
             modal.find('.progress-bar')

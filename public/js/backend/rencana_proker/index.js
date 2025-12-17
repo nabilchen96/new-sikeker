@@ -34,8 +34,16 @@ function getData() {
                 data: 'rencana_proker'
             },
             {
+                data: 'jenis_proker'
+            },
+            // {
+            //     render: function (data, type, row, meta) {
+            //         return `Bulan ${row.bulan_mulai}, Minggu ${row.minggu_mulai} → Bulan ${row.bulan_akhir}, Minggu ${row.minggu_akhir}`;
+            //     }
+            // },
+            {
                 render: function (data, type, row, meta) {
-                    return `Bulan ${row.bulan_mulai}, Minggu ${row.minggu_mulai} → Bulan ${row.bulan_akhir}, Minggu ${row.minggu_akhir}`;
+                    return `${row.tgl_mulai} → ${row.tgl_selesai}`;
                 }
             },
             {
@@ -47,9 +55,9 @@ function getData() {
                     </div>`;
                 }
             },
-            {
-                data: 'created_at'
-            },
+            // {
+            //     data: 'created_at'
+            // },
             {
                 render: function (data, type, row, meta) {
                     if (row.status_approval == 'Dalam Pengajuan' || row.status_approval == 'Diterima') {

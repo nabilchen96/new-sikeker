@@ -57,9 +57,10 @@
                                 <tr>
                                     <th width="5px">No</th>
                                     <th width="300px">Rencana Proker</th>
+                                    <th>Jenis Proker</th>
                                     <th>Waktu Pengerjaan</th>
                                     <th>Status Pengerjaan</th>
-                                    <th>Created At</th>
+                                    {{-- <th>Created At</th> --}}
                                     <th width="5px">Aksi</th>
                                 </tr>
                             </thead>
@@ -90,7 +91,7 @@
                                 placeholder="Rencana Proker"></textarea>
                         </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Bulan Mulai</label>
                             <select name="bulan_mulai" id="bulan_mulai" class="form-control" required>
                                 <option value="">Pilih Bulan ...</option>
@@ -147,6 +148,25 @@
                                 <option>2</option>
                                 <option>3</option>
                                 <option>4</option>
+                            </select>
+                        </div> --}}
+
+                        <div class="form-group">
+                            <label>Tanggal Mulai</label>
+                            <input class="form-control" type="date" name="tgl_mulai" id="tgl_mulai" required placeholder="Tanggal Mulai">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tanggal Selesai</label>
+                            <input class="form-control" type="date" name="tgl_selesai" id="tgl_selesai" required placeholder="Tanggal Selesai">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Jenis Proker</label>
+                            <select name="jenis_proker" id="jenis_proker" class="form-control" required>
+                                <option value="">Pilih Jenis Proker ...</option>
+                                <option>Utama</option>
+                                <option>Tambahan</option>
                             </select>
                         </div>
                     </div>

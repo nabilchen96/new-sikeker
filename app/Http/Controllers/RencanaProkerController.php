@@ -62,11 +62,14 @@ class RencanaProkerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'rencana_proker' => 'required',
-            'bulan_mulai' => 'required',
-            'bulan_akhir' => 'required',
-            'minggu_mulai' => 'required',
-            'minggu_akhir' => 'required',
-            'id_proker' => 'required'
+            // 'bulan_mulai' => 'required',
+            // 'bulan_akhir' => 'required',
+            // 'minggu_mulai' => 'required',
+            // 'minggu_akhir' => 'required',
+            'id_proker' => 'required',
+            'jenis_proker' => 'required',
+            'tgl_mulai' => 'required',
+            'tgl_selesai' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -76,7 +79,17 @@ class RencanaProkerController extends Controller
             ]);
         }
 
-        RencanaProker::create($request->all());
+        RencanaProker::create([
+            'id_proker' => $request->id_proker,
+            'rencana_proker' => $request->rencana_proker,
+            'jenis_proker' => $request->jenis_proker,
+            'tgl_mulai' => $request->tgl_mulai,
+            'tgl_selesai' => $request->tgl_selesai,
+            'bulan_mulai' => 0,
+            'bulan_akhir' => 0,
+            'minggu_mulai' => 0,
+            'minggu_akhir' => 0,
+        ]);
 
         return response()->json([
             'responCode' => 1,
@@ -89,11 +102,14 @@ class RencanaProkerController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'rencana_proker' => 'required',
-            'bulan_mulai' => 'required',
-            'bulan_akhir' => 'required',
-            'minggu_mulai' => 'required',
-            'minggu_akhir' => 'required',
-            'id_proker' => 'required'
+            // 'bulan_mulai' => 'required',
+            // 'bulan_akhir' => 'required',
+            // 'minggu_mulai' => 'required',
+            // 'minggu_akhir' => 'required',
+            'id_proker' => 'required',
+            'jenis_proker' => 'required',
+            'tgl_mulai' => 'required',
+            'tgl_selesai' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -104,7 +120,17 @@ class RencanaProkerController extends Controller
         }
 
         $data = RencanaProker::find($request->id);
-        $data->update($request->all());
+        $data->update([
+            'id_proker' => $request->id_proker,
+            'rencana_proker' => $request->rencana_proker,
+            'jenis_proker' => $request->jenis_proker,
+            'tgl_mulai' => $request->tgl_mulai,
+            'tgl_selesai' => $request->tgl_selesai,
+            'bulan_mulai' => 0,
+            'bulan_akhir' => 0,
+            'minggu_mulai' => 0,
+            'minggu_akhir' => 0,
+        ]);
 
         return response()->json([
             'responCode' => 1,

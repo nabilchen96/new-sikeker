@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('bulan_akhir');
             $table->string('minggu_akhir');
             $table->string('status_rencana')->nullable();
+            // $table->date('tgl_mulai');
+            // $table->date('tgl_selesai');
+            // $table->string('jenis_proker');
             $table->timestamps();
         });
     }

@@ -8,51 +8,99 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(){
+    // public function index(){
 
-        $id_unit = Request('id_unit');
-        $id_tahun = Request('id_tahun');
+    //     $id_unit = Request('id_unit');
+    //     $id_tahun = Request('id_tahun');
 
-        // Ambil semua rencana proker
-        $prokers = DB::table('rencana_prokers')
+    //     // Ambil semua rencana proker
+    //     $prokers = DB::table('rencana_prokers')
+    //             ->leftJoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
+    //             ->leftJoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
+    //             ->leftJoin('units', 'units.id', '=', 'prokers.id_unit')
+    //             ->leftJoin('aksi_prokers', 'aksi_prokers.id_rencana_proker', '=', 'rencana_prokers.id')
+    //             ->select(
+    //                 'rencana_prokers.*',
+    //                 'tahuns.tahun',
+    //                 'units.unit',
+    //                 DB::raw('SUM(aksi_prokers.progress) as total_progress')
+    //             )
+    //             ->where('units.id', $id_unit)
+    //             ->where('tahuns.id', $id_tahun)
+    //             ->groupBy(
+    //                 'rencana_prokers.id', 
+    //             )->get();
+
+    //     // Daftar bulan (gunakan key angka)
+    //     $bulanList = [
+    //         1 => 'Januari',
+    //         2 => 'Februari',
+    //         3 => 'Maret',
+    //         4 => 'April',
+    //         5 => 'Mei',
+    //         6 => 'Juni',
+    //         7 => 'Juli',
+    //         8 => 'Agustus',
+    //         9 => 'September',
+    //         10 => 'Oktober',
+    //         11 => 'November',
+    //         12 => 'Desember'
+    //     ];
+
+    //     // Struktur bulan dan minggu
+    //     $bulanMinggu = [];
+    //     foreach ($bulanList as $nama) {
+    //         $bulanMinggu[$nama] = [1,2,3,4];
+    //     }
+
+    //     return view('backend.dashboard.index', compact('prokers', 'bulanList', 'bulanMinggu'));
+    // }
+    
+    public function index(Request $request)
+    {
+        $id_unit = $request->id_unit;
+        $bulan   = $request->bulan; // 1–12
+
+        // default jumlah hari
+        $jumlahHari = 31;
+
+        if ($bulan) {
+            $jumlahHari = cal_days_in_month(CAL_GREGORIAN, $bulan, now()->year);
+        }
+
+        // data unit
+        $units = DB::table('units')->get();
+
+        // DEFAULT: kosong
+        $prokers = collect();
+
+        // JALANKAN QUERY HANYA JIKA FILTER LENGKAP
+        if ($id_unit && $bulan) {
+
+            $prokers = DB::table('rencana_prokers')
                 ->leftJoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
                 ->leftJoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
                 ->leftJoin('units', 'units.id', '=', 'prokers.id_unit')
                 ->leftJoin('aksi_prokers', 'aksi_prokers.id_rencana_proker', '=', 'rencana_prokers.id')
                 ->select(
                     'rencana_prokers.*',
-                    'tahuns.tahun',
-                    'units.unit',
-                    DB::raw('SUM(aksi_prokers.progress) as total_progress')
+                    DB::raw('COALESCE(SUM(aksi_prokers.progress),0) as total_progress')
                 )
                 ->where('units.id', $id_unit)
-                ->where('tahuns.id', $id_tahun)
-                ->groupBy(
-                    'rencana_prokers.id', 
-                )->get();
-
-        // Daftar bulan (gunakan key angka)
-        $bulanList = [
-            1 => 'Januari',
-            2 => 'Februari',
-            3 => 'Maret',
-            4 => 'April',
-            5 => 'Mei',
-            6 => 'Juni',
-            7 => 'Juli',
-            8 => 'Agustus',
-            9 => 'September',
-            10 => 'Oktober',
-            11 => 'November',
-            12 => 'Desember'
-        ];
-
-        // Struktur bulan dan minggu
-        $bulanMinggu = [];
-        foreach ($bulanList as $nama) {
-            $bulanMinggu[$nama] = [1,2,3,4];
+                ->whereMonth('tgl_mulai', '<=', $bulan)
+                ->whereMonth('tgl_selesai', '>=', $bulan)
+                ->where('tahuns.status', 'Aktif')
+                ->groupBy('rencana_prokers.id')
+                ->get();
         }
 
-        return view('backend.dashboard.index', compact('prokers', 'bulanList', 'bulanMinggu'));
+        return view('backend.dashboard.index', compact(
+            'units',
+            'prokers',
+            'bulan',
+            'jumlahHari'
+        ));
     }
+
+
 }

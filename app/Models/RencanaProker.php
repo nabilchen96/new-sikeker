@@ -16,6 +16,9 @@ class RencanaProker extends Model
         'minggu_mulai',
         'bulan_akhir',
         'minggu_akhir',
-        'status_rencana'
+        'status_rencana',
+        'jenis_proker',
+        'tgl_mulai',
+        'tgl_selesai'
     ];
 }
