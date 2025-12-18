@@ -42,8 +42,8 @@ function getData() {
             {
                 render: function (data, type, row, meta) {
                     return `<b>Waktu Pengerjaan: </b>
-                    <br>Bulan ${row.bulan_mulai}, Minggu ${row.minggu_mulai} 
-                    → Bulan ${row.bulan_akhir}, Minggu ${row.minggu_akhir}<br><br>
+                    <br>${row.tgl_mulai} 
+                    → ${row.tgl_selesai}<br><br>
                     <b>Unit:</b><br>
                     ${row.unit}, Tahun ${row.tahun}
                     `;

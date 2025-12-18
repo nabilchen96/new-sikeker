@@ -23,12 +23,14 @@
             <div class="card w-100">
                 <div class="card-body">
 
-                    <button type="button" class="btn btn-primary btn-md mb-4 d-none d-md-inline-block" data-toggle="modal"
-                        data-target="#modal">
-                        Tambah
-                    </button>
-
-                    @if ($proker->status_approval == 'Belum Mengajukan' || $proker->status_approval == 'Ditolak')
+                    
+                    @if ($proker->status_approval == 'Belum Mengajukan' || 
+                        $proker->status_approval == 'Ditolak' || 
+                        $proker->status_approval == 'Direvisi')
+                        <button type="button" class="btn btn-primary btn-md mb-4 d-none d-md-inline-block" data-toggle="modal"
+                            data-target="#modal">
+                            Tambah
+                        </button>
                         <button type="button" onclick="ajukanProker({{ $proker->id }})"
                             class="btn btn-info btn-md mb-4 d-none d-md-inline-block">
                             Ajukan Proker
@@ -197,6 +199,7 @@
                             <select name="status_approval" id="status_approval" class="form-control" required>
                                 <option value="">Pilih Status ...</option>
                                 <option>Ditolak</option>
+                                <option>Direvisi</option>
                                 <option>Diterima</option>
                             </select>
                         </div>

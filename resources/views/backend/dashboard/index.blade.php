@@ -66,7 +66,7 @@
                                         <td class="p-3">
                                             <a href="#" style="font-size: 14px;" data-toggle="modal"
                                                 data-target="#modal" data-rencana-proker="{{ $proker->rencana_proker }}"
-                                                data-waktu-pengerjaan="{{ $proker->tgl_mulai }} → {{ $proker->tgl_selesai }}"
+                                                data-waktu-pengerjaan="{{ date('d-m-Y', strtotime($proker->tgl_mulai)) }} → {{ date('d-m-Y', strtotime($proker->tgl_selesai)) }}"
                                                 data-jenis-proker="{{ $proker->jenis_proker }}"
                                                 data-id-rencana-proker="{{ $proker->id }}"
                                                 data-total-progress="{{ $proker->total_progress }}">
@@ -92,7 +92,7 @@
 
                                             <td class="text-start p-1">
                                                 @if ($active)
-                                                    <div class="{{ $proker->total_progress == 100 ? 'bg-success' : 'bg-warning' }}"
+                                                    <div class="{{ $proker->total_progress > 100 ? 'bg-success' : 'bg-warning' }}"
                                                         style="width:35px; height:35px; border-radius:8px;">
                                                     </div>
                                                 @endif

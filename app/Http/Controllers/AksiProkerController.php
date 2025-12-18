@@ -33,6 +33,8 @@ class AksiProkerController extends Controller
                         'rencana_prokers.minggu_mulai',
                         'rencana_prokers.bulan_akhir',
                         'rencana_prokers.minggu_akhir',
+                        'rencana_prokers.tgl_mulai',
+                        'rencana_prokers.tgl_selesai',
                         'units.unit',
                         'tahuns.tahun'
                     );
