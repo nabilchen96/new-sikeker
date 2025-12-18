@@ -88,9 +88,10 @@
                                                     \Carbon\Carbon::parse($proker->tgl_mulai),
                                                     \Carbon\Carbon::parse($proker->tgl_selesai),
                                                 );
+
                                             @endphp
 
-                                            <td class="text-start p-1">
+                                            <td class="text-start p-1 {{ $current->isWeekend() ? 'bg-danger' : ''}}">
                                                 @if ($active)
                                                     <div class="{{ $proker->total_progress > 100 ? 'bg-success' : 'bg-warning' }}"
                                                         style="width:35px; height:35px; border-radius:8px;">
