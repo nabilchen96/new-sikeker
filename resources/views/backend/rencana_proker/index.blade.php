@@ -37,7 +37,7 @@
                         </button>
                     @endif
 
-                    @if (Auth::user()->role == 'Approval'
+                    @if (Auth::user()->role == 'Approval' ||
                         Auth::user()->role == 'Admin')
                         <button type="button" data-toggle="modal" data-target="#modalUbahStatusProker"
                             class="btn btn-info btn-md mb-4 d-none d-md-inline-block">
