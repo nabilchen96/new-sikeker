@@ -46,18 +46,18 @@ function getData() {
                     return `${row.tgl_mulai} → ${row.tgl_selesai}`;
                 }
             },
-            {
-                render: function (data, type, row, meta) {
-                    return `
-                    Persentase ${row.total_progress ?? 0}%
-                    <div class="progress" style="border: grey 1px solid;">
-                        <div class="progress-bar" role="progressbar" style="width: ${row.total_progress}%;"></div>
-                    </div>`;
-                }
-            },
             // {
-            //     data: 'created_at'
+            //     render: function (data, type, row, meta) {
+            //         return `
+            //         Persentase ${row.total_progress ?? 0}%
+            //         <div class="progress" style="border: grey 1px solid;">
+            //             <div class="progress-bar" role="progressbar" style="width: ${row.total_progress}%;"></div>
+            //         </div>`;
+            //     }
             // },
+            {
+                data: 'created_at'
+            },
             {
                 render: function (data, type, row, meta) {
                     if (row.status_approval == 'Dalam Pengajuan' || row.status_approval == 'Diterima') {
@@ -109,11 +109,14 @@ $('#modal').on('show.bs.modal', function (event) {
 
         modal.find('#id').val(cokData[0].id);
         modal.find('#id_proker').val(cokData[0].id_proker);
-        modal.find('#bulan_mulai').val(cokData[0].bulan_mulai);
-        modal.find('#minggu_mulai').val(cokData[0].minggu_mulai);
-        modal.find('#bulan_akhir').val(cokData[0].bulan_akhir);
-        modal.find('#minggu_akhir').val(cokData[0].minggu_akhir);
+        // modal.find('#bulan_mulai').val(cokData[0].bulan_mulai);
+        // modal.find('#minggu_mulai').val(cokData[0].minggu_mulai);
+        // modal.find('#bulan_akhir').val(cokData[0].bulan_akhir);
+        // modal.find('#minggu_akhir').val(cokData[0].minggu_akhir);
         modal.find('#rencana_proker').val(cokData[0].rencana_proker);
+        modal.find('#tgl_mulai').val(cokData[0].tgl_mulai);
+        modal.find('#tgl_selesai').val(cokData[0].tgl_selesai);
+        modal.find('#jenis_proker').val(cokData[0].jenis_proker);
     }
 });
 

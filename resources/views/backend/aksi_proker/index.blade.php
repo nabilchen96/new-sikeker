@@ -60,8 +60,8 @@
                                 <tr>
                                     <th width="5px">No</th>
                                     <th width="350px">Rencana / Kegiatan</th>
-                                    <th>File Kegiatan / Progress</th>
-                                    <th>Waktu Pengerjaan / Unit</th>
+                                    <th width="200px">Waktu Pengerjaan / Unit</th>
+                                    <th width="200px">File Kegiatan / Created At</th>
                                     <th width="5px">Aksi</th>
                                 </tr>
                             </thead>
@@ -112,14 +112,14 @@
                             </span>
                         </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Penambahan Progress (%)</label>
                             <input placeholder="Isi dengan angka" type="number" class="form-control"
                                 placeholder="Penambahan Progress" required name="progress" id="progress">
                             <span class="text-info" style="font-size: 13px;">
                                 *Setiap progress dari rencana proker yang sama akan dijumlahkan
                             </span>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="modal-footer p-3">

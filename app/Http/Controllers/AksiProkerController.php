@@ -56,7 +56,7 @@ class AksiProkerController extends Controller
         $validator = Validator::make($request->all(), [
             'id_rencana_proker' => 'required',
             'kegiatan_proker' => 'required',
-            'progress'  => 'required',
+            // 'progress'  => 'required',
             'bukti_kegiatan' => 'nullable|file|mimes:pdf|max:2048'
         ]);
 
@@ -87,7 +87,7 @@ class AksiProkerController extends Controller
         AksiProker::create([
             'id_rencana_proker' => $request->id_rencana_proker,
             'bukti_kegiatan' => $fileName,
-            'progress' => $request->progress,
+            'progress' => $request->progress ?? 0,
             'kegiatan_proker' => $request->kegiatan_proker
         ]);
 
@@ -103,7 +103,7 @@ class AksiProkerController extends Controller
             'id' => 'required',
             'id_rencana_proker' => 'required',
             'kegiatan_proker' => 'required',
-            'progress'  => 'required',
+            // 'progress'  => 'required',
             'bukti_kegiatan' => 'nullable|file|mimes:pdf|max:2048'
         ]);
 
@@ -126,7 +126,7 @@ class AksiProkerController extends Controller
         $data->update([
             'id_rencana_proker' => $request->id_rencana_proker,
             'bukti_kegiatan' => $fileName,
-            'progress' => $request->progress,
+            'progress' => $request->progress ?? 0,
             'kegiatan_proker' => $request->kegiatan_proker
         ]);
 

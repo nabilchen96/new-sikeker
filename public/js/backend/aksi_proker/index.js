@@ -33,20 +33,20 @@ function getData() {
             },
             {
                 render: function (data, type, row, meta) {
-                    return `<b>File Kegiatan: </b><br>
-                    <a href="/storage/${row.bukti_kegiatan}"><i class="bi bi-file-earmark-text"></i> Download File</a> <br><br>
-                    <b>Penambahan Progress: </b><br>
-                    ${row.progress}%`;
-                }
-            },
-            {
-                render: function (data, type, row, meta) {
                     return `<b>Waktu Pengerjaan: </b>
                     <br>${row.tgl_mulai} 
                     → ${row.tgl_selesai}<br><br>
                     <b>Unit:</b><br>
                     ${row.unit}, Tahun ${row.tahun}
                     `;
+                }
+            },
+            {
+                render: function (data, type, row, meta) {
+                    return `<b>File Kegiatan: </b><br>
+                    <a href="/storage/${row.bukti_kegiatan}"><i class="bi bi-file-earmark-text"></i> Download File</a> <br><br>
+                    <b>Created At:</b><br>
+                    ${row.created_at}`;
                 }
             },
             {

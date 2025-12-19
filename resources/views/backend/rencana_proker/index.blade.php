@@ -62,8 +62,8 @@
                                     <th width="300px">Rencana Proker</th>
                                     <th>Jenis Proker</th>
                                     <th>Waktu Pengerjaan</th>
-                                    <th>Status Pengerjaan</th>
-                                    {{-- <th>Created At</th> --}}
+                                    {{-- <th>Status Pengerjaan</th> --}}
+                                    <th>Created At</th>
                                     <th width="5px">Aksi</th>
                                 </tr>
                             </thead>
