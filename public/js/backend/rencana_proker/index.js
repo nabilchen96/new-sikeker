@@ -58,7 +58,19 @@ function getData() {
             {
                 render: function (data, type, row, meta) {
                     if (row.status_approval == 'Dalam Pengajuan' || row.status_approval == 'Diterima') {
-                        return ``
+                        return `
+                            <div class="dropdown">
+                                <a class="text-success" href="#" data-toggle="dropdown">
+                                    <i class="bi bi-three-dots" style="font-size:1.5rem"></i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item text-info" data-toggle="modal" data-target="#modalStatus"
+                                        href="javascript:void(0)" data-bs-id="${row.id}">
+                                        <i class="bi bi-grid"></i> &nbsp; Ubah Status
+                                    </a>
+                                </div>
+                            </div>
+                        `
                     } else {
                         return `
                         <div class="dropdown">
