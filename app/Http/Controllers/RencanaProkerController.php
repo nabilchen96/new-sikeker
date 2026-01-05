@@ -171,4 +171,33 @@ class RencanaProkerController extends Controller
             'respon' => 'Data berhasil dihapus'
         ]);
     }
+
+    public function exportRencanaProker(){
+
+        $data = DB::table('rencana_prokers')
+            ->join('prokers', 'rencana_prokers.id_proker', '=', 'prokers.id')
+            ->join('units', 'prokers.id_unit', '=', 'units.id')
+            ->join('tahuns', 'prokers.id_tahun', '=', 'tahuns.id')
+            ->where('tahuns.status', 'Aktif')
+            ->select(
+                'units.id as unit_id',
+                'units.unit as nama_unit',
+                'rencana_prokers.rencana_proker',
+                'rencana_prokers.jenis_proker',
+                'rencana_prokers.tgl_mulai',
+                'rencana_prokers.tgl_selesai',
+                'tahuns.tahun'
+            )
+            ->orderBy('units.unit')
+            ->orderBy('rencana_prokers.tgl_mulai')
+            ->get()
+            ->groupBy('unit_id');
+
+        $tahun = DB::table('tahuns')->where('status', 'Aktif')->first();
+
+        return view('backend.rencana_proker.export_pdf', [
+            'data' => $data,
+            'tahun' => $tahun
+        ]);
+    }
 }

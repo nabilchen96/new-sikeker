@@ -21,6 +21,14 @@
                     Tambah
                 </button>
 
+                @if(Auth::user()->role == 'Admin')
+                <a href="{{ url('export-rencana-proker') }}" target="_blank">
+                    <button class="btn btn-danger btn-md mb-4 d-none d-md-inline-block">
+                        Export PDF
+                    </button>
+                </a>
+                @endif
+
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" id="searchInput" placeholder="Cari ...">
                     <div class="input-group-append">
@@ -111,4 +119,5 @@
 
 @push('script')
 <script src="{{ asset('js/backend/proker/index.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 @endpush
