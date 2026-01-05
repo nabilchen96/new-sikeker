@@ -46,7 +46,7 @@ function getData() {
                     return `<b>File Kegiatan: </b><br>
                     <a href="/storage/${row.bukti_kegiatan}"><i class="bi bi-file-earmark-text"></i> Download File</a> <br><br>
                     <b>Created At:</b><br>
-                    ${row.created_at}`;
+                    ${row.tgl_pengerjaan}`;
                 }
             },
             {
@@ -98,6 +98,7 @@ $('#modal').on('show.bs.modal', function (event) {
         modal.find('#id_rencana_proker').val(cokData[0].id_rencana_proker);
         modal.find('#kegiatan_proker').val(cokData[0].kegiatan_proker);
         modal.find('#progress').val(cokData[0].progress);
+        modal.find('#tgl_pengerjaan').val(cokData[0].tgl_pengerjaan);
     }
 });
 

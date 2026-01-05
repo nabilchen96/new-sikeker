@@ -112,6 +112,11 @@
                             </span>
                         </div>
 
+                        <div class="form-group">
+                            <label>Tanggal Pengerjaan</label>
+                            <input type="date" name="tgl_pengerjaan" class="form-control" required id="tgl_pengerjaan">
+                        </div>
+
                         {{-- <div class="form-group">
                             <label>Penambahan Progress (%)</label>
                             <input placeholder="Isi dengan angka" type="number" class="form-control"

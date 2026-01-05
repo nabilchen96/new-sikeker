@@ -13,6 +13,7 @@ class AksiProker extends Model
         'id_rencana_proker',
         'kegiatan_proker',
         'bukti_kegiatan',
-        'progress'
+        'progress',
+        'tgl_pengerjaan'
     ];
 }

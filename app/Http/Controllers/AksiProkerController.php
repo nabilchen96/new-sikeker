@@ -57,7 +57,8 @@ class AksiProkerController extends Controller
             'id_rencana_proker' => 'required',
             'kegiatan_proker' => 'required',
             // 'progress'  => 'required',
-            'bukti_kegiatan' => 'nullable|file|mimes:pdf|max:2048'
+            'bukti_kegiatan' => 'nullable|file|mimes:pdf|max:2048',
+            'tgl_pengerjaan' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -88,7 +89,8 @@ class AksiProkerController extends Controller
             'id_rencana_proker' => $request->id_rencana_proker,
             'bukti_kegiatan' => $fileName,
             'progress' => $request->progress ?? 0,
-            'kegiatan_proker' => $request->kegiatan_proker
+            'kegiatan_proker' => $request->kegiatan_proker,
+            'tgl_pengerjaan' => $request->tgl_pengerjaan
         ]);
 
         return response()->json([
@@ -104,7 +106,8 @@ class AksiProkerController extends Controller
             'id_rencana_proker' => 'required',
             'kegiatan_proker' => 'required',
             // 'progress'  => 'required',
-            'bukti_kegiatan' => 'nullable|file|mimes:pdf|max:2048'
+            'bukti_kegiatan' => 'nullable|file|mimes:pdf|max:2048',
+            'tgl_pengerjaan' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -127,7 +130,8 @@ class AksiProkerController extends Controller
             'id_rencana_proker' => $request->id_rencana_proker,
             'bukti_kegiatan' => $fileName,
             'progress' => $request->progress ?? 0,
-            'kegiatan_proker' => $request->kegiatan_proker
+            'kegiatan_proker' => $request->kegiatan_proker,
+            'tgl_pengerjaan' => $request->tgl_pengerjaan
         ]);
 
         return response()->json([
