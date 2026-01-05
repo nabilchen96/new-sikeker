@@ -137,7 +137,7 @@
                             <input type="file" class="form-control" name="bukti_kegiatan" id="bukti_kegiatan">
                             {{-- <div id="previewFile" class="mt-2"></div> --}}
                             <span class="text-info" style="font-size: 13px;">
-                                *Hanya file pdf, maksimal: 2MB
+                                *Hanya file pdf, word, excel, image, maksimal: 2MB
                             </span>
                         </div>
 

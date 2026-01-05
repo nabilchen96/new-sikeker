@@ -57,7 +57,7 @@ class AksiProkerController extends Controller
             'id_rencana_proker' => 'required',
             'kegiatan_proker' => 'required',
             // 'progress'  => 'required',
-            'bukti_kegiatan' => 'nullable|file|mimes:pdf|max:2048',
+            'bukti_kegiatan'    => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:2048',
             'tgl_pengerjaan' => 'required'
         ]);
 
@@ -106,7 +106,7 @@ class AksiProkerController extends Controller
             'id_rencana_proker' => 'required',
             'kegiatan_proker' => 'required',
             // 'progress'  => 'required',
-            'bukti_kegiatan' => 'nullable|file|mimes:pdf|max:2048',
+            'bukti_kegiatan'    => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:2048',
             'tgl_pengerjaan' => 'required'
         ]);
 
