@@ -86,11 +86,40 @@
                         <input type="hidden" name="id" id="id">
                         <input type="hidden" name="id_proker" id="id_proker" value="{{ Request('id_proker') }}">
 
+                        @php
+
+                            $user = DB::table('users')
+                                ->where('id', Auth::user()->id)
+                                ->first();
+                            $role = $user->role;
+
+                            if ($role != 'Anggota') {
+                                $rencana2 = DB::table('rencana_prokers')
+                                    ->leftjoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
+                                    ->leftjoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
+                                    ->leftjoin('units', 'units.id', '=', 'prokers.id_unit')
+                                    ->select('rencana_prokers.*', 'units.unit')
+                                    ->where('tahuns.status', 'Aktif')
+                                    ->where('prokers.status_approval', 'Diterima')
+                                    ->get();
+                            } else {
+                                $rencana2 = DB::table('rencana_prokers')
+                                    ->leftjoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
+                                    ->leftjoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
+                                    ->leftjoin('units', 'units.id', '=', 'prokers.id_unit')
+                                    ->select('rencana_prokers.*', 'units.unit')
+                                    ->where('tahuns.status', 'Aktif')
+                                    ->where('prokers.status_approval', 'Diterima')
+                                    ->where('prokers.id_unit', $user->id_unit)
+                                    ->get();
+                            }
+                        @endphp
+
                         <div class="form-group">
                             <label>Rencana Proker</label>
                             <select name="id_rencana_proker" class="form-control" id="id_rencana_proker">
                                 <option value="">Pilih Proker Unit ...</option>
-                                @foreach ($rencana as $item)
+                                @foreach ($rencana2 as $item)
                                     <option value="{{ $item->id }}">{{ $item->rencana_proker }} [ Unit:
                                         {{ $item->unit }} ]</option>
                                 @endforeach
@@ -112,19 +141,19 @@
                             </span>
                         </div>
 
-                        <div class="form-group">
-                            <label>Tanggal Pengerjaan</label>
-                            <input type="date" name="tgl_pengerjaan" class="form-control" required id="tgl_pengerjaan">
-                        </div>
-
                         {{-- <div class="form-group">
-                            <label>Penambahan Progress (%)</label>
-                            <input placeholder="Isi dengan angka" type="number" class="form-control"
-                                placeholder="Penambahan Progress" required name="progress" id="progress">
-                            <span class="text-info" style="font-size: 13px;">
-                                *Setiap progress dari rencana proker yang sama akan dijumlahkan
-                            </span>
-                        </div> --}}
+                        <label>Penambahan Progress (%)</label>
+                        <input placeholder="Isi dengan angka" type="number" class="form-control"
+                            placeholder="Penambahan Progress" required name="progress" id="progress">
+                        <span class="text-info" style="font-size: 13px;">
+                            *Setiap progress dari rencana proker yang sama akan dijumlahkan
+                        </span>
+                    </div> --}}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tgl Kegiatan</label>
+                        <input type="date" name="tgl_kegiatan" id="tgl_kegiatan" required class="form-control">
                     </div>
 
                     <div class="modal-footer p-3">
