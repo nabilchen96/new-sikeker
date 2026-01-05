@@ -93,7 +93,7 @@
 
                                             <td class="text-center p-1 {{ $current->isWeekend() ? 'bg-danger' : '' }}">
                                                 @if ($active)
-                                                    <div class="{{ $proker->total_progress > 100 ? 'bg-success' : 'bg-warning' }}"
+                                                    <div class="{{ $proker->status_rencana == 'Selesai' ? 'bg-success' : 'bg-warning' }}"
                                                         style="
                                                             width:35px;
                                                             height:35px;
