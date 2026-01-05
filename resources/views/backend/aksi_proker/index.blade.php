@@ -149,12 +149,12 @@
                             *Setiap progress dari rencana proker yang sama akan dijumlahkan
                         </span>
                     </div> --}}
+                        <div class="form-group">
+                            <label>Tgl Pengerjaan</label>
+                            <input type="date" name="tgl_pengerjaan" id="tgl_pengerjaan" required class="form-control">
+                        </div>
                     </div>
-
-                    <div class="form-group">
-                        <label>Tgl Kegiatan</label>
-                        <input type="date" name="tgl_kegiatan" id="tgl_kegiatan" required class="form-control">
-                    </div>
+                    
 
                     <div class="modal-footer p-3">
                         <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
