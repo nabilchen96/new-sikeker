@@ -23,12 +23,13 @@
             <div class="card w-100">
                 <div class="card-body">
 
-                    
-                    @if ($proker->status_approval == 'Belum Mengajukan' || 
-                        $proker->status_approval == 'Ditolak' || 
-                        $proker->status_approval == 'Direvisi')
-                        <button type="button" class="btn btn-primary btn-md mb-4 d-none d-md-inline-block" data-toggle="modal"
-                            data-target="#modal">
+
+                    @if (
+                        $proker->status_approval == 'Belum Mengajukan' ||
+                            $proker->status_approval == 'Ditolak' ||
+                            $proker->status_approval == 'Direvisi')
+                        <button type="button" class="btn btn-primary btn-md mb-4 d-none d-md-inline-block"
+                            data-toggle="modal" data-target="#modal">
                             Tambah
                         </button>
                         <button type="button" onclick="ajukanProker({{ $proker->id }})"
@@ -37,8 +38,7 @@
                         </button>
                     @endif
 
-                    @if (Auth::user()->role == 'Approval' ||
-                        Auth::user()->role == 'Admin')
+                    @if (Auth::user()->role == 'Approval' || Auth::user()->role == 'Admin')
                         <button type="button" data-toggle="modal" data-target="#modalUbahStatusProker"
                             class="btn btn-info btn-md mb-4 d-none d-md-inline-block">
                             Ubah Status Pengajuan
@@ -62,8 +62,7 @@
                                     <th width="300px">Rencana Proker</th>
                                     <th>Jenis Proker</th>
                                     <th>Waktu Pengerjaan</th>
-                                    {{-- <th>Status Pengerjaan</th> --}}
-                                    <th>Created At</th>
+                                    <th>Status</th>
                                     <th width="5px">Aksi</th>
                                 </tr>
                             </thead>
@@ -156,12 +155,14 @@
 
                         <div class="form-group">
                             <label>Tanggal Mulai</label>
-                            <input class="form-control" type="date" name="tgl_mulai" id="tgl_mulai" required placeholder="Tanggal Mulai">
+                            <input class="form-control" type="date" name="tgl_mulai" id="tgl_mulai" required
+                                placeholder="Tanggal Mulai">
                         </div>
 
                         <div class="form-group">
                             <label>Tanggal Selesai</label>
-                            <input class="form-control" type="date" name="tgl_selesai" id="tgl_selesai" required placeholder="Tanggal Selesai">
+                            <input class="form-control" type="date" name="tgl_selesai" id="tgl_selesai" required
+                                placeholder="Tanggal Selesai">
                         </div>
 
                         <div class="form-group">
@@ -210,6 +211,37 @@
                             <label>Keterangan Ditolak</label>
                             <textarea name="keterangan_ditolak" id="keterangan_ditolak" cols="10" class="form-control" rows="10"
                                 placeholder="Keterangan Hanya Jika Ditolak"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer p-3">
+                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                        <button id="tombol_kirim" class="btn btn-primary btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalStatus" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="formStatus" method="post" action="{{ url('update-status-rencana-proker') }}">
+                    @csrf
+                    <div class="modal-header p-3">
+                        <h5 class="modal-title m-2">Form Rencana Proker</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id">
+
+                        <div class="form-group">
+                            <label>Status Pengerjaan Rencana Proker</label>
+                            <select name="status_rencana" id="status_rencana" class="form-control" required>
+                                <option value="">Pilih Status Rencana Proker ...</option>
+                                <option>Selesai</option>
+                                <option>Belum</option>
+                            </select>
                         </div>
                     </div>
 

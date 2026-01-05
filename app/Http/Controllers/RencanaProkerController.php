@@ -138,6 +138,30 @@ class RencanaProkerController extends Controller
         ]);
     }
 
+    public function updateStatus(Request  $request){
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'status_rencana' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'responCode' => 0,
+                'respon' => $validator->errors(),
+            ]);
+        }
+
+        $data = RencanaProker::find($request->id);
+        $data->update([
+            'status_rencana' => $request->status_rencana
+        ]);
+
+        return response()->json([
+            'responCode' => 1,
+            'respon' => 'Data berhasil diperbarui'
+        ]);
+    }
+
     public function delete(Request $request)
     {
         RencanaProker::find($request->id)->delete();

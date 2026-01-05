@@ -69,7 +69,7 @@
                                                 data-waktu-pengerjaan="{{ date('d-m-Y', strtotime($proker->tgl_mulai)) }} → {{ date('d-m-Y', strtotime($proker->tgl_selesai)) }}"
                                                 data-jenis-proker="{{ $proker->jenis_proker }}"
                                                 data-id-rencana-proker="{{ $proker->id }}"
-                                                data-total-progress="{{ $proker->total_progress }}">
+                                                data-status-rencana="{{ $proker->status_rencana ?? 'Belum' }}">
                                                 {{ $proker->rencana_proker }}
                                             </a>
                                         </td>
@@ -91,10 +91,20 @@
 
                                             @endphp
 
-                                            <td class="text-start p-1 {{ $current->isWeekend() ? 'bg-danger' : ''}}">
+                                            <td class="text-center p-1 {{ $current->isWeekend() ? 'bg-danger' : '' }}">
                                                 @if ($active)
                                                     <div class="{{ $proker->total_progress > 100 ? 'bg-success' : 'bg-warning' }}"
-                                                        style="width:35px; height:35px; border-radius:8px;">
+                                                        style="
+                                                            width:35px;
+                                                            height:35px;
+                                                            border-radius:8px;
+                                                            line-height:35px;
+                                                            text-align:center;
+                                                            font-size:20px;
+                                                        ">
+                                                        @if($proker->status_rencana == 'Selesai')
+                                                            🏅
+                                                        @endif
                                                     </div>
                                                 @endif
                                             </td>
@@ -138,11 +148,8 @@
                             <input type="text" id="jenis_proker" readonly class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>Status Progress</label>
-                            <div class="progress" style="height: 30px;">
-                                <div class="progress-bar" role="progressbar"></div>
-                            </div>
-                            <label id="progress_label">Persentase Kegiatan</label>
+                            <label>Status Rencana Proker</label>
+                            <input type="text" id="status_rencana" readonly class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Detail Pekerjaan</label>
@@ -167,7 +174,7 @@
 
             var a = button.data('rencana-proker');
             var b = button.data('waktu-pengerjaan');
-            var c = button.data('total-progress');
+            var c = button.data('status-rencana');
             var d = button.data('jenis-proker');
             var e = button.data('id-rencana-proker');
 
@@ -180,9 +187,7 @@
             modal.find('input[readonly].form-control').val(b);
 
             // Set progress bar
-            modal.find('.progress-bar')
-                .css('width', c + '%')
-                .attr('aria-valuenow', c);
+            modal.find('#status_rencana').val(c);
 
             // Set input waktu pengerjaan
             modal.find('#jenis_proker').val(d);

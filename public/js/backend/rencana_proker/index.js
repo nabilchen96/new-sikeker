@@ -46,17 +46,14 @@ function getData() {
                     return `${row.tgl_mulai} → ${row.tgl_selesai}`;
                 }
             },
-            // {
-            //     render: function (data, type, row, meta) {
-            //         return `
-            //         Persentase ${row.total_progress ?? 0}%
-            //         <div class="progress" style="border: grey 1px solid;">
-            //             <div class="progress-bar" role="progressbar" style="width: ${row.total_progress}%;"></div>
-            //         </div>`;
-            //     }
-            // },
             {
-                data: 'created_at'
+                render: function (data, type, row, meta) {
+                    if (row.status_rencana == 'Selesai') {
+                        return `<span class="badge badge-success">Selesai</span>`
+                    } else {
+                        return `<span class="badge badge-warning">Belum</span>`
+                    }
+                }
             },
             {
                 render: function (data, type, row, meta) {
@@ -72,6 +69,10 @@ function getData() {
                                 <a class="dropdown-item text-success" data-toggle="modal" data-target="#modal"
                                     href="javascript:void(0)" data-bs-id="${row.id}">
                                     <i class="bi bi-grid"></i> &nbsp; Edit
+                                </a>
+                                <a class="dropdown-item text-info" data-toggle="modal" data-target="#modalStatus"
+                                    href="javascript:void(0)" data-bs-id="${row.id}">
+                                    <i class="bi bi-grid"></i> &nbsp; Ubah Status
                                 </a>
                                 <a class="dropdown-item text-danger" onclick="hapusData(${row.id})">
                                     <i class="bi bi-trash"></i> &nbsp; Hapus
@@ -120,6 +121,27 @@ $('#modal').on('show.bs.modal', function (event) {
     }
 });
 
+$('#modalStatus').on('show.bs.modal', function (event) {
+
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var recipient = button.data('bs-id'); // Extract info from data-* attributes
+    var cok = $("#myTable").DataTable().rows().data().toArray();
+
+    let cokData = cok.filter((dt) => {
+        return dt.id == recipient;
+    });
+
+    document.getElementById("formStatus").reset();
+
+    if (recipient) {
+
+        var modal = $(this);
+
+        modal.find('#id').val(cokData[0].id);
+        modal.find('#status_rencana').val(cokData[0].status_rencana);
+    }
+});
+
 
 // =========================
 // FORM SUBMIT (AJAX)
@@ -151,6 +173,47 @@ form.onsubmit = function (e) {
                 });
 
                 $("#modal").modal("hide");
+                table.destroy();
+                getData();
+            } else {
+                let err = "";
+                Object.entries(res.data.respon).forEach(([field, msg]) => {
+                    msg.forEach(m => err += `<li>${m}</li>`);
+                });
+                $("#respon_error").html(err);
+            }
+        })
+        .catch(err => {
+            $("#tombol_kirim").prop("disabled", false);
+            console.error(err);
+        });
+}
+
+formStatus.onsubmit = function (e) {
+    e.preventDefault();
+
+    let formData = new FormData(formStatus);
+
+    $("#respon_error").html("");
+    $("#tombol_kirim").prop("disabled", true);
+
+    axios.post(
+        "update-status-rencana-proker",
+        formData
+    )
+        .then(res => {
+            $("#tombol_kirim").prop("disabled", false);
+
+            if (res.data.responCode == 1) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Sukses",
+                    text: res.data.respon,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+
+                $("#modalStatus").modal("hide");
                 table.destroy();
                 getData();
             } else {
