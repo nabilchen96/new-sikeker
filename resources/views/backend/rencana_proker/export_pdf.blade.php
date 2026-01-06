@@ -39,7 +39,7 @@
         <table>
             <thead>
                 <tr>
-                    <th width="100%">
+                    <th style="text-align: left;" colspan="3" width="100%">
                         Unit: {{ $unitProkers->first()->nama_unit }}
                     </th>
                 </tr>
