@@ -117,6 +117,14 @@ class AksiProkerController extends Controller
             ]);
         }
         
+        $rencana = DB::table('rencana_prokers')
+                    ->leftjoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
+                    ->leftjoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
+                    ->leftjoin('units', 'units.id', '=', 'prokers.id_unit')
+                    ->select('rencana_prokers.*', 'units.unit', 'tahuns.tahun')
+                    ->where('rencana_prokers.id', $request->id_rencana_proker)
+                    ->first();
+
         // Upload file
         $fileName = null;
         if ($request->hasFile('bukti_kegiatan')) {
