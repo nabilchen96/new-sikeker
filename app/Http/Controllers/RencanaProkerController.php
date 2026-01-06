@@ -8,6 +8,7 @@ use DB;
 use Auth;
 use App\Models\RencanaProker;
 use Validator;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RencanaProkerController extends Controller
 {
@@ -195,9 +196,12 @@ class RencanaProkerController extends Controller
 
         $tahun = DB::table('tahuns')->where('status', 'Aktif')->first();
 
-        return view('backend.rencana_proker.export_pdf', [
+        $pdf = Pdf::loadView('backend.rencana_proker.export_pdf', [
             'data' => $data,
             'tahun' => $tahun
-        ]);
+        ])
+        ->setPaper('A4', 'portrait'); // bisa landscape juga
+
+        return $pdf->stream('rencana-proker.pdf');
     }
 }

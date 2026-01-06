@@ -20,8 +20,28 @@
             padding: 5px;
         }
 
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+
         table {
+            width: 100%;
+            border-collapse: collapse;
+            page-break-inside: auto;
+        }
+
+        tr {
             page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tbody {
+            display: table-row-group;
         }
     </style>
 </head>
@@ -48,7 +68,7 @@
                 <tr>
                     <th width="50%">Rencana Proker</th>
                     <th width="15%">Jenis Proker</th>
-                    <th width="20%">Waktu Pengerjaan</th>
+                    <th width="25%">Waktu Pengerjaan</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,7 +88,7 @@
     @endforeach
 </div>
 
-<!-- html2pdf -->
+{{-- <!-- html2pdf -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
@@ -83,7 +103,7 @@ window.onload = function () {
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     }).from(element).save();
 };
-</script>
+</script> --}}
 
 </body>
 </html>
