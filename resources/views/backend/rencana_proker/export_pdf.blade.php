@@ -36,9 +36,14 @@
     <hr>
     <br><br>
     @foreach ($data as $unitProkers)
-        <h4>Unit: {{ $unitProkers->first()->nama_unit }}</h4>
-
         <table>
+            <thead>
+                <tr>
+                    <th width="100%">
+                        Unit: {{ $unitProkers->first()->nama_unit }}
+                    </th>
+                </tr>
+            </thead>
             <thead>
                 <tr>
                     <th width="50%">Rencana Proker</th>
