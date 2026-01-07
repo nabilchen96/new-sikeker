@@ -34,7 +34,7 @@ function getData() {
             {
                 render: function (data, type, row, meta) {
                     return `<b>Waktu Pengerjaan: </b>
-                    <br>${row.tgl_mulai} 
+                    <br>${row.tgl_mulai}
                     → ${row.tgl_selesai}<br><br>
                     <b>Unit:</b><br>
                     ${row.unit}, Tahun ${row.tahun}
@@ -57,7 +57,7 @@ function getData() {
                             <i class="bi bi-three-dots" style="font-size:1.5rem"></i>
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item text-success" data-toggle="modal" data-target="#modal"
+                            <a class="dropdown-item text-success" data-toggle="modal" data-target="#modalEdit"
                                 href="javascript:void(0)" data-bs-id="${row.id}">
                                 <i class="bi bi-grid"></i> &nbsp; Edit
                             </a>
@@ -96,6 +96,32 @@ $('#modal').on('show.bs.modal', function (event) {
 
         modal.find('#id').val(cokData[0].id);
         modal.find('#id_rencana_proker').val(cokData[0].id_rencana_proker);
+        modal.find('#kegiatan_proker').val(cokData[0].kegiatan_proker);
+        modal.find('#progress').val(cokData[0].progress);
+        modal.find('#tgl_pengerjaan').val(cokData[0].tgl_pengerjaan);
+    }
+});
+
+$('#modalEdit').on('show.bs.modal', function (event) {
+
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var recipient = button.data('bs-id'); // Extract info from data-* attributes
+    var cok = $("#myTable").DataTable().rows().data().toArray();
+
+    let cokData = cok.filter((dt) => {
+        return dt.id == recipient;
+    });
+
+    document.getElementById("form").reset();
+    document.getElementById('id').value = '';
+
+    if (recipient) {
+
+        var modal = $(this);
+
+        modal.find('#id').val(cokData[0].id);
+        modal.find('#id_rencana_proker3').val(cokData[0].id_rencana_proker);
+        id_rencana_proker3.setValue(cokData[0].id_rencana_proker)
         modal.find('#kegiatan_proker').val(cokData[0].kegiatan_proker);
         modal.find('#progress').val(cokData[0].progress);
         modal.find('#tgl_pengerjaan').val(cokData[0].tgl_pengerjaan);
@@ -167,8 +193,8 @@ hapusData = (id) => {
 
         if (result.value) {
 
-            axios.post("/delete-aksi-proker", { 
-                id 
+            axios.post("/delete-aksi-proker", {
+                id
             })
                 .then(res => {
 

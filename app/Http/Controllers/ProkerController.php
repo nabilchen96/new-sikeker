@@ -21,21 +21,26 @@ class ProkerController extends Controller
         $keyword = $request->keyword;
 
         $query = DB::table('prokers')
-                ->leftjoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
-                ->leftjoin('units', 'units.id', '=', 'prokers.id_unit')
-                ->select(
-                    'prokers.*',
-                    'tahuns.tahun',
-                    'units.unit'
-                );
+            ->leftjoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
+            ->leftjoin('units', 'units.id', '=', 'prokers.id_unit')
+            ->select(
+                'prokers.*',
+                'tahuns.tahun',
+                'units.unit'
+            );
 
         if ($keyword) {
             $query->where('tahuns.tahun', 'like', "%$keyword%");
         }
 
-        if(Auth::user()->role == 'Anggota'){
+        if (Auth::user()->role == 'Anggota') {
             $query->where('units.id', Auth::user()->id_unit);
         }
+
+        // if (Auth::user()->role == 'Approval') {
+        //     $getApproval = DB::table('approvals')->where('id_user', Auth::user()->id)->first();
+        //     $query->where('units.id', $getApproval->id_unit);
+        // }
 
         return response()->json(['data' => $query->get()]);
     }
