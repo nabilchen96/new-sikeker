@@ -49,10 +49,17 @@ function getData() {
             },
             {
                 render: function (data, type, row, meta) {
+
+                    function formatTanggal(tgl) {
+                        if (!tgl) return '';
+                        const [yyyy, mm, dd] = tgl.split('-');
+                        return `${dd}-${mm}-${yyyy}`;
+                    }
+
                     return `<b>File Kegiatan: </b><br>
                     <a href="/storage/${row.bukti_kegiatan}"><i class="bi bi-file-earmark-text"></i> Download File</a> <br><br>
                     <b>Created At:</b><br>
-                    ${row.tgl_pengerjaan}`;
+                    ${formatTanggal(row.tgl_pengerjaan)}`;
                 }
             },
             {
