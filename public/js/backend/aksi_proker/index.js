@@ -15,7 +15,7 @@ function getData() {
         searching: false,
         lengthChange: false,
         ajax: {
-            url: '/data-aksi-proker?id_rencana_proker='+id_rencana_proker,
+            url: '/data-aksi-proker?id_rencana_proker=' + id_rencana_proker,
         },
         columns: [
             {
@@ -33,9 +33,15 @@ function getData() {
             },
             {
                 render: function (data, type, row, meta) {
+                    function formatTanggal(tgl) {
+                        if (!tgl) return '';
+                        const [yyyy, mm, dd] = tgl.split('-');
+                        return `${dd}-${mm}-${yyyy}`;
+                    }
+
                     return `<b>Waktu Pengerjaan: </b>
-                    <br>${row.tgl_mulai}
-                    → ${row.tgl_selesai}<br><br>
+                    <br>${formatTanggal(row.tgl_mulai)}
+                    → ${formatTanggal(row.tgl_selesai)}<br><br>
                     <b>Unit:</b><br>
                     ${row.unit}, Tahun ${row.tahun}
                     `;

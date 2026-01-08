@@ -43,7 +43,13 @@ function getData() {
             // },
             {
                 render: function (data, type, row, meta) {
-                    return `${row.tgl_mulai} → ${row.tgl_selesai}`;
+                    function formatTanggal(tgl) {
+                        if (!tgl) return '';
+                        const [yyyy, mm, dd] = tgl.split('-');
+                        return `${dd}-${mm}-${yyyy}`;
+                    }
+
+                    return `${formatTanggal(row.tgl_mulai)} → ${formatTanggal(row.tgl_selesai)}`;
                 }
             },
             {
