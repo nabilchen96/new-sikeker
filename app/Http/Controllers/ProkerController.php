@@ -30,7 +30,7 @@ class ProkerController extends Controller
             );
 
         if ($keyword) {
-            $query->where('tahuns.tahun', 'like', "%$keyword%");
+            $query->where('units.unit', 'like', "%$keyword%");
         }
 
         if (Auth::user()->role == 'Anggota') {

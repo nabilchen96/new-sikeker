@@ -41,7 +41,7 @@ class AksiProkerController extends Controller
 
 
         if (!empty($keyword)) {
-            $query->where('rencana_prokers.id', $keyword);
+            $query->where('units.id', $keyword);
         }
 
         if(Auth::user()->role == 'Anggota'){
@@ -57,7 +57,7 @@ class AksiProkerController extends Controller
             'id_rencana_proker' => 'required',
             'kegiatan_proker' => 'required',
             // 'progress'  => 'required',
-            'bukti_kegiatan'    => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:2048',
+            'bukti_kegiatan'    => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:2048',
             'tgl_pengerjaan' => 'required'
         ]);
 

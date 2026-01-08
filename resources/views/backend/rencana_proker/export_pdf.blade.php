@@ -77,7 +77,7 @@
                         <td>{{ $item->rencana_proker }}</td>
                         <td align="center">{{ $item->jenis_proker }}</td>
                         <td align="center">
-                            {{ $item->tgl_mulai }} → {{ $item->tgl_selesai }}
+                            {{ $item->tgl_mulai }} s/d {{ $item->tgl_selesai }}
                         </td>
                     </tr>
                 @endforeach

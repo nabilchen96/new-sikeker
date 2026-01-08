@@ -81,7 +81,7 @@
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ asset('panduan.pdf') }}" target="blank">
+            <a class="nav-link" href="https://drive.google.com/drive/folders/1ZJ5rXn9vlnPVU046vE7Cs56v7VoGGbJ3?usp=sharing" target="blank">
                 <i class="bi bi-file-earmark-text menu-icon"></i>
                 <span class="menu-title">Panduan</span>
             </a>
