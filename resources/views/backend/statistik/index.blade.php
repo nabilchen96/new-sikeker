@@ -83,25 +83,47 @@
                         </div>
                         <div class="col-12 mt-4">
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item" role="presentation">
+                                {{-- <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="home-tab" data-toggle="tab" data-target="#home"
                                         type="button" role="tab" aria-controls="home" aria-selected="true">
                                         <i class="bi bi-bar-chart"></i> Grafik
                                     </button>
-                                </li>
+                                </li> --}}
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile"
+                                    <button class="nav-link active" id="profile-tab" data-toggle="tab" data-target="#profile"
                                         type="button" role="tab" aria-controls="profile" aria-selected="false">
                                         <i class="bi bi-table"></i> Data Tabel
                                     </button>
                                 </li>
                             </ul>
                             <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                <div class="tab-pane fade" id="home" role="tabpanel"
                                     aria-labelledby="home-tab">
                                     <div id="chart-proker"></div>
                                 </div>
-                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...
+                                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <table id="myTable" class="table table-striped" style="width: 100%;">
+                                        <thead class="bg-info text-white">
+                                            <tr>
+                                                <th width="5%">No</th>
+                                                <th width="50%">Unit</th>
+                                                <th class="text-center">Total Proker</th>
+                                                <th class="text-center">Selesai</th>
+                                                <th class="text-center">Belum</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($chart as $k => $item)
+                                                <tr>
+                                                    <td>{{ $k+1 }}</td>
+                                                    <td>{{ $item->unit }}</td>
+                                                    <td class="text-center">{{ $item->selesai+$item->belum }}</td>
+                                                    <td class="text-center">{{ $item->selesai }}</td>
+                                                    <td class="text-center">{{ $item->belum }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -113,54 +135,4 @@
 @endsection
 
 @push('script')
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-
-    <script>
-        console.log(@json($categories));
-        console.log(@json($dataSelesai));
-        console.log(@json($dataBelum));
-
-        Highcharts.chart('chart-proker', {
-            chart: {
-                type: 'bar'
-            },
-            title: {
-                text: 'Progress Pengerjaan Proker Perunit'
-            },
-            xAxis: {
-                categories: @json($categories),
-                title: {
-                    text: null
-                }
-            },
-            yAxis: {
-                min: 0,
-                allowDecimals: false,
-                title: {
-                    text: 'Jumlah Proker',
-                    align: 'high'
-                }
-            },
-            tooltip: {
-                shared: true
-            },
-            plotOptions: {
-                bar: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: true
-                    }
-                }
-            },
-            series: [{
-                name: 'Selesai',
-                data: @json($dataSelesai),
-                color: '#28a745'
-            }, {
-                name: 'Belum',
-                data: @json($dataBelum),
-                color: '#dc3545'
-            }]
-        });
-    </script>
 @endpush

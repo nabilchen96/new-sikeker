@@ -32,7 +32,7 @@
 
                     <div class="table-responsive">
                         <table id="myTable" class="table table-striped" style="width: 100%;">
-                            <thead class="bg-info text-white">
+                            <thead  class="bg-info text-white">
                                 <tr>
                                     <th width="5px">No</th>
                                     <th>Tahun</th>

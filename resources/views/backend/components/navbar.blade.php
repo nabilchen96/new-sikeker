@@ -80,13 +80,13 @@
                 </ul>
             </div>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link" href="{{ url('statistik') }}">
                 <i class="bi bi-bar-chart menu-icon"></i>
                 <span class="menu-title">Statistik</span>
             </a>
 
-        </li>
+        </li> --}}
         <li class="nav-item">
             <a class="nav-link" href="https://drive.google.com/drive/folders/1ZJ5rXn9vlnPVU046vE7Cs56v7VoGGbJ3?usp=sharing" target="blank">
                 <i class="bi bi-file-earmark-text menu-icon"></i>
