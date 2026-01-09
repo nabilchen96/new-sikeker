@@ -43,8 +43,13 @@
                                 $unit = DB::table('units');
                                 if (Auth::user()->role == 'Admin') {
                                     $unit = $unit->get();
-                                } else {
+                                } elseif (Auth::user()->role == 'Anggota') {
                                     $unit = $unit->where('id', Auth::user()->id_unit)->get();
+                                } elseif (Auth::user()->role == 'Approval') {
+                                    // ambil semua unit yang dibawahi approval
+                                    $unitIds = DB::table('approvals')->where('id_user', Auth::id())->pluck('id_unit');
+
+                                    $unit = $unit->whereIn('id', $unitIds)->get();
                                 }
                             @endphp
                             <div class="flex-grow-1">
