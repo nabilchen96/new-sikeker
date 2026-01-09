@@ -37,10 +37,13 @@ class ProkerController extends Controller
             $query->where('units.id', Auth::user()->id_unit);
         }
 
-        // if (Auth::user()->role == 'Approval') {
-        //     $getApproval = DB::table('approvals')->where('id_user', Auth::user()->id)->first();
-        //     $query->where('units.id', $getApproval->id_unit);
-        // }
+        if (Auth::user()->role == 'Approval') {
+            $query->whereIn('units.id', function ($sub) {
+                $sub->select('id_unit')
+                    ->from('approvals')
+                    ->where('id_user', Auth::id());
+            });
+        }
 
         return response()->json(['data' => $query->get()]);
     }

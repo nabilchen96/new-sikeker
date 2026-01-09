@@ -56,7 +56,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/update-approval', 'App\Http\Controllers\ApprovalController@update');
     Route::post('/delete-approval', 'App\Http\Controllers\ApprovalController@delete');
 
-
     //PROKER
     Route::get('/proker', 'App\Http\Controllers\ProkerController@index');
     Route::get('/data-proker', 'App\Http\Controllers\ProkerController@data');
@@ -82,6 +81,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/update-aksi-proker', 'App\Http\Controllers\AksiProkerController@update');
     Route::post('/delete-aksi-proker', 'App\Http\Controllers\AksiProkerController@delete');
 
+    //STATISTIK
+    Route::get('/statistik', 'App\Http\Controllers\StatistikController@index');
 
     Route::get('file-manager', function(){
         return view('backend.file_manager.index');
