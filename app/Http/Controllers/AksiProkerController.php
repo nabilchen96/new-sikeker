@@ -40,8 +40,22 @@ class AksiProkerController extends Controller
                     );
 
 
+        /* ROLE ANGGOTA */
+        if (Auth::user()->role == 'Anggota') {
+            $query->where('units.id', Auth::user()->id_unit);
+        }
+
+        /* ROLE APPROVAL */
+        if (Auth::user()->role == 'Approval') {
+            $query->whereIn('units.id', function ($sub) {
+                $sub->select('id_unit')
+                    ->from('approvals')
+                    ->where('id_user', Auth::id());
+            });
+        }
+
         if ($keyword) {
-            $query->where('units.id', 'like', "%$keyword%");
+            $query->Where('units.id', 'like', "%$keyword%");
         }
 
         return response()->json([
