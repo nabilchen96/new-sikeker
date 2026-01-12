@@ -40,7 +40,7 @@
                                         class="card-img-absolute" alt="circle">
                                     <h4 class="font-weight-normal mb-3">
                                         Total
-                                        <i class="bi bi-person-circle float-right"></i>
+                                        <i class="bi bi-bar-chart float-right"></i>
                                     </h4>
                                     <h2>
                                         {{ $statistik->total_proker ?? 0 }}
@@ -56,7 +56,7 @@
                                         class="card-img-absolute" alt="circle">
                                     <h4 class="font-weight-normal mb-3">
                                         Proker
-                                        <i class="bi bi-person-circle float-right"></i>
+                                        <i class="bi bi-bar-chart float-right"></i>
                                     </h4>
                                     <h2>
                                         {{ $statistik->proker_selesai ?? 0 }}
@@ -72,7 +72,7 @@
                                         class="card-img-absolute" alt="circle">
                                     <h4 class="font-weight-normal mb-3">
                                         Proker
-                                        <i class="bi bi-person-circle float-right"></i>
+                                        <i class="bi bi-bar-chart float-right"></i>
                                     </h4>
                                     <h2>
                                         {{ $statistik->proker_belum ?? 0 }}
