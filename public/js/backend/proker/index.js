@@ -13,7 +13,7 @@ function getData() {
         ordering: true,
         processing: true,
         searching: false,
-        lengthChange: false,
+        // lengthChange: false,
         ajax: {
             url: '/data-proker',
             data: function (d) {

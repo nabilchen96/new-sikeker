@@ -27,7 +27,7 @@ class ProkerController extends Controller
                 'prokers.*',
                 'tahuns.tahun',
                 'units.unit'
-            );
+            )->where('tahuns.status', 'Aktif');
 
         if ($keyword) {
             $query->where('units.unit', 'like', "%$keyword%");

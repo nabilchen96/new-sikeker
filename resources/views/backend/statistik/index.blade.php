@@ -83,30 +83,32 @@
                         </div>
                         <div class="col-12 mt-4">
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                {{-- <li class="nav-item" role="presentation">
+                                <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="home-tab" data-toggle="tab" data-target="#home"
                                         type="button" role="tab" aria-controls="home" aria-selected="true">
                                         <i class="bi bi-bar-chart"></i> Grafik
                                     </button>
-                                </li> --}}
+                                </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="profile-tab" data-toggle="tab" data-target="#profile"
+                                    <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile"
                                         type="button" role="tab" aria-controls="profile" aria-selected="false">
                                         <i class="bi bi-table"></i> Data Tabel
                                     </button>
                                 </li>
                             </ul>
                             <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade" id="home" role="tabpanel"
+                                <div class="tab-pane fade show active" id="home" role="tabpanel"
                                     aria-labelledby="home-tab">
-                                    <div id="chart-proker"></div>
+                                    <div id="chartProker" style="height: 1200px;"></div>
                                 </div>
-                                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="tab-pane fade show" id="profile" role="tabpanel"
+                                    aria-labelledby="profile-tab">
                                     <table id="myTable" class="table table-striped" style="width: 100%;">
                                         <thead class="bg-info text-white">
                                             <tr>
                                                 <th width="5%">No</th>
                                                 <th width="50%">Unit</th>
+                                                <th width="25%" class="text-center">Progress</th>
                                                 <th class="text-center">Total Proker</th>
                                                 <th class="text-center">Selesai</th>
                                                 <th class="text-center">Belum</th>
@@ -115,11 +117,28 @@
                                         <tbody>
                                             @foreach ($chart as $k => $item)
                                                 <tr>
-                                                    <td>{{ $k+1 }}</td>
+                                                    <td>{{ $k + 1 }}</td>
                                                     <td>{{ $item->unit }}</td>
-                                                    <td class="text-center">{{ $item->selesai+$item->belum }}</td>
-                                                    <td class="text-center">{{ $item->selesai }}</td>
-                                                    <td class="text-center">{{ $item->belum }}</td>
+                                                    <td>
+                                                        <div class="progress mb-2"
+                                                            style="border: 1px solid rgb(193, 188, 188); height: 20px !important;">
+                                                            <div class="progress-bar" role="progressbar"
+                                                                style="width:{{ $item->selesai + $item->belum > 0
+                                                                    ? number_format(($item->selesai / ($item->selesai + $item->belum)) * 100, 0)
+                                                                    : 0 }}%;"
+                                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                                            </div>
+                                                        </div>
+                                                        <b>Persentase:
+                                                            {{ $item->selesai + $item->belum > 0
+                                                                ? number_format(($item->selesai / ($item->selesai + $item->belum)) * 100, 0)
+                                                                : 0 }}%
+                                                        </b>
+                                                    </td>
+                                                    <td class="text-center"><b>{{ $item->selesai + $item->belum }}</b>
+                                                    </td>
+                                                    <td class="text-center"><b>{{ $item->selesai }}</b></td>
+                                                    <td class="text-center"><b>{{ $item->belum }}</b></td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -135,4 +154,48 @@
 @endsection
 
 @push('script')
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
+    <script>
+        Highcharts.chart('chartProker', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Progress Rencana Proker per Unit'
+            },
+            xAxis: {
+                categories: {!! json_encode($units) !!}
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Jumlah Rencana'
+                },
+                stackLabels: {
+                    enabled: true
+                }
+            },
+            legend: {
+                reversed: true
+            },
+            plotOptions: {
+                series: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            series: [{
+                    name: 'Belum Selesai',
+                    data: {!! json_encode($belum) !!}
+                },
+                {
+                    name: 'Selesai',
+                    data: {!! json_encode($selesai) !!}
+                }
+            ]
+        });
+    </script>
 @endpush

@@ -41,6 +41,7 @@
                                     ->get();
 
                                 $unit = DB::table('units');
+                                
                                 if (Auth::user()->role == 'Admin') {
                                     $unit = $unit->get();
                                 } elseif (Auth::user()->role == 'Anggota') {

@@ -55,7 +55,7 @@ class AksiProkerController extends Controller
         }
 
         if ($keyword) {
-            $query->Where('units.id', 'like', "%$keyword%");
+            $query->Where('units.id', $keyword);
         }
 
         return response()->json([

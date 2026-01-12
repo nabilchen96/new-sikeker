@@ -173,14 +173,28 @@ class RencanaProkerController extends Controller
         ]);
     }
 
-    public function exportRencanaProker(){
+    public function exportRencanaProker(Request $request)
+    {
+        $bulan = $request->bulan;      // 1 – 12
+        $unit  = $request->id_unit;    // id unit
 
-        $data = DB::table('rencana_prokers')
+        $query = DB::table('rencana_prokers')
             ->join('prokers', 'rencana_prokers.id_proker', '=', 'prokers.id')
             ->join('units', 'prokers.id_unit', '=', 'units.id')
             ->join('tahuns', 'prokers.id_tahun', '=', 'tahuns.id')
-            ->where('tahuns.status', 'Aktif')
-            ->select(
+            ->where('tahuns.status', 'Aktif');
+
+        // 🔹 Filter jika bulan diisi
+        if (!empty($bulan)) {
+            $query->whereMonth('rencana_prokers.tgl_mulai', $bulan);
+        }
+
+        // 🔹 Filter jika unit diisi
+        if (!empty($unit)) {
+            $query->where('units.id', $unit);
+        }
+
+        $data = $query->select(
                 'units.id as unit_id',
                 'units.unit as nama_unit',
                 'rencana_prokers.rencana_proker',
@@ -194,13 +208,16 @@ class RencanaProkerController extends Controller
             ->get()
             ->groupBy('unit_id');
 
-        $tahun = DB::table('tahuns')->where('status', 'Aktif')->first();
+        $tahun = DB::table('tahuns')
+            ->where('status', 'Aktif')
+            ->first();
 
         $pdf = Pdf::loadView('backend.rencana_proker.export_pdf', [
-            'data' => $data,
-            'tahun' => $tahun
-        ])
-        ->setPaper('A4', 'portrait'); // bisa landscape juga
+            'data'  => $data,
+            'tahun' => $tahun,
+            'bulan' => $bulan,
+            'unit'  => $unit
+        ])->setPaper('A4', 'portrait');
 
         return $pdf->stream('rencana-proker.pdf');
     }

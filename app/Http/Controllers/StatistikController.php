@@ -63,10 +63,22 @@ class StatistikController extends Controller
                 ->orderBy('units.unit')
                 ->get();
 
+            $units = $chart->pluck('unit')->map(function ($unit) {
+                return mb_strimwidth($unit, 0, 20, '…'); // aman untuk UTF-8
+            });
+
+            $selesai = $chart->pluck('selesai')->map(function ($v) {
+                return (int) $v;
+            });
+
+            $belum = $chart->pluck('belum')->map(function ($v) {
+                return (int) $v;
+            });
 
         return view('backend.statistik.index', compact(
             'statistik',
-            'chart'
+            'chart',
+            'units','selesai','belum'
         ));
     }
 }
