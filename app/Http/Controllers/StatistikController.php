@@ -34,6 +34,7 @@ class StatistikController extends Controller
                 ->leftJoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
                 ->select(
                     'units.unit',
+                    'units.id as id_unit',
                     DB::raw('
                         SUM(CASE 
                             WHEN rencana_prokers.status_rencana = "Selesai" THEN 1 
@@ -52,7 +53,8 @@ class StatistikController extends Controller
                 ->where(function ($q) {
                     $q->where('tahuns.status', 'Aktif')
                     ->orWhereNull('tahuns.status'); // supaya unit tanpa proker tetap muncul
-                });
+                })
+                ->orderByRaw('selesai DESC');
 
             if ($bulan) {
                 $chart->whereMonth('rencana_prokers.tgl_mulai', $bulan);
@@ -79,6 +81,49 @@ class StatistikController extends Controller
             'statistik',
             'chart',
             'units','selesai','belum'
+        ));
+    }
+
+    public function detail(Request $request){
+
+        $id_unit = $request->id_unit;
+        $bulan = $request->bulan;
+
+        $data = DB::table('rencana_prokers')
+                ->leftJoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
+                ->leftJoin('units', 'prokers.id_unit', '=', 'units.id')
+                ->leftJoin('tahuns', 'prokers.id_tahun', '=', 'tahuns.id')
+                ->selectRaw('
+                    rencana_prokers.rencana_proker,
+                    rencana_prokers.tgl_mulai,
+                    rencana_prokers.tgl_selesai,
+                    rencana_prokers.status_rencana,
+                    rencana_prokers.jenis_proker
+                ')
+                ->where('tahuns.status', 'Aktif')
+                ->where('units.id', $id_unit)
+                ->whereMonth('rencana_prokers.tgl_mulai', $bulan)
+                ->get();
+
+                // dd($data);
+
+        $statistik = DB::table('rencana_prokers')
+            ->leftjoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
+            ->leftjoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
+            ->leftjoin('units', 'units.id', '=', 'prokers.id_unit')
+            ->selectRaw('
+                units.unit,
+                COUNT(*) as total_proker,
+                SUM(CASE WHEN rencana_prokers.status_rencana = "Selesai" THEN 1 ELSE 0 END) as proker_selesai,
+                SUM(CASE WHEN rencana_prokers.status_rencana IS NULL THEN 1 ELSE 0 END) as proker_belum
+            ')
+            ->where('prokers.id_unit', $id_unit)
+            ->whereMonth('rencana_prokers.tgl_mulai', $bulan)
+            ->where('tahuns.status', 'Aktif')->first();
+
+        return view('backend.statistik.detail', compact(
+            'data',
+            'statistik'
         ));
     }
 }

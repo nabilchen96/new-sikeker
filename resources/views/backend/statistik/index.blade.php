@@ -112,6 +112,7 @@
                                                 <th class="text-center">Total Proker</th>
                                                 <th class="text-center">Selesai</th>
                                                 <th class="text-center">Belum</th>
+                                                <th class="text-center">Detail</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -139,6 +140,11 @@
                                                     </td>
                                                     <td class="text-center"><b>{{ $item->selesai }}</b></td>
                                                     <td class="text-center"><b>{{ $item->belum }}</b></td>
+                                                    <td class="text-center">
+                                                        <a href="{{ url('detail-statistik') }}?id_unit={{ $item->id_unit }}&bulan={{ Request('bulan') }}">
+                                                            <i style="font-size: 1.5rem;" class="bi bi-ui-checks-grid"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

@@ -55,8 +55,8 @@
 
                                         <div class="form-group">
                                             <label>Unit</label>
-                                            <select name="id_unit" id="id_unit" class="form-control">
-                                                <option value="">Semua Unit ....</option>
+                                            <select name="id_unit" id="id_unit" class="form-control" required>
+                                                <option value="">Pilih Unit ....</option>
                                                 @if (Auth::user()->role == 'Admin')
                                                     <option value="">Semua Unit ....</option>
                                                 @endif
