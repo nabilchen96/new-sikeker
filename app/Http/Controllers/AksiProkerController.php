@@ -69,7 +69,7 @@ class AksiProkerController extends Controller
             'id_rencana_proker' => 'required',
             'kegiatan_proker' => 'required',
             // 'progress'  => 'required',
-            'bukti_kegiatan'    => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:5048',
+            'bukti_kegiatan'    => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:52048',
             'tgl_pengerjaan' => 'required'
         ]);
 

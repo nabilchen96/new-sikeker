@@ -219,7 +219,7 @@
                     </div>
 
                     <div class="modal-body">
-
+                        <div id="respon_error" class="text-danger mb-4"></div>
                         <input type="hidden" name="id" id="id">
                         <input type="hidden" name="id_proker" id="id_proker" value="{{ Request('id_proker') }}">
 

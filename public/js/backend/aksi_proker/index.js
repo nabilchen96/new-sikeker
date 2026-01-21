@@ -171,9 +171,8 @@ form.onsubmit = function (e) {
                     timer: 2000
                 });
 
-                $("#modal").modal("hide");
-                table.destroy();
-                getData();
+                window.location.reload();
+                
             } else {
                 let err = "";
                 Object.entries(res.data.respon).forEach(([field, msg]) => {
