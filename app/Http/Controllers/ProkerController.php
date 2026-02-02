@@ -8,6 +8,7 @@ use DB;
 use Auth;
 use App\Models\Proker;
 use Validator;
+use Illuminate\Validation\Rule;
 
 class ProkerController extends Controller
 {
@@ -51,8 +52,15 @@ class ProkerController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_tahun' => 'required',
+            'id_tahun' => [
+                'required',
+                Rule::unique('prokers')->where(function ($query) use ($request) {
+                    return $query->where('id_unit', $request->id_unit);
+                }),
+            ],
             'id_unit' => 'required',
+        ], [
+            'id_tahun.unique' => 'Data dengan tahun dan unit tersebut sudah ada, tambah rencana proker di proker yang sudah ada'
         ]);
 
         if ($validator->fails()) {

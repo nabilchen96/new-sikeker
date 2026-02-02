@@ -128,7 +128,7 @@
                     </div>
 
                     <div class="modal-body">
-
+                        <div id="respon_error" class="text-danger mb-4"></div>
                         <input type="hidden" name="id" id="id">
 
                         @php
