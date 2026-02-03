@@ -8,6 +8,7 @@ use DB;
 use Auth;
 use App\Models\AksiProker;
 use Validator;
+use Illuminate\Support\Str;
 
 class AksiProkerController extends Controller
 {
@@ -88,12 +89,35 @@ class AksiProkerController extends Controller
                     ->where('rencana_prokers.id', $request->id_rencana_proker)
                     ->first();
 
+        if (!$rencana) {
+            return response()->json([
+                'responCode' => 0,
+                'respon' => 'Data rencana proker tidak ditemukan'
+            ]);
+        }
+
+        // ==============================
+        // SANITIZE PATH (ANTI \r\n ERROR)
+        // ==============================
+        $tahun  = trim($rencana->tahun);
+
+        $unit   = Str::of($rencana->unit)
+            ->replace(["\r", "\n", "\t"], ' ')
+            ->squish(); // hapus spasi ganda & newline
+
+        $proker = Str::of($rencana->rencana_proker)
+            ->replace(["\r", "\n", "\t"], ' ')
+            ->squish();
+
+        // OPSI PALING AMAN (REKOMENDASI)
+        $unit   = Str::slug($unit);
+        $proker = Str::slug($proker);
 
                     
         // Upload file
         $fileName = null;
         if ($request->hasFile('bukti_kegiatan')) {
-            $path = 'bukti_kegiatan/'.$rencana->tahun.'/'.$rencana->unit.'/'.$rencana->rencana_proker;
+            $path = "bukti_kegiatan/{$tahun}/{$unit}/{$proker}";
             $fileName = $request->file('bukti_kegiatan')->store($path, 'public');
         }
 
