@@ -122,7 +122,7 @@
             <div class="modal-content">
                 <form id="form" enctype="multipart/form-data">
                     <div class="modal-header p-3">
-                        <h5 class="modal-title m-2">Form Rencana Proker</h5>
+                        <h5 class="modal-title m-2">Form Aksi Proker</h5>
                     </div>
 
                     <div class="modal-body">

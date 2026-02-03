@@ -17,7 +17,7 @@ function getData() {
         ordering: true,
         processing: true,
         searching: false,
-        lengthChange: false,
+        lengthChange: true,
         ajax: {
             url: '/data-rencana-proker?id_proker=' + id_proker,
             data: function (d) {

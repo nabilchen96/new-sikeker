@@ -32,7 +32,7 @@ class RencanaProkerController extends Controller
 
     public function data(Request $request)
     {
-        $keyword = $request->keyword;
+        $bulan = $request->keyword;
 
         $query = DB::table('rencana_prokers')
                 ->leftJoin('prokers', 'prokers.id', '=', 'rencana_prokers.id_proker')
@@ -48,12 +48,16 @@ class RencanaProkerController extends Controller
                 )
                 ->where('rencana_prokers.id_proker', $request->id_proker)
                 ->groupBy(
-                    'rencana_prokers.id', 
-                );
+                    'rencana_prokers.id',
+                    'tahuns.tahun',
+                    'units.unit',
+                    'prokers.status_approval'
+                )->orderBy('rencana_prokers.tgl_mulai', 'DESC');
 
 
-        if ($keyword) {
-            $query->where('rencana_prokers.rencana_proker', 'like', "%$keyword%");
+        // filter berdasarkan bulan tgl_mulai
+        if (!empty($bulan)) {
+            $query->whereMonth('rencana_prokers.tgl_mulai', $bulan);
         }
 
         return response()->json(['data' => $query->get()]);

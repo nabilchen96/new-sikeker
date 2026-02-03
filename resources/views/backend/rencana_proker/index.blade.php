@@ -46,7 +46,15 @@
                     @endif
 
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Cari ...">
+                        {{-- <input type="text" class="form-control" id="searchInput" placeholder="Cari ..."> --}}
+                        <select name="bulan" class="form-control" id="searchInput" required>
+                            <option value="">Pilih Bulan</option>
+                            @foreach ([1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'] as $i => $b)
+                                <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
+                                    {{ $b }}
+                                </option>
+                            @endforeach
+                        </select>
                         <div class="input-group-append">
                             <button style="height: 38px;" class="input-group-text" id="btnCari">
                                 <i class="bi bi-search"></i> &nbsp; Cari
