@@ -1,11 +1,11 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
 
-        
+
         <li class="nav-item mb-2">
             <div style="
-                border-radius: 8px; 
-                height: fit-content; 
+                border-radius: 8px;
+                height: fit-content;
                 width: 100%;
                 background-image: url('https://cdn.pixabay.com/photo/2022/10/03/23/41/house-7497002_640.png');
                 background-position: center;
@@ -15,7 +15,8 @@
                             ->leftjoin('units', 'units.id', '=', 'users.id_unit')
                             ->select(
                                 'users.name',
-                                'units.unit'
+                                'users.role',
+                                'units.unit',
                             )->where('users.id', Auth::id())->first();
                 @endphp
                 @if($user->unit)
@@ -25,6 +26,8 @@
                     <b>Name:</b><br>
                     {{ $user->name }}
                 @endif
+                <br>
+                Level : {{ $user->role }}
             </div>
         </li>
 
@@ -101,6 +104,6 @@
             </a>
 
         </li>
-        
+
     </ul>
 </nav>
