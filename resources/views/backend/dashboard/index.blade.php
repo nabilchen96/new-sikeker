@@ -192,7 +192,7 @@
                                 </div>
                             </td>
                             <td>:</td>
-                            <td>Aksi Proker (data dukung) sudah diupload namun kegiatan belum Selesai</td>
+                            <td>Aksi Proker (data dukung) sudah diupload/sedang dalam proses namun kegiatan belum Selesai</td>
                         </tr>
 
                         <tr>
