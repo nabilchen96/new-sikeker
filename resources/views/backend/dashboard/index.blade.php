@@ -62,6 +62,9 @@
 
                             <tbody>
                                 @forelse ($prokers as $proker)
+                                @php
+                                    $cekAksi = DB::table('aksi_prokers')->where('id_rencana_proker', $proker->id )->first();
+                                @endphp
                                     <tr>
                                         <td class="p-3">
                                             <a href="#" style="font-size: 14px;" data-toggle="modal"
@@ -93,19 +96,50 @@
 
                                             <td class="text-center p-1 {{ $current->isWeekend() ? 'bg-danger' : '' }}">
                                                 @if ($active)
-                                                    <div class="{{ $proker->status_rencana == 'Selesai' ? 'bg-success' : 'bg-warning' }}"
-                                                        style="
-                                                            width:35px;
-                                                            height:35px;
-                                                            border-radius:8px;
-                                                            line-height:35px;
-                                                            text-align:center;
-                                                            font-size:20px;
-                                                        ">
-                                                        @if($proker->status_rencana == 'Selesai')
-                                                            🏅
-                                                        @endif
-                                                    </div>
+                                                {{-- jika aksi proker sudah diupload dan status selesai --}}
+                                                    @if ($cekAksi && $proker->status_rencana == 'Selesai')
+                                                        <div class="bg-success"
+                                                            style="
+                                                                width:35px;
+                                                                height:35px;
+                                                                border-radius:8px;
+                                                                line-height:35px;
+                                                                text-align:center;
+                                                                font-size:20px;
+                                                            ">
+                                                        🏅
+                                                        </div>
+
+                                                    @elseif ($cekAksi)
+                                                    {{-- jika status belum selesai namun data aksi sudah diupload --}}
+                                                    <div class="bg-info"
+                                                            style="
+                                                                width:35px;
+                                                                height:35px;
+                                                                border-radius:8px;
+                                                                line-height:35px;
+                                                                text-align:center;
+                                                                font-size:20px;
+                                                            ">
+                                                        🏃‍➡️
+                                                        </div>
+                                                    @else
+                                                    {{-- jika belum ada upload dan status belum selesai --}}
+                                                        <div class="{{ $proker->status_rencana == 'Selesai' ? 'bg-success' : 'bg-warning' }}"
+                                                            style="
+                                                                width:35px;
+                                                                height:35px;
+                                                                border-radius:8px;
+                                                                line-height:35px;
+                                                                text-align:center;
+                                                                font-size:20px;
+                                                            ">
+                                                            @if($proker->status_rencana == 'Selesai')
+                                                                🏅
+                                                            @endif
+                                                        </div>
+                                                    @endif
+
                                                 @endif
                                             </td>
                                         @endfor
@@ -119,9 +153,71 @@
                                 @endforelse
                             </tbody>
                         </table>
+
                     </div>
 
                 </div>
+                <div class="ml-4 mb-3">
+                    <h5>Keterangan : </h5>
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="bg-warning"
+                                    style="
+                                        width:35px;
+                                        height:35px;
+                                        border-radius:8px;
+                                        line-height:35px;
+                                        text-align:center;
+                                        font-size:20px;
+                                    ">
+
+                                </div>
+                            </td>
+                            <td>:</td>
+                            <td>Aksi Proker (data dukung) belum diupload dan kegiatan belum Selesai</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="bg-info"
+                                    style="
+                                        width:35px;
+                                        height:35px;
+                                        border-radius:8px;
+                                        line-height:35px;
+                                        text-align:center;
+                                        font-size:20px;
+                                    ">
+                                🏃‍➡️
+                                </div>
+                            </td>
+                            <td>:</td>
+                            <td>Aksi Proker (data dukung) sudah diupload namun kegiatan belum Selesai</td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="bg-success"
+                                                            style="
+                                                                width:35px;
+                                                                height:35px;
+                                                                border-radius:8px;
+                                                                line-height:35px;
+                                                                text-align:center;
+                                                                font-size:20px;
+                                                            ">
+                                                        🏅
+                                                        </div>
+                            </td>
+                            <td>:</td>
+                            <td>Aksi Proker (data dukung) sudah diupload dan kegiatan sudah Selesai</td>
+                        </tr>
+                    </table>
+
+
+
+                </div>
+
             </div>
         </div>
     </div>
