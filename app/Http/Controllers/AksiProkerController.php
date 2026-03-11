@@ -197,6 +197,10 @@ class AksiProkerController extends Controller
 
     public function exportAksiProker(Request $request)
     {
+
+        ini_set('memory_limit', '1024M');
+        set_time_limit(0);
+
         $bulan = $request->bulan;      // 1 – 12
         $unit  = $request->id_unit;    // id unit
 
