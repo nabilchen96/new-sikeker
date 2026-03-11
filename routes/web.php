@@ -80,6 +80,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/store-aksi-proker', 'App\Http\Controllers\AksiProkerController@store');
     Route::post('/update-aksi-proker', 'App\Http\Controllers\AksiProkerController@update');
     Route::post('/delete-aksi-proker', 'App\Http\Controllers\AksiProkerController@delete');
+    Route::get('/export-aksi-proker', 'App\Http\Controllers\AksiProkerController@exportAksiProker');
 
     //STATISTIK
     Route::get('/statistik', 'App\Http\Controllers\StatistikController@index');

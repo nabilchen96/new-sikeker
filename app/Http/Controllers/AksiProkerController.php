@@ -9,6 +9,7 @@ use Auth;
 use App\Models\AksiProker;
 use Validator;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AksiProkerController extends Controller
 {
@@ -192,5 +193,57 @@ class AksiProkerController extends Controller
             'responCode' => 1,
             'respon' => 'Data berhasil dihapus'
         ]);
+    }
+
+    public function exportAksiProker(Request $request)
+    {
+        $bulan = $request->bulan;      // 1 – 12
+        $unit  = $request->id_unit;    // id unit
+
+        $query = DB::table('rencana_prokers')
+            ->join('prokers', 'rencana_prokers.id_proker', '=', 'prokers.id')
+            ->join('units', 'prokers.id_unit', '=', 'units.id')
+            ->join('tahuns', 'prokers.id_tahun', '=', 'tahuns.id')
+            ->join('aksi_prokers', 'rencana_prokers.id', '=', 'aksi_prokers.id_rencana_proker')
+            ->where('tahuns.status', 'Aktif');
+
+        // 🔹 Filter jika bulan diisi
+        if (!empty($bulan)) {
+            $query->whereMonth('rencana_prokers.tgl_mulai', $bulan);
+        }
+
+        // 🔹 Filter jika unit diisi
+        if (!empty($unit)) {
+            $query->where('units.id', $unit);
+        }
+
+        $data = $query->select(
+                'units.id as unit_id',
+                'units.unit as nama_unit',
+                'rencana_prokers.rencana_proker',
+                'rencana_prokers.jenis_proker',
+                'rencana_prokers.tgl_mulai',
+                'rencana_prokers.tgl_selesai',
+                'rencana_prokers.status_rencana',
+                'tahuns.tahun',
+                'aksi_prokers.kegiatan_proker'
+            )
+            ->orderBy('units.unit')
+            ->orderBy('rencana_prokers.tgl_mulai')
+            ->get()
+            ->groupBy('unit_id');
+
+        $tahun = DB::table('tahuns')
+            ->where('status', 'Aktif')
+            ->first();
+
+        $pdf = Pdf::loadView('backend.aksi_proker.export_pdf', [
+            'data'  => $data,
+            'tahun' => $tahun,
+            'bulan' => $bulan,
+            'unit'  => $unit
+        ])->setPaper('A4', 'landscape');
+
+        return $pdf->stream('rencana-proker.pdf');
     }
 }

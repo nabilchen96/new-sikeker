@@ -25,6 +25,7 @@
                             Export PDF
                         </button>
                     </a>
+                    
                     <div class="modal fade" id="modalExport" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content">
