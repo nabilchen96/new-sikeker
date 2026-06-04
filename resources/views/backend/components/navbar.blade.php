@@ -77,9 +77,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('aksi-proker') }}?id_rencana_proker=">Aksi Proker</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="{{ url('file-manager') }}">File Manager</a>
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
         </li>

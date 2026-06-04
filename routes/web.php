@@ -86,9 +86,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/statistik', 'App\Http\Controllers\StatistikController@index');
     Route::get('/detail-statistik', 'App\Http\Controllers\StatistikController@detail');
 
-    Route::get('file-manager', function(){
-        return view('backend.file_manager.index');
-    });
+    // Route::get('file-manager', function(){
+    //     return view('backend.file_manager.index');
+    // });
 });
 
 
