@@ -482,7 +482,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-xl-2 offset-xl-1 col-lg-2 col-md-6 col-sm-6">
+                    {{-- <div class="col-xl-2 offset-xl-1 col-lg-2 col-md-6 col-sm-6">
                         <div class="footer-widget wow fadeInUp" data-wow-delay=".3s">
                             <h6>Quick Link</h6>
                             <ul class="links">
@@ -514,7 +514,7 @@
                                 <li> <a href="#0">Terms & Conditions</a> </li>
                             </ul>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <div class="copyright-wrapper wow fadeInUp" data-wow-delay=".2s">
