@@ -136,7 +136,7 @@
 
     </section>
 
-    <section id="services" class="feature-section feature-style-2" style="background: transparent;">
+    {{-- <section id="services" class="feature-section feature-style-2" style="background: transparent;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -461,7 +461,7 @@
         <div class="feature-img wow" style="margin-top: -40px !important;" data-wow-delay=".2s">
             <img src="{{ asset('flat/assets/img/feature/feature-2-1.svg') }}" alt="">
         </div>
-    </section>
+    </section> --}}
 
     <footer class="footer footer-style-1">
         <div class="container">
