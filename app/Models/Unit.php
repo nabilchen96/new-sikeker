@@ -12,4 +12,9 @@ class Unit extends Model
     protected $fillable = [
         'unit',
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'id_unit', 'id');
+    }
 }

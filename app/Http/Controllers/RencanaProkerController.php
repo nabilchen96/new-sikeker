@@ -25,8 +25,25 @@ class RencanaProkerController extends Controller
                     'prokers.id'
                 )->where('prokers.id', Request('id_proker'))->first();
 
+
+        $kontrak = DB::table('cascadings')
+            ->leftjoin('kontraks', 'kontraks.id', '=', 'cascadings.id_kontrak')
+            ->leftjoin('tahuns', 'tahuns.id', '=', 'kontraks.id_tahun')
+            ->where('tahuns.status', 'Aktif')
+            ->select(
+                'kontraks.*'
+            )
+            ->groupby('cascadings.id_kontrak');
+
+        if(Auth::user()->role == 'Admin'){
+            $kontrak = $kontrak->get();
+        }else{
+            $kontrak = $kontrak->where('cascadings.id_user', Auth::id())->get();
+        }
+
         return view('backend.rencana_proker.index', [
-            'proker' => $proker
+            'proker'    => $proker,
+            'kontrak'   => $kontrak
         ]);
     }
 
@@ -39,11 +56,17 @@ class RencanaProkerController extends Controller
                 ->leftJoin('tahuns', 'tahuns.id', '=', 'prokers.id_tahun')
                 ->leftJoin('units', 'units.id', '=', 'prokers.id_unit')
                 ->leftJoin('aksi_prokers', 'aksi_prokers.id_rencana_proker', '=', 'rencana_prokers.id')
+                ->leftJoin('kontraks as pk', 'pk.id', '=', 'rencana_prokers.id_pk')
+                ->leftJoin('kontraks as kpi', 'kpi.id', '=', 'rencana_prokers.id_kpi')
                 ->select(
                     'rencana_prokers.*',
                     'tahuns.tahun',
                     'units.unit',
                     'prokers.status_approval',
+                    'pk.nama as nama_pk',
+                    'pk.kode as kode_pk',
+                    'kpi.nama as nama_kpi',
+                    'kpi.kode as kode_kpi',
                     DB::raw('SUM(aksi_prokers.progress) as total_progress')
                 )
                 ->where('rencana_prokers.id_proker', $request->id_proker)
@@ -94,6 +117,8 @@ class RencanaProkerController extends Controller
             'bulan_akhir' => 0,
             'minggu_mulai' => 0,
             'minggu_akhir' => 0,
+            'id_pk' => $request->id_pk,
+            'id_kpi' => $request->id_kpi
         ]);
 
         return response()->json([
@@ -135,6 +160,8 @@ class RencanaProkerController extends Controller
             'bulan_akhir' => 0,
             'minggu_mulai' => 0,
             'minggu_akhir' => 0,
+            'id_pk' => $request->id_pk,
+            'id_kpi' => $request->id_kpi
         ]);
 
         return response()->json([

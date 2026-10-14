@@ -90,14 +90,14 @@
                         </div>
                     </div>
 
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Cari ...">
-                        <div class="input-group-append">
-                            <button style="height: 38px;" class="input-group-text" id="btnCari">
-                                <i class="bi bi-search"></i> &nbsp; Cari
-                            </button>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Cari ...">
+                            <div class="input-group-append">
+                                <button style="height: 38px;" class="input-group-text" id="btnCari">
+                                    <i class="bi bi-search"></i> &nbsp; Cari
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
                     <div class="table-responsive">
                         <table id="myTable" class="table table-striped" style="width: 100%;">

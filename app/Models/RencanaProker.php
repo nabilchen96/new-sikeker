@@ -19,6 +19,8 @@ class RencanaProker extends Model
         'status_rencana',
         'jenis_proker',
         'tgl_mulai',
-        'tgl_selesai'
+        'tgl_selesai',
+        'id_pk',
+        'id_kpi'
     ];
 }

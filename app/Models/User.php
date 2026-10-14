@@ -44,4 +44,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    public function cascadings()
+    {
+        return $this->hasMany(
+            Cascading::class,
+            'id_user'
+        );
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'id_unit', 'id');
+    }
 }

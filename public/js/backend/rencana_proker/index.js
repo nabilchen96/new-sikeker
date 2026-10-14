@@ -31,16 +31,34 @@ function getData() {
                 }
             },
             {
-                data: 'rencana_proker'
+                render: function (data, type, row, meta) {
+                    var status
+                    if (row.status_rencana == 'Selesai') {
+                        status = `<span style="border-radius: 8px;" class="badge badge-success">Selesai</span>`
+                    } else {
+                        status = `<span style="border-radius: 8px;" class="badge badge-warning">Belum</span>`
+                    }
+
+                    return `
+
+                        <b>Rencana Proker:</b><br>
+                        ${row.rencana_proker}<br><br>
+
+                        <b>Status:</b><br>
+                        ${status}
+                    `
+                }
             },
             {
-                data: 'jenis_proker'
+                render: function (data, type, row, meta) {
+                    return `
+                        <b>PK:</b><br>
+                        {{row.kode_pk}} {{row.nama_pk ?? '-'}}
+                        <br><br><b>KPI:</b><br>
+                        {{row.kode_kpi}} {{row.nama_kpi ?? '-'}}
+                    `
+                }
             },
-            // {
-            //     render: function (data, type, row, meta) {
-            //         return `Bulan ${row.bulan_mulai}, Minggu ${row.minggu_mulai} → Bulan ${row.bulan_akhir}, Minggu ${row.minggu_akhir}`;
-            //     }
-            // },
             {
                 render: function (data, type, row, meta) {
                     function formatTanggal(tgl) {
@@ -49,18 +67,20 @@ function getData() {
                         return `${dd}-${mm}-${yyyy}`;
                     }
 
-                    return `${formatTanggal(row.tgl_mulai)} → ${formatTanggal(row.tgl_selesai)}`;
+                    return `<b>Waktu Pengerjaan:</b><br> ${formatTanggal(row.tgl_mulai)} 
+                    → ${formatTanggal(row.tgl_selesai)} <br> <br> 
+                    <b>Jenis Proker:</b><br>${row.jenis_proker}`;
                 }
             },
-            {
-                render: function (data, type, row, meta) {
-                    if (row.status_rencana == 'Selesai') {
-                        return `<span class="badge badge-success">Selesai</span>`
-                    } else {
-                        return `<span class="badge badge-warning">Belum</span>`
-                    }
-                }
-            },
+            // {
+            //     render: function (data, type, row, meta) {
+            //         if (row.status_rencana == 'Selesai') {
+            //             return `<span class="badge badge-success">Selesai</span>`
+            //         } else {
+            //             return `<span class="badge badge-warning">Belum</span>`
+            //         }
+            //     }
+            // },
             {
                 render: function (data, type, row, meta) {
                     if (row.status_approval == 'Dalam Pengajuan' || row.status_approval == 'Diterima') {

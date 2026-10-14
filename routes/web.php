@@ -48,6 +48,25 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/store-user', 'App\Http\Controllers\UserController@store');
     Route::post('/update-user', 'App\Http\Controllers\UserController@update');
     Route::post('/delete-user', 'App\Http\Controllers\UserController@delete');
+
+    //KONTRAK
+    Route::get('/kontrak', 'App\Http\Controllers\KontrakController@index');
+    Route::post('/store-sasaran-kinerja', 'App\Http\Controllers\KontrakController@storeSasaranKinerja');
+    Route::post('/update-sasaran-kinerja', 'App\Http\Controllers\KontrakController@updateSasaranKinerja');
+    Route::post('/delete-sasaran-kinerja', 'App\Http\Controllers\KontrakController@deleteSasaranKinerja');
+
+    Route::post('/store-bagian', 'App\Http\Controllers\KontrakController@storeBagian');
+    Route::post('/update-bagian', 'App\Http\Controllers\KontrakController@updateBagian');
+    Route::post('/delete-bagian', 'App\Http\Controllers\KontrakController@deleteBagian');
+
+
+    //CASCADING
+    Route::get('/cascading', 'App\Http\Controllers\CascadingController@index');
+    Route::get('/data-cascading', 'App\Http\Controllers\CascadingController@data');
+    Route::post('/store-cascading', 'App\Http\Controllers\CascadingController@store');
+    Route::post('/update-cascading', 'App\Http\Controllers\CascadingController@update');
+    Route::post('/delete-cascading', 'App\Http\Controllers\CascadingController@delete');
+
     
     //APPROVAL
     Route::get('/approval', 'App\Http\Controllers\ApprovalController@index');
@@ -81,6 +100,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/update-aksi-proker', 'App\Http\Controllers\AksiProkerController@update');
     Route::post('/delete-aksi-proker', 'App\Http\Controllers\AksiProkerController@delete');
     Route::get('/export-aksi-proker', 'App\Http\Controllers\AksiProkerController@exportAksiProker');
+
+
+    //REALISASI
+    Route::get('/realisasi', 'App\Http\Controllers\RealisasiController@index');
+    Route::get('/data-realisasi', 'App\Http\Controllers\RealisasiController@data');
+    Route::post('/store-realisasi', 'App\Http\Controllers\RealisasiController@store');
+    Route::post('/update-realisasi', 'App\Http\Controllers\RealisasiController@update');
+    Route::post('/delete-realisasi', 'App\Http\Controllers\RealisasiController@delete');
 
     //STATISTIK
     Route::get('/statistik', 'App\Http\Controllers\StatistikController@index');

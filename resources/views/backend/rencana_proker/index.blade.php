@@ -1,5 +1,10 @@
 @extends('backend.app')
 @section('content')
+    <style>
+        td{
+            vertical-align: top !important;
+        }
+    </style>
     <div class="row" style="margin-top: -200px;">
         <div class="col-md-12 text-white">
             <div class="row">
@@ -68,9 +73,9 @@
                                 <tr>
                                     <th width="5px">No</th>
                                     <th width="300px">Rencana Proker</th>
-                                    <th>Jenis Proker</th>
-                                    <th>Waktu Pengerjaan</th>
-                                    <th>Status</th>
+                                    <th>PK / KPI</th>
+                                    <th>Jenis Proker / Waktu Pengerjaan</th>
+                                    {{-- <th>Status</th> --}}
                                     <th width="5px">Aksi</th>
                                 </tr>
                             </thead>
@@ -180,6 +185,32 @@
                                 <option>Utama</option>
                                 <option>Tambahan</option>
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>PK</label>
+                            <select name="id_pk" id="id_pk" class="form-control">
+                                <option value="">Pilih PK ...</option>
+                                @foreach ($kontrak as $pk)
+                                    @if($pk->jenis == 'pk')
+                                        <option value="{{ $pk->id }}">{{ $pk->kode }} {{ $pk->nama }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                            <span style="font-size: 12px;" class="text-danger">*Pilih PK yang sesuai dengan proker atau kosongkan</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>KPI</label>
+                            <select name="id_kpi" id="id_kpi" class="form-control">
+                                <option value="">Pilih KPI ...</option>
+                                @foreach ($kontrak as $kpi)
+                                    @if($kpi->jenis == 'kpi')
+                                        <option value="{{ $kpi->id }}">{{ $kpi->kode }} {{ $kpi->nama }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                            <span style="font-size: 12px;" class="text-danger">*Pilih KPI yang sesuai dengan proker atau kosongkan</span>
                         </div>
                     </div>
 

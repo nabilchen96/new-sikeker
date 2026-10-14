@@ -9,17 +9,16 @@
                 width: 100%;
                 background-image: url('https://cdn.pixabay.com/photo/2022/10/03/23/41/house-7497002_640.png');
                 background-position: center;
-                " class="text-white py-1 px-3">
+                "
+                class="text-white py-1 px-3">
                 @php
                     $user = DB::table('users')
-                            ->leftjoin('units', 'units.id', '=', 'users.id_unit')
-                            ->select(
-                                'users.name',
-                                'users.role',
-                                'units.unit',
-                            )->where('users.id', Auth::id())->first();
+                        ->leftjoin('units', 'units.id', '=', 'users.id_unit')
+                        ->select('users.name', 'users.role', 'units.unit')
+                        ->where('users.id', Auth::id())
+                        ->first();
                 @endphp
-                @if($user->unit)
+                @if ($user->unit)
                     <b>Unit:</b><br>
                     {{ $user->unit }}
                 @else
@@ -38,9 +37,10 @@
             </a>
 
         </li>
-        @if(Auth::user()->role == 'Admin')
+        @if (Auth::user()->role == 'Admin')
             <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false"
+                    aria-controls="ui-basic">
                     <i class="icon-layout menu-icon"></i>
                     <span class="menu-title">Master</span>
                     <i class="menu-arrow"></i>
@@ -72,10 +72,19 @@
             <div class="collapse" id="aktivitas">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url('kontrak') }}">Kontrak</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('cascading') }}">Cascading</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url('proker') }}">Rencana Proker</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('aksi-proker') }}?id_rencana_proker=">Aksi Proker</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('realisasi') }}">Realisasi</a>
                     </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="{{ url('file-manager') }}">File Manager</a>
@@ -91,7 +100,9 @@
 
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="https://drive.google.com/drive/folders/1ZJ5rXn9vlnPVU046vE7Cs56v7VoGGbJ3?usp=sharing" target="blank">
+            <a class="nav-link"
+                href="https://drive.google.com/drive/folders/1ZJ5rXn9vlnPVU046vE7Cs56v7VoGGbJ3?usp=sharing"
+                target="blank">
                 <i class="bi bi-file-earmark-text menu-icon"></i>
                 <span class="menu-title">Panduan</span>
             </a>
