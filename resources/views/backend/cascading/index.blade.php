@@ -38,72 +38,137 @@
 
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-toggle="tab" data-target="#home" type="button"
-                        role="tab" aria-controls="home" aria-selected="true">
+                    <a href="{{ url('cascading') }}?jenis=PK"
+                        class="nav-link {{ Request('jenis') == 'PK' || Request('jenis') == null ? 'active' : '' }}""
+                        type="button" role="tab" aria-controls="home" aria-selected="true">
                         Perjanjian Kinerja
-                    </button>
+                    </a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile" type="button"
-                        role="tab" aria-controls="profile" aria-selected="false">
+                    <a href="{{ url('cascading') }}?jenis=KPI"
+                        class="nav-link {{ Request('jenis') == 'KPI' ? 'active' : '' }}" type="button" role="tab"
+                        aria-controls="profile" aria-selected="false">
                         KPI
-                    </button>
+                    </a>
                 </li>
             </ul>
 
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                @if (Request('jenis') == 'PK' || request('jenis') == null)
+                    <div
+                        class="tab-pane fade show {{ Request('jenis') == 'PK' || Request('jenis') == null ? 'active' : '' }}">
 
-                    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modal">
-                        Tambah
-                    </button>
+                        @if (Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'PK' || Auth::user()->role_kontrak == 'KPI')
 
-                    <table id="myTable" class="table table-bordered table-hover" style="width: 100%;">
+                            <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modal">
+                                Tambah
+                            </button>
 
+                        @endif
 
-                        <thead class="bg-info text-white text-center">
-
-
-                            <tr>
-
-
-                                <th>
-                                    Indikator Kinerja
-                                </th>
+                        <table id="myTable" class="table table-bordered table-hover" style="width: 100%;">
 
 
-                                <th width="5px">
-                                </th>
+                            <thead class="bg-info text-white text-center">
 
 
-                                <th>
-                                    Unit Organisasi
-                                </th>
+                                <tr>
 
 
-                                <th width="5%">
-                                    Aksi
-                                </th>
+                                    <th>
+                                        Indikator Kinerja
+                                    </th>
 
 
-                            </tr>
+                                    <th width="5px">
+                                    </th>
 
 
-                        </thead>
+                                    <th>
+                                        Unit Organisasi
+                                    </th>
+
+
+                                    <th width="5%">
+                                        Aksi
+                                    </th>
+
+
+                                </tr>
+
+
+                            </thead>
 
 
 
-                        <tbody>
+                            <tbody>
 
 
 
-                            @foreach ($data as $item)
-                                @forelse($item->cascadings as $index=>$cascading)
-                                    <tr>
+                                @foreach ($data as $item)
+                                    @forelse($item->cascadings as $index=>$cascading)
+                                        <tr>
 
 
-                                        @if ($index == 0)
-                                            <td class="align-middle" rowspan="{{ $item->cascadings->count() }}">
+                                            @if ($index == 0)
+                                                <td class="align-middle" rowspan="{{ $item->cascadings->count() }}">
+
+
+                                                    <b>
+                                                        {{ $item->kode }}
+                                                    </b>
+
+
+                                                    <br>
+
+
+                                                    {{ $item->nama }}
+
+
+                                                </td>
+                                            @endif
+
+
+
+                                            <td class="text-center">
+                                                ✔
+                                            </td>
+
+
+
+                                            <td>
+
+                                                {{ $cascading->user->unit->unit ?? $cascading->user->name }}
+
+                                            </td>
+
+
+
+                                            <td class="text-center">
+                                                @if (Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'PK' || Auth::user()->role_kontrak == 'KPI')
+
+                                                    <i onclick="hapusData({{ $cascading->id }})" style="font-size:1.2rem"
+                                                        class="bi bi-trash text-danger" href="javascript:void(0)"
+                                                        class="bi bi-trash">
+                                                    </i>
+                                                @endif
+
+                                            </td>
+
+
+
+                                        </tr>
+
+
+
+                                    @empty
+
+
+
+                                        <tr>
+
+
+                                            <td>
 
 
                                                 <b>
@@ -117,160 +182,331 @@
                                                 {{ $item->nama }}
 
 
+
                                             </td>
-                                        @endif
+
+
+                                            <td class="text-center">
+                                                -
+                                            </td>
+
+
+                                            <td>
+
+                                                Belum ada unit organisasi
+
+                                            </td>
+
+
+                                            <td class="text-center">
+
+
+                                                {{-- <i onclick="tambahUnit({{ $item->id }})" style="font-size:1.2rem"
+                                                    class="text-success bi bi-plus-circle">
+
+                                                </i> --}}
+
+                                            </td>
+
+
+                                        </tr>
+                                    @endforelse
+                                @endforeach
 
 
 
-                                        <td class="text-center">
-                                            ✔
-                                        </td>
+                            </tbody>
 
 
+                        </table>
 
-                                        <td>
-
-                                            {{ $cascading->user->unit->unit ?? $cascading->user->name }}
-
-                                        </td>
+                        <!-- MODAL -->
 
 
-
-                                        <td class="text-center">
-
-                                            <i onclick="hapusData({{ $cascading->id }})" style="font-size:1.2rem"
-                                                class="bi bi-trash text-danger" href="javascript:void(0)"
-                                                class="bi bi-trash">
-                                            </i>
-
-
-                                        </td>
-
-
-
-                                    </tr>
-
-
-
-                                @empty
-
-
-
-                                    <tr>
-
-
-                                        <td>
-
-
-                                            <b>
-                                                {{ $item->kode }}
-                                            </b>
-
-
-                                            <br>
-
-
-                                            {{ $item->nama }}
-
-
-
-                                        </td>
-
-
-                                        <td class="text-center">
-                                            -
-                                        </td>
-
-
-                                        <td>
-
-                                            Belum ada unit organisasi
-
-                                        </td>
-
-
-                                        <td class="text-center">
-
-
-                                            {{-- <i onclick="tambahUnit({{ $item->id }})" style="font-size:1.2rem"
-                                                class="text-success bi bi-plus-circle">
-
-                                            </i> --}}
-
-                                        </td>
-
-
-                                    </tr>
-                                @endforelse
-                            @endforeach
-
-
-
-                        </tbody>
-
-
-                    </table>
-
-                    <!-- MODAL -->
-
-
-                    <div class="modal fade" id="modal">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form id="form">
-                                    <div class="modal-header">
-                                        <h5>
-                                            Form Cascading
-                                        </h5>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="hidden" id="id" name="id">
-                                        <div id="respon_error" class="text-danger"> </div>
-                                        <div class="form-group">
-                                            <label>
-                                                Indikator Kinerja
-                                            </label>
-                                            <select name="id_kontrak" id="id_kontrak" class="form-control" required>
-                                                <option value="">
-                                                    Pilih Indikator
-                                                </option>
-                                                @foreach ($kontraks as $k)
-                                                    <option value="{{ $k->id }}"> {{ $k->kode }} -
-                                                        {{ $k->nama }}
-
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                        <div class="modal fade" id="modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form id="form">
+                                        <div class="modal-header">
+                                            <h5>
+                                                Form Cascading
+                                            </h5>
                                         </div>
-                                        <div class="form-group">
-                                            <label>
-                                                User / Unit Organisasi
-                                            </label>
-                                            <select name="id_user" id="id_user" class="form-control" required>
-                                                <option value="">
-                                                    Pilih Unit
-                                                </option>
-                                                @foreach ($users as $u)
-                                                    <option value="{{ $u->id }}">
-                                                        {{ $u->unit ?? $u->name }} 
+                                        <div class="modal-body">
+                                            <input type="hidden" id="id" name="id">
+                                            <div id="respon_error" class="text-danger"> </div>
+                                            <div class="form-group">
+                                                <label>
+                                                    Indikator Kinerja
+                                                </label>
+                                                <select name="id_kontrak" id="id_kontrak" class="form-control" required>
+                                                    <option value="">
+                                                        Pilih Indikator
                                                     </option>
-                                                @endforeach
-                                            </select>
+                                                    @foreach ($kontraks as $k)
+                                                        <option value="{{ $k->id }}"> {{ $k->kode }} -
+                                                            {{ $k->nama }}
+
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>
+                                                    User / Unit Organisasi
+                                                </label>
+                                                <select name="id_user" id="id_user" class="form-control" required>
+                                                    <option value="">
+                                                        Pilih Unit
+                                                    </option>
+                                                    @foreach ($users as $u)
+                                                        <option value="{{ $u->id }}">
+                                                            {{ $u->unit ?? $u->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                            Close
-                                        </button>
-                                        <button id="tombol_kirim" class="btn btn-primary">
-                                            Simpan
-                                        </button>
-                                    </div>
-                                </form>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button id="tombol_kirim" class="btn btn-primary">
+                                                Simpan
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @elseif(Request('jenis') == 'KPI')
+                
+                    <div class="tab-pane fade show {{ Request('jenis') == 'KPI' ? 'active' : ''}}">
+
+                        @if (Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'KPI' || Auth::user()->role_kontrak == 'KPI')
+
+                            <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modal">
+                                Tambah
+                            </button>
+
+                        @endif
+
+                        <table id="myTable" class="table table-bordered table-hover" style="width: 100%;">
+
+
+                            <thead class="bg-info text-white text-center">
+
+
+                                <tr>
+
+
+                                    <th>
+                                        Indikator Kinerja
+                                    </th>
+
+
+                                    <th width="5px">
+                                    </th>
+
+
+                                    <th>
+                                        Unit Organisasi
+                                    </th>
+
+
+                                    <th width="5%">
+                                        Aksi
+                                    </th>
+
+
+                                </tr>
+
+
+                            </thead>
+
+
+
+                            <tbody>
+
+
+
+                                @foreach ($data as $item)
+                                    @forelse($item->cascadings as $index=>$cascading)
+                                        <tr>
+
+
+                                            @if ($index == 0)
+                                                <td class="align-middle" rowspan="{{ $item->cascadings->count() }}">
+
+
+                                                    <b>
+                                                        {{ $item->kode }}
+                                                    </b>
+
+
+                                                    <br>
+
+
+                                                    {{ $item->nama }}
+
+
+                                                </td>
+                                            @endif
+
+
+
+                                            <td class="text-center">
+                                                ✔
+                                            </td>
+
+
+
+                                            <td>
+
+                                                {{ $cascading->user->unit->unit ?? $cascading->user->name }}
+
+                                            </td>
+
+
+
+                                            <td class="text-center">
+                                                @if (Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'KPI' || Auth::user()->role_kontrak == 'KPI')
+                                                    <i onclick="hapusData({{ $cascading->id }})" style="font-size:1.2rem"
+                                                        class="bi bi-trash text-danger" href="javascript:void(0)"
+                                                        class="bi bi-trash">
+                                                    </i>
+                                                @endif
+
+
+                                            </td>
+
+
+
+                                        </tr>
+
+
+
+                                    @empty
+
+
+
+                                        <tr>
+
+
+                                            <td>
+
+
+                                                <b>
+                                                    {{ $item->kode }}
+                                                </b>
+
+
+                                                <br>
+
+
+                                                {{ $item->nama }}
+
+
+
+                                            </td>
+
+
+                                            <td class="text-center">
+                                                -
+                                            </td>
+
+
+                                            <td>
+
+                                                Belum ada unit organisasi
+
+                                            </td>
+
+
+                                            <td class="text-center">
+
+
+                                                {{-- <i onclick="tambahUnit({{ $item->id }})" style="font-size:1.2rem"
+                                                    class="text-success bi bi-plus-circle">
+
+                                                </i> --}}
+
+                                            </td>
+
+
+                                        </tr>
+                                    @endforelse
+                                @endforeach
+
+
+
+                            </tbody>
+
+
+                        </table>
+
+                        <!-- MODAL -->
+
+
+                        <div class="modal fade" id="modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form id="form">
+                                        <div class="modal-header">
+                                            <h5>
+                                                Form Cascading
+                                            </h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" id="id" name="id">
+                                            <div id="respon_error" class="text-danger"> </div>
+                                            <div class="form-group">
+                                                <label>
+                                                    Indikator Kinerja
+                                                </label>
+                                                <select name="id_kontrak" id="id_kontrak" class="form-control" required>
+                                                    <option value="">
+                                                        Pilih Indikator
+                                                    </option>
+                                                    @foreach ($kontraks as $k)
+                                                        <option value="{{ $k->id }}"> {{ $k->kode }} -
+                                                            {{ $k->nama }}
+
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>
+                                                    User / Unit Organisasi
+                                                </label>
+                                                <select name="id_user" id="id_user" class="form-control" required>
+                                                    <option value="">
+                                                        Pilih Unit
+                                                    </option>
+                                                    @foreach ($users as $u)
+                                                        <option value="{{ $u->id }}">
+                                                            {{ $u->unit ?? $u->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button id="tombol_kirim" class="btn btn-primary">
+                                                Simpan
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

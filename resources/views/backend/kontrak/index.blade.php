@@ -48,16 +48,18 @@
 
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="home-tab" data-toggle="tab" data-target="#home"
-                                type="button" role="tab" aria-controls="home" aria-selected="true">
+                            <a href="{{ url('kontrak') }}?jenis=PK"
+                                class="nav-link {{ Request('jenis') == 'PK' || Request('jenis') == null ? 'active' : '' }}"" type="button"
+                                role="tab" aria-controls="home" aria-selected="true">
                                 Perjanjian Kinerja
-                            </button>
+                            </a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile"
-                                type="button" role="tab" aria-controls="profile" aria-selected="false">
+                            <a href="{{ url('kontrak') }}?jenis=KPI"
+                                class="nav-link {{ Request('jenis') == 'KPI' ? 'active' : '' }}" type="button"
+                                role="tab" aria-controls="profile" aria-selected="false">
                                 KPI
-                            </button>
+                            </a>
                         </li>
                     </ul>
 
@@ -66,159 +68,167 @@
                     ================================================== --}}
 
                     <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        @if (Request('jenis') == 'PK' || request('jenis') == null)
+                            <div class="tab-pane fade show {{ Request('jenis') == 'PK' || Request('jenis') == null ? 'active' : '' }}">
 
-                            <div class="table-responsive">
+                                <div class="table-responsive">
 
-                                <button type="button" class="btn btn-primary btn-md mb-4 d-none d-md-inline-block"
-                                    data-toggle="modal" data-target="#modalSk">
-                                    Tambah
-                                </button>
+                                    @if(Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'PK' || Auth::user()->role_kontrak == 'KPI')
+                                    <button type="button" class="btn btn-primary btn-md mb-4 d-none d-md-inline-block"
+                                        data-toggle="modal" data-target="#modalSk">
+                                        Tambah
+                                    </button>
+                                    @endif
 
-                                <table id="myTable" class="table table-bordered table-hover" style="width: 100%;">
+                                    <table id="myTable" class="table table-bordered table-hover" style="width: 100%;">
 
-                                    <thead class="bg-info text-white">
+                                        <thead class="bg-info text-white">
 
-                                        <tr>
+                                            <tr>
 
-                                            <th width="5%" class="text-center align-middle">
-                                                No
-                                            </th>
+                                                <th width="5%" class="text-center align-middle">
+                                                    No
+                                                </th>
 
-                                            <th width="25%" class="text-center align-middle">
-                                                Sasaran Kinerja
-                                            </th>
+                                                <th width="25%" class="text-center align-middle">
+                                                    Sasaran Kinerja
+                                                </th>
 
-                                            <th width="5%">
+                                                <th width="5%">
 
-                                            </th>
-                                            <th width="30%" class="text-center align-middle">
-                                                Indikator Kinerja
-                                            </th>
-                                            <th width="5px" class="text-center align-middle">
-                                                Target
-                                            </th>
-                                            <th width="5px" class="text-center align-middle">
-                                                Realisasi
-                                            </th>
-                                            <th width="5px" class="text-center align-middle">
-                                                Satuan
-                                            </th>
-                                            <th width="5px" class="text-center align-middle">
-                                                Aksi
-                                            </th>
+                                                </th>
+                                                <th width="30%" class="text-center align-middle">
+                                                    Indikator Kinerja
+                                                </th>
+                                                <th width="5px" class="text-center align-middle">
+                                                    Target
+                                                </th>
+                                                <th width="5px" class="text-center align-middle">
+                                                    Realisasi
+                                                </th>
+                                                <th width="5px" class="text-center align-middle">
+                                                    Satuan
+                                                </th>
+                                                <th width="5px" class="text-center align-middle">
+                                                    Aksi
+                                                </th>
 
-                                        </tr>
+                                            </tr>
 
-                                    </thead>
-
-
-                                    <tbody>
-
-                                        @forelse ($data as $index => $item)
-                                            @foreach ($item['rows'] as $rowIndex => $row)
-                                                @php
-
-                                                    $kontrak = $row['model'];
-
-                                                    $level = $row['level'];
-
-                                                @endphp
+                                        </thead>
 
 
-                                                <tr>
+                                        <tbody>
+
+                                            @forelse ($data as $index => $item)
+                                                @foreach ($item['rows'] as $rowIndex => $row)
+                                                    @php
+
+                                                        $kontrak = $row['model'];
+
+                                                        $level = $row['level'];
+
+                                                    @endphp
 
 
-                                                    {{-- =================================
+                                                    <tr>
+
+
+                                                        {{-- =================================
                                                 NO
                                             ================================== --}}
 
-                                                    @if ($rowIndex === 0)
-                                                        <td rowspan="{{ $item['rowspan'] }}"
-                                                            class="text-center align-middle">
+                                                        @if ($rowIndex === 0)
+                                                            <td rowspan="{{ $item['rowspan'] }}"
+                                                                class="text-center align-middle">
 
-                                                            {{ $index + 1 }}
+                                                                {{ $index + 1 }}
 
-                                                        </td>
+                                                            </td>
 
 
-                                                        {{-- =============================
+                                                            {{-- =============================
                                                     SASARAN KINERJA
                                                 ============================== --}}
 
-                                                        <td rowspan="{{ $item['rowspan'] }}" class="align-middle">
+                                                            <td rowspan="{{ $item['rowspan'] }}" class="align-middle">
 
-                                                            <div
-                                                                style="
+                                                                <div
+                                                                    style="
                                                             font-weight: 600;
                                                             line-height: 1.5;
                                                         ">
 
-                                                                {{ $item['sasaran']->nama }}
-                                                                <br>
+                                                                    {{ $item['sasaran']->nama }}
+                                                                    <br>
 
-                                                                <div class="dropdown">
-                                                                    <a class="text-success" href="#"
-                                                                        data-toggle="dropdown">
-                                                                        <i class="bi bi-three-dots"
-                                                                            style="font-size:1.5rem"></i>
-                                                                    </a>
-                                                                    <div class="dropdown-menu">
-                                                                        <a class="dropdown-item text-primary"
-                                                                            data-toggle="modal"
-                                                                            data-target="#modalTambahBagian"
-                                                                            href="javascript:void(0)" {{-- data-bs-id="{{ $kontrak->id }}" --}}
-                                                                            data-bs-id_parent="{{ $kontrak->id_parent }}"
-                                                                            data-bs-level="{{ $level }}"
-                                                                            data-bs-indikator_induk="{{ $item['sasaran']->nama }}"
-                                                                            data-bs-target="{{ $kontrak->target }}"
-                                                                            data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
-                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Add
-                                                                            Sub
+                                                                    <div class="dropdown">
+                                                                        @if(Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'PK' || Auth::user()->role_kontrak == 'KPI')
+                                    
+                                                                        <a class="text-success" href="#"
+                                                                            data-toggle="dropdown">
+                                                                            <i class="bi bi-three-dots"
+                                                                                style="font-size:1.5rem"></i>
                                                                         </a>
-                                                                        <a class="dropdown-item text-success"
-                                                                            data-toggle="modal" data-target="#modalSk"
-                                                                            href="javascript:void(0)"
-                                                                            data-bs-id="{{ $item['sasaran']->id }}"
-                                                                            data-bs-nama="{{ $item['sasaran']->nama }}">
-                                                                            <i class="bi bi-grid"></i> &nbsp; Edit
-                                                                        </a>
-                                                                        @if ($kontrak->childrenRecursive->isEmpty())
-                                                                            <a class="dropdown-item text-danger"
-                                                                                onclick="hapusDataSasaranKinerja({{ $kontrak->id }})">
-                                                                                <i class="bi bi-trash"></i> &nbsp; Hapus
-                                                                            </a>
+
                                                                         @endif
+                                                                        <div class="dropdown-menu">
+                                                                            <a class="dropdown-item text-primary"
+                                                                                data-toggle="modal"
+                                                                                data-target="#modalTambahBagian"
+                                                                                href="javascript:void(0)"
+                                                                                {{-- data-bs-id="{{ $kontrak->id }}" --}}
+                                                                                data-bs-id_parent="{{ $item['sasaran']->id }}"
+                                                                                data-bs-level="{{ $level }}"
+                                                                                data-bs-indikator_induk="{{ $item['sasaran']->nama }}"
+                                                                                data-bs-target="{{ $kontrak->target }}"
+                                                                                data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
+                                                                                <i class="bi bi-plus-circle"></i> &nbsp; Add
+                                                                                Sub
+                                                                            </a>
+                                                                            <a class="dropdown-item text-success"
+                                                                                data-toggle="modal" data-target="#modalSk"
+                                                                                href="javascript:void(0)"
+                                                                                data-bs-id="{{ $item['sasaran']->id }}"
+                                                                                data-bs-nama="{{ $item['sasaran']->nama }}">
+                                                                                <i class="bi bi-grid"></i> &nbsp; Edit
+                                                                            </a>
+                                                                            @if ($kontrak->childrenRecursive->isEmpty())
+                                                                                <a class="dropdown-item text-danger"
+                                                                                    onclick="hapusDataSasaranKinerja({{ $kontrak->id }})">
+                                                                                    <i class="bi bi-trash"></i> &nbsp; Hapus
+                                                                                </a>
+                                                                            @endif
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
 
-                                                        </td>
-                                                    @endif
+                                                            </td>
+                                                        @endif
 
 
-                                                    {{-- =================================
+                                                        {{-- =================================
                                                 INDIKATOR
                                             ================================== --}}
 
-                                                    <td class="text-center"
-                                                        {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}>
+                                                        <td class="text-center"
+                                                            {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}>
 
-                                                        @if ($kontrak->id_parent)
-                                                            <strong>
-
-                                                                {{ $kontrak->kode }}
-
-                                                            </strong>
-                                                        @endif
-
-                                                    </td>
-                                                    <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}>
-                                                        @if ($kontrak->id_parent)
-                                                            @if ($level === 0)
+                                                            @if ($kontrak->id_parent)
                                                                 <strong>
-                                                                    {{ $kontrak->nama }}
-                                                                    {{-- <br>
+
+                                                                    {{ $kontrak->kode }}
+
+                                                                </strong>
+                                                            @endif
+
+                                                        </td>
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}>
+                                                            @if ($kontrak->id_parent)
+                                                                @if ($level === 0)
+                                                                    <strong>
+                                                                        {{ $kontrak->nama }}
+                                                                        {{-- <br>
                                                                     <a style="border-radius: 8px !important; font-size: 9px;" href="#"
                                                                         class="badge bg-info text-white">
                                                                         <i class="bi bi-pencil"></i> Edit
@@ -227,156 +237,485 @@
                                                                         class="badge bg-info text-white">
                                                                         <i class="bi bi-plus-circle"></i> Tambah Bagian
                                                                     </a> --}}
-                                                                </strong>
-                                                            @else
-                                                                @if ($level === 1)
-                                                                    <strong>
+                                                                    </strong>
+                                                                @else
+                                                                    @if ($level === 1)
+                                                                        <strong>
+                                                                    @endif
+                                                                    {{ $kontrak->nama }}
+                                                                    </strong>
                                                                 @endif
-                                                                {{ $kontrak->nama }}
+                                                            @endif
+                                                        </td>
+
+
+
+                                                        {{-- TARGET --}}
+
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
+                                                            class="text-center align-middle">
+                                                            @if ($kontrak->id_parent)
+                                                                @if ($row['total_target'] !== null)
+                                                                    <strong>
+
+                                                                        {{ rtrim(rtrim(number_format(floor($row['total_target'] * 100) / 100, 2, ',', '.'), '0'), ',') }}
+                                                                        @if (strtoupper(trim($kontrak->kode ?? '')) && str_starts_with(strtoupper(trim($kontrak->kode ?? '')), 'IKK'))
+                                                                            %
+                                                                        @endif
+
+                                                                    </strong>
+                                                                @else
+                                                                    <strong>
+                                                                        0 {{ $level === 0 ?? '%' }}
+                                                                    </strong>
+                                                                @endif
+                                                            @endif
+                                                        </td>
+
+                                                        {{-- REALISASI --}}
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
+                                                            class="text-center align-middle">
+                                                            @if ($kontrak->id_parent)
+                                                                @if ($row['total_realisasi'] !== null)
+                                                                    <strong>
+
+                                                                        {{ rtrim(rtrim(number_format($row['total_realisasi'], 2, ',', '.'), '0'), ',') }}
+
+                                                                        @if ($row['satuan_tampilan'] === 'persen')
+                                                                            %
+                                                                        @endif
+                                                                    </strong>
+                                                                @else
+                                                                    <strong>
+                                                                        0 {{ $level === 0 ? '%' : '' }}
+                                                                    </strong>
+                                                                @endif
+                                                            @endif
+
+                                                        </td>
+
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
+                                                            class="text-center align-middle">
+
+                                                            @if ($row['satuan_tampilan'])
+                                                                <strong>
+                                                                    {{ $row['satuan_tampilan'] }}
                                                                 </strong>
                                                             @endif
-                                                        @endif
-                                                    </td>
 
-                                                    
-
-                                                    {{-- TARGET --}}
-
-                                                    <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
-                                                        class="text-center align-middle">
-                                                        @if ($kontrak->id_parent)
-                                                            @if ($row['total_target'] !== null)
-                                                                <strong>
-
-                                                                    {{ rtrim(rtrim(number_format($row['total_target'], 2, ',', '.'), '0'), ',') }}
-
-                                                                    @if (strtoupper(trim($kontrak->kode ?? '')) && str_starts_with(strtoupper(trim($kontrak->kode ?? '')), 'IKK'))
-                                                                        %
-                                                                    @endif
-
-                                                                </strong>
-                                                            @else
-                                                                <strong>
-                                                                    0 {{ $level === 0 ?? "%"}}
-                                                                </strong>
-                                                            @endif
-                                                        @endif
-                                                    </td>
-
-                                                    {{-- REALISASI --}}
-                                                    <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
-                                                        class="text-center align-middle">
-                                                        @if ($kontrak->id_parent)
-                                                            @if ($row['total_realisasi'] !== null)
-                                                                <strong>
-
-                                                                    {{ rtrim(rtrim(number_format($row['total_realisasi'], 2, ',', '.'), '0'), ',') }}
-
-                                                                    @if ($row['satuan_tampilan'] === 'persen')
-                                                                        %
-                                                                    @endif
-                                                                </strong>
-                                                            @else
-                                                                <strong>
-                                                                    0 {{ $level === 0 ? "%" : ""}}
-                                                                </strong>
-                                                            @endif
-                                                        @endif
-
-                                                    </td>
-
-                                                    <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
-                                                        class="text-center align-middle">
-
-                                                        @if ($row['satuan_tampilan'])
-                                                            <strong>
-                                                                {{ $row['satuan_tampilan'] }}
-                                                            </strong>
-                                                        @endif
-
-                                                    </td>
-                                                    <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
-                                                        class="text-center">
-                                                        @if ($kontrak->id_parent)
-                                                            <div class="dropdown">
-                                                                <a class="text-success" href="#"
-                                                                    data-toggle="dropdown">
-                                                                    <i class="bi bi-three-dots"
-                                                                        style="font-size:1.5rem"></i>
-                                                                </a>
-                                                                <div class="dropdown-menu">
-                                                                    <a class="dropdown-item text-primary"
-                                                                        data-toggle="modal"
-                                                                        data-target="#modalTambahBagian"
-                                                                        href="javascript:void(0)" {{-- data-bs-id="{{ $kontrak->id }}" --}}
-                                                                        data-bs-id_parent="{{ $kontrak->id }}"
-                                                                        data-bs-level="{{ $level+1 }}"
-                                                                        data-bs-indikator_induk="{{ $kontrak->nama }}"
-                                                                        data-bs-target="{{ $kontrak->target }}"
-                                                                        data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
-                                                                        <i class="bi bi-plus-circle"></i> &nbsp; Add Sub
+                                                        </td>
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
+                                                            class="text-center">
+                                                            @if ($kontrak->id_parent)
+                                                                <div class="dropdown">
+                                                                    @if(Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'PK' || Auth::user()->role_kontrak == 'KPI')
+                                    
+                                                                    <a class="text-success" href="#"
+                                                                        data-toggle="dropdown">
+                                                                        <i class="bi bi-three-dots"
+                                                                            style="font-size:1.5rem"></i>
                                                                     </a>
-                                                                    @if($level === 0)
-                                                                    {{-- <a class="dropdown-item text-info" data-toggle="modal"
+                                                                    @endif
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item text-primary"
+                                                                            data-toggle="modal"
+                                                                            data-target="#modalTambahBagian"
+                                                                            href="javascript:void(0)"
+                                                                            {{-- data-bs-id="{{ $kontrak->id }}" --}}
+                                                                            data-bs-id_parent="{{ $kontrak->id }}"
+                                                                            data-bs-level="{{ $level + 1 }}"
+                                                                            data-bs-indikator_induk="{{ $kontrak->nama }}"
+                                                                            data-bs-target="{{ $kontrak->target }}"
+                                                                            data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
+                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Add
+                                                                            Sub
+                                                                        </a>
+                                                                        @if ($level === 0)
+                                                                            {{-- <a class="dropdown-item text-info" data-toggle="modal"
                                                                         data-target="#modalTambahCasecading"
                                                                         href="javascript:void(0)"
                                                                         data-bs-id="{{ $kontrak->id }}">
                                                                         <i class="bi bi-plus-circle"></i> &nbsp; Casecading
                                                                     </a> --}}
-                                                                    @endif
-                                                                    <a class="dropdown-item text-success"
-                                                                        data-toggle="modal" data-target="#modalTambahBagian"
-                                                                        href="javascript:void(0)"
-                                                                        data-bs-id="{{ $kontrak->id }}"
-                                                                        data-bs-id_parent="{{ $kontrak->parent?->id }}"
-                                                                        data-bs-indikator_induk="{{ $kontrak->parent?->nama }}"
-                                                                        data-bs-sub_indikator="{{ $kontrak->nama }}"
-                                                                        data-bs-target="{{ $kontrak->target }}"
-                                                                        data-bs-jenis_target="{{ $kontrak->jenis_target }}"
-                                                                        data-bs-level="{{ $level }}"
-                                                                        data-bs-kode="{{ $kontrak->kode }}">
-                                                                        <i class="bi bi-grid"></i> &nbsp; Edit
-                                                                    </a>
-                                                                    @if ($kontrak->childrenRecursive->isEmpty())
-                                                                        <a class="dropdown-item text-danger"
-                                                                            onclick="hapusDataBagian({{ $kontrak->id }})">
-                                                                            <i class="bi bi-trash"></i> &nbsp; Hapus
+                                                                        @endif
+                                                                        <a class="dropdown-item text-success"
+                                                                            data-toggle="modal"
+                                                                            data-target="#modalTambahBagian"
+                                                                            href="javascript:void(0)"
+                                                                            data-bs-id="{{ $kontrak->id }}"
+                                                                            data-bs-id_parent="{{ $kontrak->parent?->id }}"
+                                                                            data-bs-indikator_induk="{{ $kontrak->parent?->nama }}"
+                                                                            data-bs-sub_indikator="{{ $kontrak->nama }}"
+                                                                            data-bs-target="{{ $kontrak->target }}"
+                                                                            data-bs-jenis_target="{{ $kontrak->jenis_target }}"
+                                                                            data-bs-level="{{ $level }}"
+                                                                            data-bs-kode="{{ $kontrak->kode }}">
+                                                                            <i class="bi bi-grid"></i> &nbsp; Edit
                                                                         </a>
-                                                                    @endif
+                                                                        @if ($kontrak->childrenRecursive->isEmpty())
+                                                                            <a class="dropdown-item text-danger"
+                                                                                onclick="hapusDataBagian({{ $kontrak->id }})">
+                                                                                <i class="bi bi-trash"></i> &nbsp; Hapus
+                                                                            </a>
+                                                                        @endif
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
 
-                                        @empty
+                                            @empty
+
+                                                <tr>
+
+                                                    <td colspan="8" class="text-center py-5">
+
+                                                        <i class="bi bi-inbox" style="font-size: 30px;">
+                                                        </i>
+
+                                                        <br>
+
+                                                        Data kontrak belum tersedia.
+
+                                                    </td>
+
+                                                </tr>
+                                            @endforelse
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+                            </div>
+                        @elseif(Request('jenis') == 'KPI')
+                            <div class="tab-pane fade show {{ Request('jenis') == 'KPI' ? 'active' : '' }}">
+                                <div class="table-responsive">
+                                    @if(Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'KPI' || Auth::user()->role_kontrak == 'KPI')
+                                    
+                                    <button type="button" class="btn btn-primary btn-md mb-4 d-none d-md-inline-block"
+                                        data-toggle="modal" data-target="#modalSk">
+                                        Tambah
+                                    </button>
+
+                                    @endif
+
+                                    <table id="myTable" class="table table-bordered table-hover" style="width: 100%;">
+
+                                        <thead class="bg-info text-white">
 
                                             <tr>
 
-                                                <td colspan="4" class="text-center py-5">
+                                                <th width="5%" class="text-center align-middle">
+                                                    No
+                                                </th>
 
-                                                    <i class="bi bi-inbox" style="font-size: 30px;">
-                                                    </i>
+                                                <th width="25%" class="text-center align-middle">
+                                                    Sasaran Kinerja
+                                                </th>
 
-                                                    <br>
+                                                <th width="5%">
 
-                                                    Data kontrak belum tersedia.
-
-                                                </td>
+                                                </th>
+                                                <th width="30%" class="text-center align-middle">
+                                                    Indikator Kinerja
+                                                </th>
+                                                <th width="5px" class="text-center align-middle">
+                                                    Target
+                                                </th>
+                                                <th width="5px" class="text-center align-middle">
+                                                    Realisasi
+                                                </th>
+                                                <th width="5px" class="text-center align-middle">
+                                                    Satuan
+                                                </th>
+                                                <th width="5px" class="text-center align-middle">
+                                                    Aksi
+                                                </th>
 
                                             </tr>
-                                        @endforelse
 
-                                    </tbody>
+                                        </thead>
 
-                                </table>
 
+                                        <tbody>
+
+                                            @forelse ($data as $index => $item)
+                                                @foreach ($item['rows'] as $rowIndex => $row)
+                                                    @php
+
+                                                        $kontrak = $row['model'];
+
+                                                        $level = $row['level'];
+
+                                                    @endphp
+
+
+                                                    <tr>
+
+
+                                                        {{-- =================================
+                                                NO
+                                            ================================== --}}
+
+                                                        @if ($rowIndex === 0)
+                                                            <td rowspan="{{ $item['rowspan'] }}"
+                                                                class="text-center align-middle">
+
+                                                                {{ $index + 1 }}
+
+                                                            </td>
+
+
+                                                            {{-- =============================
+                                                    SASARAN KINERJA
+                                                ============================== --}}
+
+                                                            <td rowspan="{{ $item['rowspan'] }}" class="align-middle">
+
+                                                                <div
+                                                                    style="
+                                                            font-weight: 600;
+                                                            line-height: 1.5;
+                                                        ">
+
+                                                                    {{ $item['sasaran']->nama }}
+                                                                    <br>
+
+                                                                    <div class="dropdown">
+                                                                        @if(Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'KPI' || Auth::user()->role_kontrak == 'KPI')
+                                    
+                                                                        <a class="text-success" href="#"
+                                                                            data-toggle="dropdown">
+                                                                            <i class="bi bi-three-dots"
+                                                                                style="font-size:1.5rem"></i>
+                                                                        </a>
+
+                                                                        @endif
+                                                                        <div class="dropdown-menu">
+                                                                            <a class="dropdown-item text-primary"
+                                                                                data-toggle="modal"
+                                                                                data-target="#modalTambahBagian"
+                                                                                href="javascript:void(0)"
+                                                                                {{-- data-bs-id="{{ $kontrak->id }}" --}}
+                                                                                {{-- data-bs-id_parent="{{ $kontrak->id_parent }}" --}}
+                                                                                data-bs-id_parent="{{ $kontrak->id }}"
+                                                                                data-bs-level="{{ $level }}"
+                                                                                data-bs-indikator_induk="{{ $item['sasaran']->nama }}"
+                                                                                data-bs-target="{{ $kontrak->target }}"
+                                                                                data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
+                                                                                <i class="bi bi-plus-circle"></i> &nbsp;
+                                                                                Add
+                                                                                Sub
+                                                                            </a>
+                                                                            <a class="dropdown-item text-success"
+                                                                                data-toggle="modal" data-target="#modalSk"
+                                                                                href="javascript:void(0)"
+                                                                                data-bs-id="{{ $item['sasaran']->id }}"
+                                                                                data-bs-nama="{{ $item['sasaran']->nama }}">
+                                                                                <i class="bi bi-grid"></i> &nbsp; Edit
+                                                                            </a>
+                                                                            @if ($kontrak->childrenRecursive->isEmpty())
+                                                                                <a class="dropdown-item text-danger"
+                                                                                    onclick="hapusDataSasaranKinerja({{ $kontrak->id }})">
+                                                                                    <i class="bi bi-trash"></i> &nbsp;
+                                                                                    Hapus
+                                                                                </a>
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                        @endif
+
+
+                                                        {{-- =================================
+                                                INDIKATOR
+                                            ================================== --}}
+
+                                                        <td class="text-center"
+                                                            {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}>
+
+                                                            @if ($kontrak->id_parent)
+                                                                <strong>
+
+                                                                    {{ $kontrak->kode }}
+
+                                                                </strong>
+                                                            @endif
+
+                                                        </td>
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}>
+                                                            @if ($kontrak->id_parent)
+                                                                @if ($level === 0)
+                                                                    <strong>
+                                                                        {{ $kontrak->nama }}
+                                                                        {{-- <br>
+                                                                    <a style="border-radius: 8px !important; font-size: 9px;" href="#"
+                                                                        class="badge bg-info text-white">
+                                                                        <i class="bi bi-pencil"></i> Edit
+                                                                    </a>
+                                                                    <a style="border-radius: 8px !important; font-size: 9px;" href="#"
+                                                                        class="badge bg-info text-white">
+                                                                        <i class="bi bi-plus-circle"></i> Tambah Bagian
+                                                                    </a> --}}
+                                                                    </strong>
+                                                                @else
+                                                                    @if ($level === 1)
+                                                                        <strong>
+                                                                    @endif
+                                                                    {{ $kontrak->nama }}
+                                                                    </strong>
+                                                                @endif
+                                                            @endif
+                                                        </td>
+
+
+
+                                                        {{-- TARGET --}}
+
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
+                                                            class="text-center align-middle">
+                                                            @if ($kontrak->id_parent)
+                                                                @if ($row['total_target'] !== null)
+                                                                    <strong>
+
+                                                                        {{ rtrim(rtrim(number_format($row['total_target'], 2, ',', '.'), '0'), ',') }}
+
+                                                                        @if (strtoupper(trim($kontrak->kode ?? '')) && str_starts_with(strtoupper(trim($kontrak->kode ?? '')), 'IKK'))
+                                                                            %
+                                                                        @endif
+
+                                                                    </strong>
+                                                                @else
+                                                                    <strong>
+                                                                        0 {{ $level === 0 ?? '%' }}
+                                                                    </strong>
+                                                                @endif
+                                                            @endif
+                                                        </td>
+
+                                                        {{-- REALISASI --}}
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
+                                                            class="text-center align-middle">
+                                                            @if ($kontrak->id_parent)
+                                                                @if ($row['total_realisasi'] !== null)
+                                                                    <strong>
+
+                                                                        {{ rtrim(rtrim(number_format($row['total_realisasi'], 2, ',', '.'), '0'), ',') }}
+
+                                                                        @if ($row['satuan_tampilan'] === 'persen')
+                                                                            %
+                                                                        @endif
+                                                                    </strong>
+                                                                @else
+                                                                    <strong>
+                                                                        0 {{ $level === 0 ? '%' : '' }}
+                                                                    </strong>
+                                                                @endif
+                                                            @endif
+
+                                                        </td>
+
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
+                                                            class="text-center align-middle">
+
+                                                            @if ($row['satuan_tampilan'])
+                                                                <strong>
+                                                                    {{ $row['satuan_tampilan'] }}
+                                                                </strong>
+                                                            @endif
+
+                                                        </td>
+                                                        <td {{ $level === 0 ? 'style=background:#FFF2CC; ' : '' }}
+                                                            class="text-center">
+                                                            @if ($kontrak->id_parent)
+                                                                <div class="dropdown">
+                                                                    @if(Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'KPI' || Auth::user()->role_kontrak == 'KPI')
+                                    
+                                                                    <a class="text-success" href="#"
+                                                                        data-toggle="dropdown">
+                                                                        <i class="bi bi-three-dots"
+                                                                            style="font-size:1.5rem"></i>
+                                                                    </a>
+
+                                                                    @endif
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item text-primary"
+                                                                            data-toggle="modal"
+                                                                            data-target="#modalTambahBagian"
+                                                                            href="javascript:void(0)"
+                                                                            {{-- data-bs-id="{{ $kontrak->id }}" --}}
+                                                                            data-bs-id_parent="{{ $kontrak->id }}"
+                                                                            data-bs-level="{{ $level + 1 }}"
+                                                                            data-bs-indikator_induk="{{ $kontrak->nama }}"
+                                                                            data-bs-target="{{ $kontrak->target }}"
+                                                                            data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
+                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Add
+                                                                            Sub
+                                                                        </a>
+                                                                        @if ($level === 0)
+                                                                            {{-- <a class="dropdown-item text-info" data-toggle="modal"
+                                                                        data-target="#modalTambahCasecading"
+                                                                        href="javascript:void(0)"
+                                                                        data-bs-id="{{ $kontrak->id }}">
+                                                                        <i class="bi bi-plus-circle"></i> &nbsp; Casecading
+                                                                    </a> --}}
+                                                                        @endif
+                                                                        <a class="dropdown-item text-success"
+                                                                            data-toggle="modal"
+                                                                            data-target="#modalTambahBagian"
+                                                                            href="javascript:void(0)"
+                                                                            data-bs-id="{{ $kontrak->id }}"
+                                                                            data-bs-id_parent="{{ $kontrak->parent?->id }}"
+                                                                            data-bs-indikator_induk="{{ $kontrak->parent?->nama }}"
+                                                                            data-bs-sub_indikator="{{ $kontrak->nama }}"
+                                                                            data-bs-target="{{ $kontrak->target }}"
+                                                                            data-bs-jenis_target="{{ $kontrak->jenis_target }}"
+                                                                            data-bs-level="{{ $level }}"
+                                                                            data-bs-kode="{{ $kontrak->kode }}">
+                                                                            <i class="bi bi-grid"></i> &nbsp; Edit
+                                                                        </a>
+                                                                        @if ($kontrak->childrenRecursive->isEmpty())
+                                                                            <a class="dropdown-item text-danger"
+                                                                                onclick="hapusDataBagian({{ $kontrak->id }})">
+                                                                                <i class="bi bi-trash"></i> &nbsp; Hapus
+                                                                            </a>
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+
+                                            @empty
+
+                                                <tr>
+
+                                                    <td colspan="8" class="text-center py-5">
+
+                                                        <i class="bi bi-inbox" style="font-size: 30px;">
+                                                        </i>
+
+                                                        <br>
+
+                                                        Data kontrak belum tersedia.
+
+                                                    </td>
+
+                                                </tr>
+                                            @endforelse
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
                             </div>
-                        </div>
-                        <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-
-                        </div>
+                        @endif
                     </div>
 
                 </div>
@@ -400,7 +739,8 @@
                     <div class="modal-body">
                         <div id="respon_error" class="text-danger mb-4"></div>
                         <input type="hidden" name="id" id="id">
-                        <input type="hidden" name="jenis" value="pk">
+                        <input type="hidden" name="jenis"
+                            value="{{ Request('jenis') == null || Request('jenis') == 'PK' ? 'PK' : 'KPI' }}">
 
                         <div class="form-group">
                             <label>Sasaran Kinerja</label>
@@ -430,7 +770,8 @@
                         <div id="respon_error" class="text-danger mb-4"></div>
                         <input type="hidden" name="id" id="id">
                         <input type="hidden" name="id_parent" id="id_parent">
-                        <input type="hidden" name="jenis" value="pk">
+                        <input type="hidden" name="jenis"
+                            value="{{ Request('jenis') == null || Request('jenis') == 'PK' ? 'PK' : 'KPI' }}">
 
                         <div class="form-group">
                             <label>Indikator Induk</label>
@@ -464,6 +805,12 @@
                                 <option>file</option>
                                 <option>nilai</option>
                                 <option>rupiah</option>
+                                <option>persen</option>
+                                <option>prodi</option>
+                                <option>kegiatan</option>
+                                <option>indeks</option>
+                                <option>unit</option>
+                                <option>layanan</option>
                             </select>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StatistikKinerjaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,10 +109,27 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/store-realisasi', 'App\Http\Controllers\RealisasiController@store');
     Route::post('/update-realisasi', 'App\Http\Controllers\RealisasiController@update');
     Route::post('/delete-realisasi', 'App\Http\Controllers\RealisasiController@delete');
+    Route::get('/realisasi/{id}/detail', 'App\Http\Controllers\RealisasiController@detail')->name('realisasi.detail');
+
+    
+    // Route::get('/realisasi', [
+    //     \App\Http\Controllers\RealisasiController::class,
+    //     'index'
+    // ]);
+
+    // Route::post('/store-realisasi', [
+    //     \App\Http\Controllers\RealisasiController::class,
+    //     'store'
+    // ]);
+
 
     //STATISTIK
     Route::get('/statistik', 'App\Http\Controllers\StatistikController@index');
     Route::get('/detail-statistik', 'App\Http\Controllers\StatistikController@detail');
+
+    Route::get('/statistik-kinerja', [StatistikKinerjaController::class, 'index'])->name('statistik.index2');
+    Route::get('/statistik-kinerja/{jenis}/{kontrak}', [StatistikKinerjaController::class, 'detail'])
+        ->whereNumber('kontrak')->name('statistik.detail2');
 
     // Route::get('file-manager', function(){
     //     return view('backend.file_manager.index');

@@ -28,7 +28,12 @@ function getData() {
             },
             { data: "name"  },
             { data: "email" },
-            { data: "role"  },
+            // { data: "role"  },
+             {
+                render: function (data, type, row, meta) {
+                    return `${row.role} <br> ${row.role_kontrak == 'Kosong' ? '-' : row.role_kontrak == null ? '-' : row.role_kontrak}`
+                }
+            },
             { data: "unit"  },
             { data: "created_at" },
             {

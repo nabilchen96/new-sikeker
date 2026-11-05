@@ -93,12 +93,23 @@
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ url('statistik') }}">
-                <i class="bi bi-bar-chart menu-icon"></i>
-                <span class="menu-title">Statistik</span>
-            </a>
-
-        </li>
+                <a class="nav-link" data-toggle="collapse" href="#statistik" aria-expanded="false"
+                    aria-controls="ui-basic">
+                    <i class="icon-layout bi bi-bar-chart menu-icon"></i>
+                    <span class="menu-title">Statistik</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="statistik">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('statistik') }}">Statistik Proker</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('statistik.index2') }}">Statistik PK & KPI</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
         <li class="nav-item">
             <a class="nav-link"
                 href="https://drive.google.com/drive/folders/1ZJ5rXn9vlnPVU046vE7Cs56v7VoGGbJ3?usp=sharing"

@@ -36,8 +36,8 @@
                         <div class="col-lg-4 mt-2">
                             <div class="card bg-gradient-primary card-img-holder text-white">
                                 <div class="card-body">
-                                    <img src="https://themewagon.github.io/purple-react/static/media/circle.953c9ca0.svg"
-                                        class="card-img-absolute" alt="circle">
+                                    {{-- <img src="https://themewagon.github.io/purple-react/static/media/circle.953c9ca0.svg"
+                                        class="card-img-absolute" alt="circle"> --}}
                                     <h4 class="font-weight-normal mb-3">
                                         Total
                                         <i class="bi bi-bar-chart float-right"></i>
@@ -52,8 +52,8 @@
                         <div class="col-lg-4 mt-2">
                             <div class="card bg-gradient-info card-img-holder text-white">
                                 <div class="card-body">
-                                    <img src="https://themewagon.github.io/purple-react/static/media/circle.953c9ca0.svg"
-                                        class="card-img-absolute" alt="circle">
+                                    {{-- <img src="https://themewagon.github.io/purple-react/static/media/circle.953c9ca0.svg"
+                                        class="card-img-absolute" alt="circle"> --}}
                                     <h4 class="font-weight-normal mb-3">
                                         Proker
                                         <i class="bi bi-bar-chart float-right"></i>
@@ -68,8 +68,8 @@
                         <div class="col-lg-4 mt-2">
                             <div class="card bg-gradient-danger card-img-holder text-white">
                                 <div class="card-body">
-                                    <img src="https://themewagon.github.io/purple-react/static/media/circle.953c9ca0.svg"
-                                        class="card-img-absolute" alt="circle">
+                                    {{-- <img src="https://themewagon.github.io/purple-react/static/media/circle.953c9ca0.svg"
+                                        class="card-img-absolute" alt="circle"> --}}
                                     <h4 class="font-weight-normal mb-3">
                                         Proker
                                         <i class="bi bi-bar-chart float-right"></i>

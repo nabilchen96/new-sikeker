@@ -97,6 +97,15 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label>Role Kontrak</label>
+                            <select name="role_kontrak" class="form-control" id="role_kontrak" required>
+                                <option value="">Pilih Role Kontrak ...</option>
+                                <option>PK</option>
+                                <option>KPI</option>
+                                <option>PK dan KPI</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer p-3">
                         <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>

@@ -53,9 +53,9 @@ function getData() {
                 render: function (data, type, row, meta) {
                     return `
                         <b>PK:</b><br>
-                        {{row.kode_pk}} {{row.nama_pk ?? '-'}}
+                        ${row.kode_pk} ${row.nama_pk ?? '-'}
                         <br><br><b>KPI:</b><br>
-                        {{row.kode_kpi}} {{row.nama_kpi ?? '-'}}
+                        ${row.kode_kpi} ${row.nama_kpi ?? '-'}
                     `
                 }
             },

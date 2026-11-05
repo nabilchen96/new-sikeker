@@ -16,4 +16,16 @@ class AksiProker extends Model
         'progress',
         'tgl_pengerjaan'
     ];
+
+    
+    public function realisasis()
+    {
+        return $this->belongsToMany(
+            \App\Models\Realisasi::class,
+            'realisasi_aksi_proker',
+            'aksi_proker_id',
+            'realisasi_id'
+        )->withTimestamps();
+    }
+
 }

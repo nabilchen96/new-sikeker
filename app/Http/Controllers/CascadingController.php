@@ -16,15 +16,21 @@ class CascadingController extends Controller
     public function index()
     {
 
+        // dd(Request('jenis'));
+
         $data = Kontrak::with([
                 'cascadings.user.unit'
             ])
+            
+            ->where('kontraks.jenis', Request('jenis'))
             ->whereNotNull('id_parent')
             ->whereIn('id_parent', function($query){
-
-                $query->select('id')
+                
+                $query->select('kontraks.id')
                     ->from('kontraks')
-                    ->whereNull('id_parent');
+                    ->leftjoin('tahuns', 'tahuns.id', '=', 'kontraks.id_tahun')
+                    ->where('tahuns.status', 'Aktif')
+                    ->whereNull('kontraks.id_parent');
 
             })
             ->orderBy('kode')

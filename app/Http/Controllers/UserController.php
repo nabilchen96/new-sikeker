@@ -63,7 +63,8 @@ class UserController extends Controller
                 'role' => $request->role,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'id_unit'   => $request->id_unit
+                'id_unit'   => $request->id_unit,
+                'role_kontrak' => $request->role_kontrak ?? 'Kosong'
             ]);
 
             $data = [
@@ -96,7 +97,8 @@ class UserController extends Controller
                 'role' => $request->role,
                 'email' => $request->email,
                 'password' => $request->password ? Hash::make($request->password) : $user->password,
-                'id_unit'   => $request->id_unit
+                'id_unit'   => $request->id_unit,
+                'role_kontrak' => $request->role_kontrak ?? 'Kosong'
             ]);
 
             $data = [

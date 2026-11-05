@@ -21,9 +21,11 @@ class KontrakController extends Controller
         $sasaran = Kontrak::query()
             ->join('tahuns', 'tahuns.id', '=', 'kontraks.id_tahun')
             ->where('tahuns.status', 'Aktif')
+            ->where('kontraks.jenis', Request('jenis') == 'PK' || Request('jenis') == null ? 'PK' : 'KPI')
             ->whereNull('kontraks.id_parent')
             ->with('childrenRecursive')
             // ->orderBy('kontraks.kode')
+
             ->select('kontraks.*')
             ->get();
 

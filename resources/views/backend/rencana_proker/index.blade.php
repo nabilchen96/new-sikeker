@@ -192,7 +192,7 @@
                             <select name="id_pk" id="id_pk" class="form-control">
                                 <option value="">Pilih PK ...</option>
                                 @foreach ($kontrak as $pk)
-                                    @if($pk->jenis == 'pk')
+                                    @if($pk->jenis == 'PK')
                                         <option value="{{ $pk->id }}">{{ $pk->kode }} {{ $pk->nama }}</option>
                                     @endif
                                 @endforeach
@@ -205,7 +205,7 @@
                             <select name="id_kpi" id="id_kpi" class="form-control">
                                 <option value="">Pilih KPI ...</option>
                                 @foreach ($kontrak as $kpi)
-                                    @if($kpi->jenis == 'kpi')
+                                    @if($kpi->jenis == 'KPI')
                                         <option value="{{ $kpi->id }}">{{ $kpi->kode }} {{ $kpi->nama }}</option>
                                     @endif
                                 @endforeach

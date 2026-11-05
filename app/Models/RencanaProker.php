@@ -23,4 +23,15 @@ class RencanaProker extends Model
         'id_pk',
         'id_kpi'
     ];
+
+    
+    public function aksiProkers()
+    {
+        return $this->hasMany(
+            \App\Models\AksiProker::class,
+            'id_rencana_proker',
+            'id'
+        );
+    }
+
 }
