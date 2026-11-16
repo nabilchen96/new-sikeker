@@ -116,6 +116,25 @@ class KontrakController extends Controller
              * ======================================================
              */
 
+            // Rumus khusus IKK 4 mengikuti spreadsheet cascading:
+            // A = akreditasi lembaga × 60; B = prodi terakreditasi / seluruh prodi × 40.
+            $targetAkreditasi = [];
+            foreach ($rows as $candidate) {
+                $ikk = $candidate['model'];
+                if (strtoupper(trim($ikk->kode ?? '')) !== 'IKK 4') {
+                    continue;
+                }
+
+                $targets = $this->hitungTargetAkreditasi($ikk, $realisasiTerakhir);
+                $targetAkreditasi[$ikk->id] = $targets['IKK'];
+                foreach ($ikk->childrenRecursive as $child) {
+                    $childKode = strtoupper(trim($child->kode ?? ''));
+                    if (array_key_exists($childKode, $targets)) {
+                        $targetAkreditasi[$child->id] = $targets[$childKode];
+                    }
+                }
+            }
+
             foreach ($rows as &$row) {
 
                 $kontrak = $row['model'];
@@ -312,6 +331,10 @@ class KontrakController extends Controller
                      */
                     $row['total_realisasi'] =
                         $row['hasil_persentase'];
+                }
+                if (array_key_exists($kontrak->id, $targetAkreditasi)) {
+                    $row['total_target'] = $targetAkreditasi[$kontrak->id];
+                    $row['satuan_tampilan'] = 'persen';
                 }
             }
 
@@ -553,6 +576,40 @@ class KontrakController extends Controller
                 );
             }
         }
+    }
+
+
+    // Target berbobot khusus akreditasi; nilai mentah tetap dipakai untuk realisasi.
+    private function hitungTargetAkreditasi($ikk, $realisasiTerakhir): array
+    {
+        $sub = $ikk->childrenRecursive->keyBy(function ($child) {
+            return strtoupper(trim($child->kode ?? ''));
+        });
+        $targetA = null;
+        $targetB = null;
+
+        if ($sub->has('A') && $sub->get('A')->childrenRecursive->isNotEmpty()) {
+            $targetA = $this->hitungTotalNode($sub->get('A'), $realisasiTerakhir)['target'] * 60;
+        }
+
+        if ($sub->has('B')) {
+            $rincian = $sub->get('B')->childrenRecursive->keyBy(function ($child) {
+                return trim((string) $child->kode);
+            });
+            if ($rincian->has('1') && $rincian->has('2')) {
+                $pembilang = $this->hitungTotalNode($rincian->get('1'), $realisasiTerakhir)['target'];
+                $pembagi = $this->hitungTotalNode($rincian->get('2'), $realisasiTerakhir)['target'];
+                if ($pembagi > 0) {
+                    $targetB = ($pembilang / $pembagi) * 40;
+                }
+            }
+        }
+
+        return [
+            'A' => $targetA,
+            'B' => $targetB,
+            'IKK' => $targetA !== null && $targetB !== null ? $targetA + $targetB : null,
+        ];
     }
 
 
