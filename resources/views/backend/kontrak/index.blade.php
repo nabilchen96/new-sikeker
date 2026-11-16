@@ -258,8 +258,8 @@
                                                                 @if ($row['total_target'] !== null)
                                                                     <strong>
 
-                                                                        {{ rtrim(rtrim(number_format(floor($row['total_target'] * 100) / 100, 2, ',', '.'), '0'), ',') }}
-                                                                        @if (strtoupper(trim($kontrak->kode ?? '')) && str_starts_with(strtoupper(trim($kontrak->kode ?? '')), 'IKK'))
+                                                                        {{ rtrim(rtrim(number_format($row['total_target'], 2, ',', '.'), '0'), ',') }}
+                                                                        @if ($row['satuan_tampilan'] === 'persen')
                                                                             %
                                                                         @endif
 
@@ -584,7 +584,7 @@
 
                                                                         {{ rtrim(rtrim(number_format($row['total_target'], 2, ',', '.'), '0'), ',') }}
 
-                                                                        @if (strtoupper(trim($kontrak->kode ?? '')) && str_starts_with(strtoupper(trim($kontrak->kode ?? '')), 'IKK'))
+                                                                        @if ($row['satuan_tampilan'] === 'persen')
                                                                             %
                                                                         @endif
 
