@@ -240,7 +240,7 @@ class KontrakController extends Controller
                  *
                  * IKK selalu berupa persentase.
                  *
-                 * Target = 100%
+                 * Target = target sub IKK A / target sub IKK B × 100.
                  *
                  * Realisasi =
                  *
@@ -256,23 +256,36 @@ class KontrakController extends Controller
 
 
                     /*
-                     * Target IKK
+                     * Gunakan dua sub IKK langsung. Target masing-masing
+                     * sub dihitung seperti baris A/B, tanpa menjumlahkan
+                     * kembali sub-sub IKK ke target IKK.
                      */
-                    $row['total_target'] = 100;
+                    $subIkk = $kontrak->childrenRecursive->keyBy(function ($child) {
+                        return strtoupper(trim($child->kode ?? ''));
+                    });
+
+                    $row['total_target'] = null;
+
+                    if ($subIkk->has('A') && $subIkk->has('B')) {
+                        $targetA = $this->hitungTotalNode($subIkk->get('A'), $realisasiTerakhir)['target'];
+                        $targetB = $this->hitungTotalNode($subIkk->get('B'), $realisasiTerakhir)['target'];
+
+                        if ($targetB > 0) {
+                            $row['total_target'] = ($targetA / $targetB) * 100;
+                        }
+                    }
 
 
                     /*
                      * Hitung persentase
                      */
                     if (
-                        $row['total_realisasi'] !== null &&
-                        $row['total_target'] !== null
+                        $row['total_realisasi'] !== null
                     ) {
 
                         /*
-                         * Kita hitung kembali total target
-                         * sebenarnya karena total_target
-                         * untuk IKK sudah diubah menjadi 100.
+                         * Realisasi tetap memakai total target node,
+                         * terpisah dari rasio target A/B di atas.
                          */
 
                         $total = $this->hitungTotalNode(
