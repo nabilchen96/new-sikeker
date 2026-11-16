@@ -211,3 +211,32 @@ table.dataTable thead .sorting_desc::before {
     }
 
 }
+
+/* Ordinary indicator modal: scroll the entire dialog, including the form wrapper. */
+#modalTambahBagian {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+#modalTambahBagian .modal-content,
+#modalTambahBagian .modal-body {
+    max-height: none;
+    overflow: visible;
+}
+
+#modalTambahBagian textarea.form-control {
+    height: auto;
+}
+
+#modalTambahBagian .modal-footer {
+    flex-wrap: nowrap;
+}
+
+#modalTambahBagian .modal-footer .btn {
+    flex-shrink: 0;
+}
+
+#calculation_settings summary {
+    cursor: pointer;
+}

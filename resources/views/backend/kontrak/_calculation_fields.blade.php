@@ -1,15 +1,18 @@
+<details id="calculation_settings" class="mb-3">
+    <summary class="text-primary">Atur perhitungan (opsional)</summary>
+    <div class="pt-3">
 <div class="form-group">
-    <label for="calculation_type">Cara menghitung target dan realisasi</label>
+    <label for="calculation_type">Cara menghitung</label>
     <select name="calculation_type" id="calculation_type" class="form-control">
-        <option value="">Profil Excel 2026 (data lama)</option>
-        <option value="manual">Isi manual — tetap meskipun ada anak</option>
+        <option value="">Otomatis sesuai Excel 2026</option>
+        <option value="manual">Isi target langsung</option>
         <option value="sum">Jumlahkan nilai anak</option>
-        <option value="ratio">Pembilang ÷ pembagi × pengali</option>
-        <option value="weighted_sum">Jumlahkan kontribusi berbobot</option>
-        <option value="scale">Nilai satu anak × pengali</option>
-        <option value="offset_ratio">Nilai dasar + pembilang ÷ pembagi × pengali</option>
+        <option value="ratio">Persentase dari dua anak</option>
+        <option value="weighted_sum">Gabungan berbobot</option>
+        <option value="scale">Bobot dari satu anak</option>
+        <option value="offset_ratio">Nilai dasar + persentase</option>
     </select>
-    <small class="form-text text-muted">Satuan mengikuti isian sendiri. Persen diisi 91,45, bukan 0,9145. Tambahkan anak dahulu sebelum memilih sumber rumus.</small>
+    <small class="form-text text-muted">Untuk data biasa, cukup isi target dan satuan. Untuk rumus, tambahkan anak terlebih dahulu lalu pilih sumbernya di sini.</small>
 </div>
 <div id="calculation_details">
     <div class="form-group calculation-parameter" data-calculation-types="ratio offset_ratio">
@@ -39,4 +42,6 @@
         <small class="text-muted">Contoh IKK 14: 40, 40, 20. Bobot 0 mengabaikan anak tersebut.</small>
     </div>
 </div>
+    </div>
+</details>
 <div id="calculation_preview" class="alert alert-info" aria-live="polite"></div>

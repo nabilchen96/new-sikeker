@@ -138,6 +138,7 @@ function updateCalculationPreview() {
 $('#modalTambahBagian').on('show.bs.modal', function (event) {
     const id = $(event.relatedTarget).data('bs-id');
     const settings = id ? window.kontrakCalculationForms[String(id)] : null;
+    calculationForm.querySelector('#calculation_settings').open = false;
     calculationChildren = settings ? settings.children : [];
     effectiveCalculationType = settings ? settings.effective_type : 'manual';
     if (settings && !calculationForm.querySelector('#jenis_target').value) {
@@ -173,6 +174,9 @@ $('#modalTambahBagian').on('show.bs.modal', function (event) {
     calculationForm.querySelectorAll('.calculation-source').forEach(select => select.disabled = false);
     calculationForm.querySelector('#respon_error').textContent = '';
     updateCalculationPreview();
+});
+$('#modalTambahBagian').on('shown.bs.modal', function () {
+    this.scrollTop = 0;
 });
 calculationForm.addEventListener('input', updateCalculationPreview);
 calculationForm.addEventListener('change', updateCalculationPreview);
@@ -264,6 +268,10 @@ formTambahBagian.onsubmit = function (e) {
             const errors = err.response?.data?.errors;
             const box = formTambahBagian.querySelector('#respon_error');
             box.textContent = errors ? Object.values(errors).flat().join(' ') : 'Data belum tersimpan. Periksa koneksi lalu coba lagi.';
+            if (errors && Object.keys(errors).some(key => key.startsWith('calculation_'))) {
+                calculationForm.querySelector('#calculation_settings').open = true;
+            }
+            document.getElementById('modalTambahBagian').scrollTop = 0;
         });
 }
 

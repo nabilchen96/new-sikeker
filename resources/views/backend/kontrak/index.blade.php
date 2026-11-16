@@ -770,12 +770,13 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalTambahBagian" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal fade" id="modalTambahBagian" tabindex="-1" role="dialog" aria-labelledby="bagianModalTitle">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <form id="formTambahBagian">
                     <div class="modal-header p-3">
-                        <h5 class="modal-title m-2">Form Sub Bagian</h5>
+                        <h5 class="modal-title m-2" id="bagianModalTitle">Data Indikator</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><span aria-hidden="true">&times;</span></button>
                     </div>
 
                     <div class="modal-body">
@@ -787,13 +788,13 @@
 
                         <div class="form-group">
                             <label>Indikator Induk</label>
-                            <textarea id="indikator_induk" class="form-control" cols="30" rows="5" placeholder="Sasaran Kinerja"
+                            <textarea id="indikator_induk" class="form-control" cols="30" rows="2" placeholder="Sasaran Kinerja"
                                 readonly></textarea>
                         </div>
 
                         <div class="form-group">
                             <label>Sub Indikator</label>
-                            <textarea name="sub_indikator" id="sub_indikator" class="form-control" cols="30" rows="5"
+                            <textarea name="sub_indikator" id="sub_indikator" class="form-control" cols="30" rows="2"
                                 placeholder="Sub Indikator"></textarea>
                         </div>
 
@@ -803,9 +804,8 @@
                                 placeholder="Kode / Urutan">
                         </div>
 
-                        @include('backend.kontrak._calculation_fields')
                         <div class="form-group" id="manual_target_group">
-                            <label>Target manual</label>
+                            <label>Target</label>
                             <input type="text" class="form-control" name="target" id="target"
                                 placeholder="Contoh: 95,57 atau 15450000000" inputmode="decimal">
                         </div>
@@ -828,11 +828,12 @@
                                 <option>jumlah</option>
                             </select>
                         </div>
+                        @include('backend.kontrak._calculation_fields')
                     </div>
 
                     <div class="modal-footer p-3">
-                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
-                        <button id="tombol_kirim" class="btn btn-primary btn-sm">Submit</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
+                        <button type="submit" id="tombol_kirim" class="btn btn-primary btn-sm">Simpan</button>
                     </div>
                 </form>
             </div>
