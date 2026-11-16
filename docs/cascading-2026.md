@@ -69,6 +69,10 @@ Form per baris dikembalikan ke versi sederhana dengan modal ukuran biasa yang da
 
 Jika baris memakai rumus tabel, nama dan satuannya masih bisa diedit melalui modal. Rumus yang sudah ada dipertahankan. Untuk mengubah rumus, gunakan **Edit seperti Excel**.
 
+Pada tab KPI, menu **Tambah IKU** di kolom Sasaran Kinerja menambahkan IKU langsung di bawah sasaran tersebut. Menu **Tambah rincian** pada baris IKU menambahkan anak ke IKU itu sendiri. Keduanya memakai induk yang berbeda sesuai lokasi tombol.
+
+Jika IKU telanjur menjadi rincian IKU lain, buka menu barisnya lalu pilih **Pindahkan langsung ke sasaran**. Baris, ID, anak, realisasi, dan kaitan program kerja dipertahankan. Pemindahan dibatasi ke sasaran asal pada tahun aktif dan ditolak jika masih ada referensi rumus yang melintasi bagian yang dipindahkan.
+
 ### Tabel seperti Excel
 
 1. Di Data Kontrak, klik **Edit seperti Excel**. Pilih IKK/KPI yang ingin diisi, atau pilih **+ Indikator baru** dan sasaran kinerjanya.

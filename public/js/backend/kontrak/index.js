@@ -376,3 +376,20 @@ hapusDataBagian = (id) => {
         }
     });
 }
+
+
+// Repair an IKU accidentally entered as another IKU's detail.
+const pemindahanKpi = new Set();
+window.pindahkanKeSasaran = async id => {
+    if (pemindahanKpi.has(id)) return;
+    pemindahanKpi.add(id);
+    try {
+        await axios.post('/promote-kontrak-kpi', {id});
+        location.reload();
+    } catch (error) {
+        const messages = error.response?.data?.errors;
+        Swal.fire({icon:'error', title:'Belum dapat dipindahkan', text:messages ? Object.values(messages).flat().join(' ') : 'Periksa koneksi lalu coba lagi.'});
+    } finally {
+        pemindahanKpi.delete(id);
+    }
+};

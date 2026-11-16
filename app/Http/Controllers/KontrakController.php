@@ -13,6 +13,7 @@ use App\Services\KontrakSheet;
 use App\Services\KontrakTreeWriter;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Validator;
 
 class KontrakController extends Controller
@@ -333,6 +334,50 @@ class KontrakController extends Controller
             'jenis_target' => $request->jenis_target,
             'id_tahun' => DB::table('tahuns')->where('status', 'Aktif')->value('id'),
         ], $request->calculationSettings());
+    }
+
+    public function promoteKpi(Request $request)
+    {
+        $data = $request->validate(['id' => ['required', 'integer', 'exists:kontraks,id']]);
+
+        return DB::transaction(function () use ($data) {
+            $node = Kontrak::whereKey($data['id'])->lockForUpdate()->firstOrFail();
+            if ($node->jenis !== 'KPI' || ! DB::table('tahuns')->where('id', $node->id_tahun)->where('status', 'Aktif')->exists()) {
+                throw ValidationException::withMessages(['id' => 'Pilih IKU pada tahun aktif di tab KPI.']);
+            }
+            $root = $node;
+            $visited = [];
+            while ($root->id_parent !== null) {
+                if (isset($visited[$root->id])) {
+                    throw ValidationException::withMessages(['id' => 'Susunan induk mengandung siklus.']);
+                }
+                $visited[$root->id] = true;
+                $root = Kontrak::whereKey($root->id_parent)->where('jenis', 'KPI')->where('id_tahun', $node->id_tahun)->lockForUpdate()->first();
+                if (! $root) {
+                    throw ValidationException::withMessages(['id' => 'Sasaran kinerja tidak ditemukan.']);
+                }
+            }
+            if ($root->id === $node->id) {
+                throw ValidationException::withMessages(['id' => 'Pilih IKU, bukan sasaran kinerja.']);
+            }
+            if ((string) $node->id_parent !== (string) $root->id) {
+                $root->load('childrenRecursive');
+                $node->load('childrenRecursive');
+                $ids = collect([$node->id]);
+                $this->collectKontrakIds($node->childrenRecursive, $ids);
+                $moved = array_fill_keys($ids->map(fn ($id) => (string) $id)->all(), true);
+                foreach ((new KontrakCalculator)->calculateTree($root) as $id => $result) {
+                    foreach ($result['source_ids'] as $source) {
+                        if (isset($moved[(string) $id]) !== isset($moved[(string) $source])) {
+                            throw ValidationException::withMessages(['id' => 'Baris ini masih terkait rumus di luar bagiannya. Perbaiki referensi rumus sebelum dipindahkan.']);
+                        }
+                    }
+                }
+                $node->update(['id_parent' => $root->id]);
+            }
+
+            return response()->json(['responCode' => 1, 'respon' => 'IKU dipindahkan langsung ke sasaran kinerja.']);
+        });
     }
 
     public function deleteBagian(Request $request)

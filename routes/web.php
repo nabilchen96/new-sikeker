@@ -61,6 +61,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/save-kontrak-tree', 'App\Http\Controllers\KontrakController@saveTree');
     Route::post('/store-bagian', 'App\Http\Controllers\KontrakController@storeBagian');
+    Route::post('/promote-kontrak-kpi', 'App\Http\Controllers\KontrakController@promoteKpi');
     Route::post('/update-bagian', 'App\Http\Controllers\KontrakController@updateBagian');
     Route::post('/delete-bagian', 'App\Http\Controllers\KontrakController@deleteBagian');
 

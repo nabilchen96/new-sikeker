@@ -186,8 +186,7 @@
                                                                                 data-bs-indikator_induk="{{ $item['sasaran']->nama }}"
                                                                                 data-bs-target="{{ $kontrak->target }}"
                                                                                 data-bs-jenis_target="">
-                                                                                <i class="bi bi-plus-circle"></i> &nbsp; Add
-                                                                                Sub
+                                                                                <i class="bi bi-plus-circle"></i> &nbsp; Tambah IKK
                                                                             </a>
                                                                             <a class="dropdown-item text-success"
                                                                                 data-toggle="modal" data-target="#modalSk"
@@ -196,9 +195,9 @@
                                                                                 data-bs-nama="{{ $item['sasaran']->nama }}">
                                                                                 <i class="bi bi-grid"></i> &nbsp; Edit
                                                                             </a>
-                                                                            @if ($kontrak->childrenRecursive->isEmpty())
+                                                                            @if ($item['sasaran']->childrenRecursive->isEmpty())
                                                                                 <a class="dropdown-item text-danger"
-                                                                                    onclick="hapusDataSasaranKinerja({{ $kontrak->id }})">
+                                                                                    onclick="hapusDataSasaranKinerja({{ $item['sasaran']->id }})">
                                                                                     <i class="bi bi-trash"></i> &nbsp; Hapus
                                                                                 </a>
                                                                             @endif
@@ -336,8 +335,7 @@
                                                                             data-bs-indikator_induk="{{ $kontrak->nama }}"
                                                                             data-bs-target="{{ $kontrak->target }}"
                                                                             data-bs-jenis_target="">
-                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Add
-                                                                            Sub
+                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Tambah rincian
                                                                         </a>
                                                                         @if ($level === 0)
                                                                             {{-- <a class="dropdown-item text-info" data-toggle="modal"
@@ -508,15 +506,13 @@
                                                                                 data-target="#modalTambahBagian"
                                                                                 href="javascript:void(0)"
                                                                                 {{-- data-bs-id="{{ $kontrak->id }}" --}}
-                                                                                {{-- data-bs-id_parent="{{ $kontrak->id_parent }}" --}}
-                                                                                data-bs-id_parent="{{ $kontrak->id }}"
+                                                                                data-bs-id_parent="{{ $item['sasaran']->id }}"
                                                                                 data-bs-level="{{ $level }}"
                                                                                 data-bs-indikator_induk="{{ $item['sasaran']->nama }}"
                                                                                 data-bs-target="{{ $kontrak->target }}"
                                                                                 data-bs-jenis_target="">
                                                                                 <i class="bi bi-plus-circle"></i> &nbsp;
-                                                                                Add
-                                                                                Sub
+                                                                                Tambah IKU
                                                                             </a>
                                                                             <a class="dropdown-item text-success"
                                                                                 data-toggle="modal" data-target="#modalSk"
@@ -525,9 +521,9 @@
                                                                                 data-bs-nama="{{ $item['sasaran']->nama }}">
                                                                                 <i class="bi bi-grid"></i> &nbsp; Edit
                                                                             </a>
-                                                                            @if ($kontrak->childrenRecursive->isEmpty())
+                                                                            @if ($item['sasaran']->childrenRecursive->isEmpty())
                                                                                 <a class="dropdown-item text-danger"
-                                                                                    onclick="hapusDataSasaranKinerja({{ $kontrak->id }})">
+                                                                                    onclick="hapusDataSasaranKinerja({{ $item['sasaran']->id }})">
                                                                                     <i class="bi bi-trash"></i> &nbsp;
                                                                                     Hapus
                                                                                 </a>
@@ -668,8 +664,7 @@
                                                                             data-bs-indikator_induk="{{ $kontrak->nama }}"
                                                                             data-bs-target="{{ $kontrak->target }}"
                                                                             data-bs-jenis_target="">
-                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Add
-                                                                            Sub
+                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Tambah rincian
                                                                         </a>
                                                                         @if ($level === 0)
                                                                             {{-- <a class="dropdown-item text-info" data-toggle="modal"
@@ -693,6 +688,10 @@
                                                                             data-bs-kode="{{ $kontrak->kode }}">
                                                                             <i class="bi bi-grid"></i> &nbsp; Edit
                                                                         </a>
+                                                                        @if ($level > 0)
+                                                                            <a class="dropdown-item text-primary" href="javascript:void(0)"
+                                                                                onclick="pindahkanKeSasaran({{ $kontrak->id }})">Pindahkan langsung ke sasaran</a>
+                                                                        @endif
                                                                         @if ($kontrak->childrenRecursive->isEmpty())
                                                                             <a class="dropdown-item text-danger"
                                                                                 onclick="hapusDataBagian({{ $kontrak->id }})">
