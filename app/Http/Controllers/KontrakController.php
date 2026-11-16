@@ -133,11 +133,6 @@ class KontrakController extends Controller
                     $childKode = strtoupper(trim($child->kode ?? ''));
                     if (array_key_exists($childKode, $targets)) {
                         $targetBerbobot[$child->id] = $targets[$childKode];
-                        if ($ikkKode === 'IKK 5') {
-                            foreach ($child->childrenRecursive as $rincian) {
-                                $targetBerbobot[$rincian->id] = $this->hitungTotalNode($rincian, $realisasiTerakhir)['target'];
-                            }
-                        }
                     }
                 }
             }
@@ -251,11 +246,7 @@ class KontrakController extends Controller
                         $total['realisasi'];
 
 
-                    /*
-                     * Ambil satuan dari leaf
-                     */
-                    $row['satuan_tampilan'] =
-                        $this->ambilSatuanLeaf($kontrak);
+                    // Satuan tetap memakai isian node ini, bukan satuan anaknya.
                 }
 
 
@@ -341,7 +332,6 @@ class KontrakController extends Controller
                 }
                 if (array_key_exists($kontrak->id, $targetBerbobot)) {
                     $row['total_target'] = $targetBerbobot[$kontrak->id];
-                    $row['satuan_tampilan'] = 'persen';
                 }
             }
 
