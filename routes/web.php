@@ -52,6 +52,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     //KONTRAK
     Route::get('/kontrak', 'App\Http\Controllers\KontrakController@index');
+    Route::get('/kontrak-sheet', 'App\Http\Controllers\KontrakController@sheet');
+    Route::post('/preview-kontrak-sheet', 'App\Http\Controllers\KontrakController@previewSheet');
+    Route::post('/save-kontrak-sheet', 'App\Http\Controllers\KontrakController@saveSheet');
     Route::post('/store-sasaran-kinerja', 'App\Http\Controllers\KontrakController@storeSasaranKinerja');
     Route::post('/update-sasaran-kinerja', 'App\Http\Controllers\KontrakController@updateSasaranKinerja');
     Route::post('/delete-sasaran-kinerja', 'App\Http\Controllers\KontrakController@deleteSasaranKinerja');

@@ -46,6 +46,9 @@
                 <div class="card-body">
 
 
+                    @if(Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'PK' || Auth::user()->role_kontrak == 'KPI')
+                        <a class="btn btn-outline-primary mb-3" href="{{ url('kontrak-sheet') }}?jenis={{ request('jenis', 'PK') }}">Edit seperti Excel</a>
+                    @endif
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a href="{{ url('kontrak') }}?jenis=PK"
@@ -271,7 +274,7 @@
                                                                 @endif
                                                             @endif
                                                             @if ($kontrak->id_parent)
-                                                                <small class="d-block text-muted">{{ ['manual' => 'Manual', 'sum' => 'Jumlah anak', 'ratio' => 'Rasio', 'weighted_sum' => 'Jumlah berbobot', 'scale' => 'Nilai × pengali', 'offset_ratio' => 'Nilai dasar + rasio'][$row['calculation']['type']] ?? 'Periksa rumus' }}</small>
+                                                                <small class="d-block text-muted">{{ ['formula' => 'Rumus Excel', 'manual' => 'Manual', 'sum' => 'Jumlah anak', 'ratio' => 'Rasio', 'weighted_sum' => 'Jumlah berbobot', 'scale' => 'Nilai × pengali', 'offset_ratio' => 'Nilai dasar + rasio'][$row['calculation']['type']] ?? 'Periksa rumus' }}</small>
                                                                 @if ($row['calculation']['error'])
                                                                     <small class="d-block text-danger">{{ $row['calculation']['error'] }}</small>
                                                                 @endif
@@ -602,7 +605,7 @@
                                                                 @endif
                                                             @endif
                                                             @if ($kontrak->id_parent)
-                                                                <small class="d-block text-muted">{{ ['manual' => 'Manual', 'sum' => 'Jumlah anak', 'ratio' => 'Rasio', 'weighted_sum' => 'Jumlah berbobot', 'scale' => 'Nilai × pengali', 'offset_ratio' => 'Nilai dasar + rasio'][$row['calculation']['type']] ?? 'Periksa rumus' }}</small>
+                                                                <small class="d-block text-muted">{{ ['formula' => 'Rumus Excel', 'manual' => 'Manual', 'sum' => 'Jumlah anak', 'ratio' => 'Rasio', 'weighted_sum' => 'Jumlah berbobot', 'scale' => 'Nilai × pengali', 'offset_ratio' => 'Nilai dasar + rasio'][$row['calculation']['type']] ?? 'Periksa rumus' }}</small>
                                                                 @if ($row['calculation']['error'])
                                                                     <small class="d-block text-danger">{{ $row['calculation']['error'] }}</small>
                                                                 @endif
@@ -793,21 +796,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="quick_pattern">Pola pengisian</label>
-                            <select id="quick_pattern" class="form-control">
-                                <option value="custom">Isi sendiri / struktur yang ada</option>
-                                <option value="ratio">Persentase dua nilai</option>
-                                <option value="sum">Jumlah beberapa rincian</option>
-                                <option value="weighted_sum">Gabungan berbobot</option>
-                                <option value="ikk4">IKK 4 — Akreditasi (60% + 40%)</option>
-                                <option value="ikk14">IKK 14 — Kualitas dosen (40%, 40%, 20%)</option>
-                                <option value="ikk5">IKK 5 — Peningkatan SDM (40% + 60%)</option>
-                                <option value="ikk16">IKK 16 — Kerja sama (60% + 40%)</option>
-                                <option value="ikk24">IKK 24 — Nilai dasar + layanan</option>
-                            </select>
-                            <small id="quick_pattern_hint" class="form-text text-muted">Pilih pola, isi semua target sumber di bawah, lalu Simpan sekali.</small>
-                        </div>
-                        <div class="form-group">
                             <label>Sub Indikator</label>
                             <textarea name="sub_indikator" id="sub_indikator" class="form-control" cols="30" rows="2"
                                 placeholder="Sub Indikator"></textarea>
@@ -915,5 +903,4 @@
 @push('script')
     <script>window.kontrakCalculationForms = @json($calculationForms);</script>
     <script src="{{ asset('js/backend/kontrak/index.js') }}?v={{ filemtime(public_path('js/backend/kontrak/index.js')) }}"></script>
-    <script src="{{ asset('js/backend/kontrak/quick-entry.js') }}?v={{ filemtime(public_path('js/backend/kontrak/quick-entry.js')) }}"></script>
 @endpush

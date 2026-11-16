@@ -5,31 +5,101 @@ namespace App\Services;
 /** Computes direct-child formulas without mixing units or counting a node twice. */
 class KontrakCalculator
 {
-    public const TYPES = ['manual', 'sum', 'ratio', 'weighted_sum', 'scale', 'offset_ratio'];
+    public const TYPES = ['manual', 'sum', 'ratio', 'weighted_sum', 'scale', 'offset_ratio', 'formula'];
 
     public function calculateTree($root, array $actuals = []): array
     {
+        $metadata = [];
+        $this->prepare($root, $metadata, null, []);
         $results = [];
-        $this->visit($root, $actuals, $results, null, []);
+        $visiting = [];
+        $resolve = function (string $id) use (&$resolve, &$results, &$visiting, $metadata, $actuals): array {
+            if (isset($results[$id])) {
+                return $results[$id];
+            }
+            if (! isset($metadata[$id])) {
+                throw new \DomainException('Sumber rumus tidak ditemukan.');
+            }
+            $item = $metadata[$id];
+            $base = $item['result'];
+            if (isset($visiting[$id])) {
+                return $base + ['target' => null, 'actual' => null, 'error' => 'Rumus membentuk siklus.', 'actual_error' => 'Rumus membentuk siklus.'];
+            }
+            $visiting[$id] = true;
+            foreach ($base['source_ids'] as $sourceId) {
+                if (isset($metadata[$sourceId])) {
+                    $resolve($sourceId);
+                }
+            }
+            $children = [];
+            foreach ($item['children'] as $childId) {
+                $children[$childId] = $results[$childId] ?? ['target' => null, 'actual' => null];
+            }
+            if ($base['type'] === 'formula') {
+                $values = [];
+                foreach (['target', 'actual'] as $metric) {
+                    try {
+                        if (! is_array($base['config']['ast'] ?? null)) {
+                            throw new \DomainException('Isi rumus melalui tabel Excel.');
+                        }
+                        $value = (new KontrakFormula)->evaluate($base['config']['ast'], function ($source) use (&$resolve, $metric) {
+                            $result = $resolve($source);
+                            if ($result[$metric] === null) {
+                                throw new \DomainException('Nilai sumber belum lengkap atau rumus sumber belum valid.');
+                            }
+
+                            return $result[$metric];
+                        });
+                        $values[$metric] = [$value, null];
+                    } catch (\DomainException $error) {
+                        $values[$metric] = [null, $error->getMessage()];
+                    }
+                }
+                [$target, $error] = $values['target'];
+                [$actual, $actualError] = $values['actual'];
+            } else {
+                [$target, $error] = $this->evaluate($base['type'], $base['config'], $children, 'target', $item['node']->target);
+                [$actual, $actualError] = $this->evaluate($base['type'], $base['config'], $children, 'actual', $actuals[$id] ?? null);
+            }
+            unset($visiting[$id]);
+
+            return $results[$id] = $base + ['target' => $target, 'actual' => $actual, 'error' => $error, 'actual_error' => $actualError];
+        };
+        foreach (array_keys($metadata) as $id) {
+            $resolve((string) $id);
+        }
 
         return $results;
     }
 
-    /** Only manual sources used by the selected formula need realization input. */
+    /** Resolve all manual inputs used by the dependency graph, including sibling references. */
     public function inputNodes($node, array $results): array
     {
-        $result = $results[(string) $node->id];
-        if ($result['type'] === 'manual') {
-            return [$node];
-        }
-        $inputs = [];
-        foreach ($node->childrenRecursive as $child) {
-            if (in_array((string) $child->id, $result['source_ids'], true)) {
-                foreach ($this->inputNodes($child, $results) as $input) {
-                    $inputs[(string) $input->id] = $input;
-                }
+        $nodes = [];
+        $collect = function ($item) use (&$collect, &$nodes) {
+            $nodes[(string) $item->id] = $item;
+            foreach ($item->childrenRecursive as $child) {
+                $collect($child);
             }
-        }
+        };
+        $collect($node);
+        $inputs = [];
+        $visited = [];
+        $walk = function (string $id) use (&$walk, &$inputs, &$visited, $nodes, $results) {
+            if (isset($visited[$id]) || ! isset($nodes[$id], $results[$id])) {
+                return;
+            }
+            $visited[$id] = true;
+            if ($results[$id]['type'] === 'manual') {
+                $inputs[$id] = $nodes[$id];
+
+                return;
+            }
+            foreach ($results[$id]['source_ids'] as $source) {
+                $walk($source);
+            }
+        };
+        $walk((string) $node->id);
 
         return array_values($inputs);
     }
@@ -37,6 +107,7 @@ class KontrakCalculator
     private function sourceIds(string $type, array $config, array $children): array
     {
         $ids = match ($type) {
+            'formula' => isset($config['ast']) ? (new KontrakFormula)->references($config['ast']) : [],
             'sum' => $config['child_ids'] ?? array_keys($children),
             'weighted_sum' => array_keys(array_filter($config['weights'] ?? [], fn ($weight) => (float) $weight !== 0.0)),
             'scale' => [$config['source_id'] ?? null],
@@ -47,7 +118,7 @@ class KontrakCalculator
         return array_values(array_unique(array_map('strval', array_filter($ids, fn ($id) => $id !== null))));
     }
 
-    private function visit($node, array $actuals, array &$results, ?string $ikk, array $path): array
+    private function prepare($node, array &$metadata, ?string $ikk, array $path): void
     {
         $code = strtoupper(trim((string) $node->kode));
         if (($node->jenis ?? 'PK') === 'PK' && preg_match('/^IKK\s+\d+$/', $code)) {
@@ -56,28 +127,21 @@ class KontrakCalculator
         }
         $children = [];
         foreach ($node->childrenRecursive as $child) {
-            $childPath = [...$path, strtoupper(trim((string) $child->kode))];
-            $children[(string) $child->id] = $this->visit($child, $actuals, $results, $ikk, $childPath);
+            $children[(string) $child->id] = true;
+            $this->prepare($child, $metadata, $ikk, [...$path, strtoupper(trim((string) $child->kode))]);
         }
         $preset = $this->preset($node, $ikk, $path);
         $explicit = $node->calculation_type !== null;
         $type = $explicit ? $node->calculation_type : $preset['type'];
         $config = $explicit ? ($node->calculation_config ?? []) : $preset['config'];
-        [$target, $error] = $this->evaluate($type, $config, $children, 'target', $node->target);
-        [$actual, $actualError] = $this->evaluate($type, $config, $children, 'actual', $actuals[(string) $node->id] ?? null);
         $unit = $node->jenis_target;
         if (! $unit && $ikk !== null && ! $path) {
             $unit = in_array($ikk, ['IKK 15', 'IKK 22', 'IKK 25', 'IKK 26'], true) ? 'nilai' : 'persen';
         }
-        $result = [
-            'target' => $target, 'actual' => $actual,
-            'error' => $error, 'actual_error' => $actualError,
-            'type' => $type, 'config' => $config, 'preset' => ! $explicit,
-            'source_ids' => $this->sourceIds($type, $config, $children),
-            'unit' => $unit,
+        $metadata[(string) $node->id] = [
+            'node' => $node, 'children' => array_keys($children),
+            'result' => ['type' => $type, 'config' => $config, 'preset' => ! $explicit, 'unit' => $unit, 'source_ids' => $this->sourceIds($type, $config, $children)],
         ];
-
-        return $results[(string) $node->id] = $result;
     }
 
     public function evaluate(string $type, array $config, array $children, string $metric, $manual): array

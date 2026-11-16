@@ -24,6 +24,7 @@ class KontrakTreeWriter
         $this->keys = $this->ids = $this->saved = [];
         $this->count = 0;
         $tree = $this->validateNode($tree, 'root', 0);
+        $this->validateDependencies($tree);
 
         return DB::transaction(function () use ($parentId, $jenis, $tree) {
             $parent = Kontrak::whereKey($parentId)->where('jenis', $jenis)->lockForUpdate()->first();
@@ -37,6 +38,9 @@ class KontrakTreeWriter
                     if (array_key_exists($field, $config)) {
                         $config[$field] = isset($this->keys[$config[$field] ?? '']) ? $this->keys[$config[$field]] : null;
                     }
+                }
+                if (isset($config['ast'])) {
+                    $config['ast'] = (new KontrakFormula)->mapReferences($config['ast'], fn ($key) => $this->keys[$key]);
                 }
                 if (isset($config['weights'])) {
                     $weights = [];
@@ -145,9 +149,66 @@ class KontrakTreeWriter
             }
             $clean['child_ids'] = array_values(array_unique($config['child_ids']));
         }
+        if ($type === 'formula') {
+            if (! is_array($config['ast'] ?? null)) {
+                $this->fail($path, 'Rumus tabel tidak valid.');
+            }
+            $clean['ast'] = $config['ast'];
+        }
         $node['calculation_config'] = $clean;
 
         return $node;
+    }
+
+    private function validateDependencies(array $tree): void
+    {
+        $nodes = [];
+        $collect = function ($node) use (&$collect, &$nodes) {
+            $nodes[$node['key']] = $node;
+            foreach ($node['children'] as $child) {
+                $collect($child);
+            }
+        };
+        $collect($tree);
+        $dependencies = [];
+        foreach ($nodes as $key => $node) {
+            $config = $node['calculation_config'];
+            if ($node['calculation_type'] === 'formula') {
+                try {
+                    (new KontrakFormula)->validate($config['ast'], array_map('strval', array_keys($nodes)));
+                } catch (\DomainException $error) {
+                    $this->fail('root', $error->getMessage());
+                }
+                $dependencies[$key] = (new KontrakFormula)->references($config['ast']);
+            } else {
+                $dependencies[$key] = match ($node['calculation_type']) {
+                    'manual' => [],
+                    'sum' => $config['child_ids'] ?? array_column($node['children'], 'key'),
+                    'weighted_sum' => array_keys(array_filter($config['weights'] ?? [], fn ($weight) => (float) $weight !== 0.0)),
+                    'scale' => array_filter([$config['source_id'] ?? null]),
+                    default => array_filter([$config['numerator_id'] ?? null, $config['denominator_id'] ?? null]),
+                };
+            }
+        }
+        $visiting = [];
+        $done = [];
+        $walk = function ($key) use (&$walk, &$visiting, &$done, $dependencies) {
+            if (isset($done[$key])) {
+                return;
+            }
+            if (isset($visiting[$key])) {
+                $this->fail('root', 'Rumus membentuk siklus. Periksa referensi sel.');
+            }
+            $visiting[$key] = true;
+            foreach ($dependencies[$key] ?? [] as $source) {
+                $walk($source);
+            }
+            unset($visiting[$key]);
+            $done[$key] = true;
+        };
+        foreach (array_keys($nodes) as $key) {
+            $walk($key);
+        }
     }
 
     private function number($value, int $max, string $path): float

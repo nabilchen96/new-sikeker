@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\KontrakBagianRequest;
+use App\Http\Requests\KontrakSheetRequest;
 use App\Http\Requests\KontrakTreeRequest;
 use App\Models\Kontrak;
 use App\Models\Realisasi;
 use App\Services\KontrakCalculator;
+use App\Services\KontrakFormula;
+use App\Services\KontrakSheet;
 use App\Services\KontrakTreeWriter;
 use DB;
 use Illuminate\Http\Request;
@@ -151,6 +154,7 @@ class KontrakController extends Controller
                 'type' => $row['model']->calculation_type,
                 'config' => $row['model']->calculation_config,
                 'effective_type' => $row['calculation']['type'],
+                'computed_target' => $row['calculation']['target'],
                 'unit' => $row['satuan_tampilan'],
                 'effective_config' => $row['calculation']['config'],
                 'children' => $row['calculation_children'],
@@ -234,6 +238,36 @@ class KontrakController extends Controller
         return response()->json($data);
     }
 
+    public function sheet(Request $request, KontrakSheet $sheet)
+    {
+        $jenis = $request->query('jenis') === 'KPI' ? 'KPI' : 'PK';
+        $parents = Kontrak::whereNull('id_parent')->where('jenis', $jenis)
+            ->whereIn('id_tahun', DB::table('tahuns')->where('status', 'Aktif')->pluck('id'))->get();
+        $indicators = Kontrak::whereIn('id_parent', $parents->pluck('id'))->with('childrenRecursive')->get()
+            ->sort(fn ($a, $b) => strnatcasecmp((string) $a->kode, (string) $b->kode))->values();
+        $selected = $request->query('indikator') === 'baru' ? null : ($indicators->firstWhere('id', $request->query('indikator')) ?? $indicators->first());
+
+        return view('backend.kontrak.sheet', [
+            'jenis' => $jenis, 'parents' => $parents, 'indicators' => $indicators, 'selected' => $selected,
+            'sheetRows' => $selected ? $sheet->rows($selected) : [['key' => 'new-root', 'id' => null, 'parent_key' => null, 'kode' => '', 'nama' => '', 'jenis_target' => 'persen', 'input' => '']],
+        ]);
+    }
+
+    public function previewSheet(KontrakSheetRequest $request, KontrakSheet $sheet)
+    {
+        $data = $request->validated();
+
+        return response()->json(['rows' => $sheet->preview($data['rows'], $data['jenis'])]);
+    }
+
+    public function saveSheet(KontrakSheetRequest $request, KontrakSheet $sheet, KontrakTreeWriter $writer)
+    {
+        $data = $request->validated();
+        $root = $writer->save((int) $data['id_parent'], $data['jenis'], $sheet->compile($data['rows']));
+
+        return response()->json(['id' => $root->id, 'rows' => $sheet->rows($root), 'message' => 'Tabel berhasil disimpan.']);
+    }
+
     public function saveTree(KontrakTreeRequest $request, KontrakTreeWriter $writer)
     {
         $data = $request->validated();
@@ -251,6 +285,9 @@ class KontrakController extends Controller
             if (isset($config[$field])) {
                 $config[$field] = 'id-'.$config[$field];
             }
+        }
+        if (isset($config['ast'])) {
+            $config['ast'] = (new KontrakFormula)->mapReferences($config['ast'], fn ($id) => 'id-'.$id);
         }
         if (isset($config['weights'])) {
             $weights = [];

@@ -72,6 +72,10 @@ class KontrakBagianRequest extends FormRequest
                     $validator->errors()->add('calculation_config.weights', 'Bobot harus berasal dari anak langsung indikator ini.');
                 }
             }
+            if ($this->input('calculation_type') === 'formula' &&
+                (! $this->filled('id') || Kontrak::whereKey($this->input('id'))->value('calculation_type') !== 'formula')) {
+                $validator->errors()->add('calculation_type', 'Tulis rumus melalui Edit seperti Excel.');
+            }
             // A parent cannot be moved below itself or one of its descendants.
             $parentId = $this->input('id_parent');
             $visited = [];
@@ -90,6 +94,9 @@ class KontrakBagianRequest extends FormRequest
     {
         $type = $this->input('calculation_type') ?: null;
         $config = $this->input('calculation_config', []);
+        if ($type === 'formula') {
+            return ['calculation_type' => 'formula', 'calculation_config' => Kontrak::findOrFail($this->input('id'))->calculation_config];
+        }
         $keys = match ($type) {
             'ratio' => ['numerator_id', 'denominator_id', 'factor'],
             'offset_ratio' => ['numerator_id', 'denominator_id', 'factor', 'baseline'],
