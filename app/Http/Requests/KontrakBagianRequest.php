@@ -54,7 +54,7 @@ class KontrakBagianRequest extends FormRequest
             'calculation_config.source_id' => ['nullable', 'required_if:calculation_type,scale', Rule::in($childIds)],
             'calculation_config.factor' => ['nullable', 'required_if:calculation_type,ratio,scale,offset_ratio', 'numeric', 'min:0', 'max:1000000'],
             'calculation_config.baseline' => ['nullable', 'required_if:calculation_type,offset_ratio', 'numeric', 'min:0', 'max:1000000'],
-            'calculation_config.weights' => ['nullable', 'required_if:calculation_type,weighted_sum', 'array'],
+            'calculation_config.weights' => ['nullable', 'array'],
             'calculation_config.weights.*' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ];
     }
@@ -67,9 +67,9 @@ class KontrakBagianRequest extends FormRequest
             }
             if ($this->input('calculation_type') === 'weighted_sum') {
                 $ids = Kontrak::where('id_parent', $this->input('id'))->pluck('id')->map(fn ($id) => (string) $id)->all();
-                $weights = $this->input('calculation_config.weights', []);
-                if (array_diff(array_map('strval', array_keys($weights)), $ids) || array_sum($weights) <= 0) {
-                    $validator->errors()->add('calculation_config.weights', 'Bobot harus berasal dari anak langsung dan totalnya lebih dari nol.');
+                $weights = $this->input('calculation_config.weights', []) ?? [];
+                if (array_diff(array_map('strval', array_keys($weights)), $ids)) {
+                    $validator->errors()->add('calculation_config.weights', 'Bobot harus berasal dari anak langsung indikator ini.');
                 }
             }
             // A parent cannot be moved below itself or one of its descendants.

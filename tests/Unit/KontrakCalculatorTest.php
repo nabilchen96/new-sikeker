@@ -105,4 +105,18 @@ class KontrakCalculatorTest extends TestCase
         $this->assertSame('nilai', $results[3]['unit']);
         $this->assertSame('persen', $results[5]['unit']);
     }
+
+    public function test_unassigned_or_all_zero_weights_are_incomplete_instead_of_a_zero_target(): void
+    {
+        $calculator = new KontrakCalculator;
+        $children = [1 => ['target' => 55], 2 => ['target' => 100]];
+        foreach ([[], [1 => 0, 2 => 0], [1 => 40]] as $weights) {
+            [$value, $error] = $calculator->evaluate('weighted_sum', ['weights' => $weights], $children, 'target', null);
+            $this->assertNull($value);
+            $this->assertNotNull($error);
+        }
+        [$value, $error] = $calculator->evaluate('weighted_sum', ['weights' => [1 => 40, 2 => 0]], $children, 'target', null);
+        $this->assertSame(22.0, $value);
+        $this->assertNull($error);
+    }
 }

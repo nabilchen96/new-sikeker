@@ -111,6 +111,9 @@ function updateCalculationPreview() {
             if (!sources.length || (!selected && profile && sources.length !== profile.length)) throw new Error('Sumber profil belum lengkap.');
             result = sources.reduce((sum, child) => sum + Number(child.target), 0);
         } else if (type === 'weighted_sum') {
+            if (!calculationChildren.length) throw new Error('Simpan induk dahulu, lalu tambahkan anak dan isi bobotnya.');
+            const inputs = calculationForm.querySelectorAll('#calculation_weights input');
+            if (![...inputs].some(input => decimal(input.value || 0) > 0)) throw new Error('Isi bobot anak untuk menghitung hasil.');
             result = 0;
             calculationForm.querySelectorAll('#calculation_weights input').forEach(input => {
                 const weight = decimal(input.value || 0);
@@ -158,6 +161,12 @@ $('#modalTambahBagian').on('show.bs.modal', function (event) {
     calculationForm.querySelector('#calculation_baseline').value = config.baseline ?? 0;
     const weights = calculationForm.querySelector('#calculation_weights');
     weights.replaceChildren();
+    if (!calculationChildren.length) {
+        const hint = document.createElement('p');
+        hint.className = 'text-muted';
+        hint.textContent = 'Belum ada anak. Metode ini tetap bisa disimpan; bobot diisi setelah anak ditambahkan.';
+        weights.append(hint);
+    }
     calculationChildren.forEach(child => {
         const label = document.createElement('label');
         label.className = 'd-block';

@@ -47,6 +47,43 @@ class KontrakCalculationTest extends TestCase
         $this->postJson('/store-bagian', $payload)->assertUnprocessable()->assertJsonValidationErrors('calculation_config.numerator_id');
     }
 
+    public function test_weighted_parent_can_be_created_before_children_and_completed_later(): void
+    {
+        $payload = [
+            'id_parent' => 1000, 'kode' => 'IKK 99', 'sub_indikator' => 'Gabungan baru', 'jenis' => 'PK',
+            'jenis_target' => 'persen', 'calculation_type' => 'weighted_sum',
+        ];
+        $this->postJson('/store-bagian', $payload)->assertOk()->assertJsonPath('responCode', 1);
+        $parent = Kontrak::where('kode', 'IKK 99')->firstOrFail();
+        $calculator = new KontrakCalculator;
+        $result = $calculator->calculateTree($parent->fresh('childrenRecursive'))[$parent->id];
+        $this->assertSame('weighted_sum', $parent->calculation_type);
+        $this->assertNull($parent->target);
+        $this->assertNull($result['target']);
+        $this->assertStringContainsString('Tambahkan anak', $result['error']);
+
+        $weights = [];
+        foreach ([[55, 40], [100, 40], [80.95, 20]] as $index => [$target, $weight]) {
+            $this->postJson('/store-bagian', [
+                'id_parent' => $parent->id, 'kode' => (string) ($index + 1), 'sub_indikator' => 'Komponen '.($index + 1),
+                'jenis' => 'PK', 'target' => $target, 'jenis_target' => 'persen', 'calculation_type' => 'manual',
+            ])->assertOk();
+            $id = Kontrak::where('id_parent', $parent->id)->where('kode', (string) ($index + 1))->value('id');
+            $weights[(string) $id] = $weight;
+        }
+        $this->assertNull($calculator->calculateTree($parent->fresh('childrenRecursive'))[$parent->id]['target']);
+        $edit = $payload + ['id' => $parent->id];
+        // Saving while the weights are still empty is allowed and preserves the method.
+        $this->postJson('/update-bagian', $edit)->assertOk();
+        $edit['calculation_config'] = ['weights' => $weights];
+        $this->postJson('/update-bagian', $edit)->assertOk();
+        $result = $calculator->calculateTree($parent->fresh('childrenRecursive'))[$parent->id];
+        $this->assertEqualsWithDelta(78.19, $result['target'], 0.000001);
+        $this->assertNull($result['error']);
+        $edit['calculation_config']['weights'][8] = 0;
+        $this->postJson('/update-bagian', $edit)->assertUnprocessable()->assertJsonValidationErrors('calculation_config.weights');
+    }
+
     private function editPayload(array $replace = []): array
     {
         return array_replace_recursive([

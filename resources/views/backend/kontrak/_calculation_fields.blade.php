@@ -12,7 +12,7 @@
         <option value="scale">Bobot dari satu anak</option>
         <option value="offset_ratio">Nilai dasar + persentase</option>
     </select>
-    <small class="form-text text-muted">Untuk data biasa, cukup isi target dan satuan. Untuk rumus, tambahkan anak terlebih dahulu lalu pilih sumbernya di sini.</small>
+    <small class="form-text text-muted">Untuk data biasa, cukup isi target dan satuan. Gabungan berbobot bisa dipilih sebelum anak ada; isi bobot setelah anak ditambahkan.</small>
 </div>
 <div id="calculation_details">
     <div class="form-group calculation-parameter" data-calculation-types="ratio offset_ratio">

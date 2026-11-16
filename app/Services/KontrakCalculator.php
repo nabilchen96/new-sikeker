@@ -107,8 +107,14 @@ class KontrakCalculator
                     $value += $read($id);
                 }
             } elseif ($type === 'weighted_sum') {
-                if (empty($config['weights'])) {
+                if (! $children) {
+                    throw new \DomainException('Tambahkan anak, lalu isi bobotnya.');
+                }
+                if (empty($config['weights']) || array_sum($config['weights']) <= 0) {
                     throw new \DomainException('Isi bobot untuk anak indikator.');
+                }
+                if (array_diff(array_keys($children), array_keys($config['weights']))) {
+                    throw new \DomainException('Ada anak yang belum diberi bobot. Isi bobot atau 0 untuk mengabaikannya.');
                 }
                 $value = 0;
                 foreach ($config['weights'] as $id => $weight) {

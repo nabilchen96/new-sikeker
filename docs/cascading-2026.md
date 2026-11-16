@@ -66,7 +66,7 @@ Workbook hanya memberi target manual. Rincian naratif bukan rumus yang bisa diek
 Form menggunakan modal ukuran biasa yang dapat digulir sampai tombol Simpan. Isian dasar hanya nama, kode, target, dan satuan. **Atur perhitungan (opsional)** tertutup saat form dibuka; pengaturan yang sudah ada tetap tersimpan meskipun bagian ini tidak dibuka. Untuk indikator yang sudah otomatis, cukup ubah nilai pada anak sumber; hasil induk dihitung kembali.
 
 1. Buat indikator dan tentukan satuannya sendiri. Target manual bisa diisi di tingkat IKK sekalipun. Isi persen 91,45 (atau 91.45), bukan 0,9145. Angka tidak memakai pemisah ribuan: 15450000000.
-2. Jika perlu rumus, buat anak sumbernya terlebih dahulu. Setelah itu edit induk, buka **Atur perhitungan (opsional)**, dan pilih metode. Memilih Manual membuat nilai induk tetap walaupun ada anak keterangan.
+2. **Gabungan berbobot dapat dipilih sejak membuat induk, sebelum anak ada.** Simpan tanpa target sementara, tambahkan anak, lalu edit induk untuk mengisi bobot. Selama anak/bobot belum lengkap hasil ditampilkan — dengan petunjuk; metode tetap tersimpan. Untuk metode rasio dan pengali, buat anak sumbernya terlebih dahulu. Setelah itu edit induk, buka **Atur perhitungan (opsional)**, dan pilih metode. Memilih Manual membuat nilai induk tetap walaupun ada anak keterangan.
 3. **Jumlah anak** menjumlahkan anak langsung, tidak menjumlahkan anak dan cucu dua kali.
 4. **Rasio** meminta pembilang, pembagi, dan pengali. Contoh IKK 10 pilih sumber 18 dan 21, pengali 100.
 5. **Nilai satu anak × pengali**: untuk bobot 40% atas persentase 91,45 gunakan pengali 0,4. Untuk akreditasi 1 × 60 gunakan pengali 60. Keduanya berbeda.
