@@ -793,6 +793,21 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="quick_pattern">Pola pengisian</label>
+                            <select id="quick_pattern" class="form-control">
+                                <option value="custom">Isi sendiri / struktur yang ada</option>
+                                <option value="ratio">Persentase dua nilai</option>
+                                <option value="sum">Jumlah beberapa rincian</option>
+                                <option value="weighted_sum">Gabungan berbobot</option>
+                                <option value="ikk4">IKK 4 — Akreditasi (60% + 40%)</option>
+                                <option value="ikk14">IKK 14 — Kualitas dosen (40%, 40%, 20%)</option>
+                                <option value="ikk5">IKK 5 — Peningkatan SDM (40% + 60%)</option>
+                                <option value="ikk16">IKK 16 — Kerja sama (60% + 40%)</option>
+                                <option value="ikk24">IKK 24 — Nilai dasar + layanan</option>
+                            </select>
+                            <small id="quick_pattern_hint" class="form-text text-muted">Pilih pola, isi semua target sumber di bawah, lalu Simpan sekali.</small>
+                        </div>
+                        <div class="form-group">
                             <label>Sub Indikator</label>
                             <textarea name="sub_indikator" id="sub_indikator" class="form-control" cols="30" rows="2"
                                 placeholder="Sub Indikator"></textarea>
@@ -899,5 +914,6 @@
 @endsection
 @push('script')
     <script>window.kontrakCalculationForms = @json($calculationForms);</script>
-    <script src="{{ asset('js/backend/kontrak/index.js') }}"></script>
+    <script src="{{ asset('js/backend/kontrak/index.js') }}?v={{ filemtime(public_path('js/backend/kontrak/index.js')) }}"></script>
+    <script src="{{ asset('js/backend/kontrak/quick-entry.js') }}?v={{ filemtime(public_path('js/backend/kontrak/quick-entry.js')) }}"></script>
 @endpush

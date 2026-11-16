@@ -56,6 +56,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/update-sasaran-kinerja', 'App\Http\Controllers\KontrakController@updateSasaranKinerja');
     Route::post('/delete-sasaran-kinerja', 'App\Http\Controllers\KontrakController@deleteSasaranKinerja');
 
+    Route::post('/save-kontrak-tree', 'App\Http\Controllers\KontrakController@saveTree');
     Route::post('/store-bagian', 'App\Http\Controllers\KontrakController@storeBagian');
     Route::post('/update-bagian', 'App\Http\Controllers\KontrakController@updateBagian');
     Route::post('/delete-bagian', 'App\Http\Controllers\KontrakController@deleteBagian');

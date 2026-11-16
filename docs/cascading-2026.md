@@ -61,30 +61,40 @@ Workbook hanya memberi target manual. Rincian naratif bukan rumus yang bisa diek
 | 13 | Kerjasama | 49,5 | nilai |
 | 14 | Peningkatan Kualitas Kelembagaan | 2,33 | nilai |
 
-## Cara mengisi form baru
+## Cara mengisi form baru: satu form, satu kali Simpan
 
-Form menggunakan modal ukuran biasa yang dapat digulir sampai tombol Simpan. Isian dasar hanya nama, kode, target, dan satuan. **Atur perhitungan (opsional)** tertutup saat form dibuka; pengaturan yang sudah ada tetap tersimpan meskipun bagian ini tidak dibuka. Untuk indikator yang sudah otomatis, cukup ubah nilai pada anak sumber; hasil induk dihitung kembali.
+Modal tetap berukuran biasa dan seluruhnya dapat digulir hingga tombol Simpan. Form memuat induk, semua anak/cucu, target sumber, satuan, serta bobot sekaligus.
 
-1. Buat indikator dan tentukan satuannya sendiri. Target manual bisa diisi di tingkat IKK sekalipun. Isi persen 91,45 (atau 91.45), bukan 0,9145. Angka tidak memakai pemisah ribuan: 15450000000.
-2. **Gabungan berbobot dapat dipilih sejak membuat induk, sebelum anak ada.** Simpan tanpa target sementara, tambahkan anak, lalu edit induk untuk mengisi bobot. Selama anak/bobot belum lengkap hasil ditampilkan — dengan petunjuk; metode tetap tersimpan. Untuk metode rasio dan pengali, buat anak sumbernya terlebih dahulu. Setelah itu edit induk, buka **Atur perhitungan (opsional)**, dan pilih metode. Memilih Manual membuat nilai induk tetap walaupun ada anak keterangan.
-3. **Jumlah anak** menjumlahkan anak langsung, tidak menjumlahkan anak dan cucu dua kali.
-4. **Rasio** meminta pembilang, pembagi, dan pengali. Contoh IKK 10 pilih sumber 18 dan 21, pengali 100.
-5. **Nilai satu anak × pengali**: untuk bobot 40% atas persentase 91,45 gunakan pengali 0,4. Untuk akreditasi 1 × 60 gunakan pengali 60. Keduanya berbeda.
-6. **Jumlah berbobot**: isi bobot persentase tiap anak. IKK 14 memakai 40, 40, 20. Bobot 0 mengabaikan sumber.
-7. **Nilai dasar + rasio**: IKK 24 sesuai rumus Excel memakai nilai dasar 50, sumber layanan 5 dan 6, pengali 50.
-8. Pratinjau memakai target sumber saat ini. Pengaturan eksplisit tersimpan memakai ID anak, sehingga mengganti nama/kode tidak mengubah rumus. Simpan kemudian periksa hasil di tabel.
-9. Data lama tanpa pengaturan memakai **Profil Excel 2026 (data lama)** agar target tidak perlu diisi ulang. Kode profil mengikuti tabel ini, termasuk anak A/B atau 1/2. Pilih metode eksplisit untuk struktur lain atau tahun berikutnya.
-10. Satuan tidak menentukan operasi matematika. Isian nilai/persen/dokumen tetap dipertahankan pada masing-masing sub, termasuk yang memiliki bobot. Simbol % hanya untuk satuan persen.
-11. Pembagi nol atau sumber yang hilang menghasilkan tanda — dan pesan penjelasan, bukan hasil 0 palsu. Nol yang benar tetap dihitung. Nilai manual kosong tidak dianggap nol.
-12. Di Realisasi, isi sumber manual yang dipakai rumus; jangan mengisi hasil induk lagi. Input bulan berjalan mempertahankan mekanisme nilai terakhir dari bulan sebelumnya. Sumber bertarget 0 dapat diisi. Hasil realisasi memakai rumus yang sama; capaian dibedakan dari hasil indikator.
+1. Klik Tambah Sub pada sasaran untuk membuat IKK, atau Edit pada IKK yang sudah ada.
+2. Pilih **Pola pengisian**. Tersedia persentase dua nilai, jumlah rincian, gabungan berbobot, serta pola siap pakai IKK 4/5/14/16/24. Nama dan kode diisi otomatis jika masih kosong; tetap dapat diedit. Pada data yang sudah ada, pola mencocokkan kode rincian dan melengkapi baris yang belum ada, sambil mempertahankan ID, target, satuan, serta rincian tersimpan. Rincian tambahan di luar pola tetap ditampilkan; pada pola penjumlahan/berbobot, rincian tersebut tidak dimasukkan ke hasil pola.
+3. Isi angka sumber langsung pada rincian yang muncul. Rumus/pengali dan hubungan sumber dalam pola sudah terpasang; tidak perlu menyimpan induk lalu membuka anak satu per satu.
+4. Periksa pratinjau hasil induk, lalu klik **Simpan** sekali. Semua tingkat disimpan sebagai satu transaksi.
+5. Untuk mengubah data lama, edit induk dan ubah seluruh rincian di form yang sama. ID baris serta realisasi lama tetap dipertahankan. Form ini tidak menghapus rincian tersimpan; sumber rumus hanya boleh berasal dari anak langsungnya.
 
-### Struktur IKK 24 pada profil lama
+| Pola | Angka yang perlu diisi | Hasil contoh |
+|---|---|---|
+| IKK 4 — Akreditasi | Akreditasi 1; prodi terakreditasi 2; seluruh prodi 3 | 86,67% |
+| IKK 14 — Kualitas dosen | 55; 100; 80,95 | 78,19% (bobot 40/40/20 sudah disiapkan) |
+| IKK 5 — Peningkatan SDM | 91,45; 95,57 | 93,92% |
+| IKK 16 — Kerja sama | 17; 19; 13; 14 | 90,83% |
+| IKK 24 — Nilai dasar + layanan | Layanan 5; target layanan 6 | 91,67% (nilai dasar 50 sesuai formula Excel) |
+| Persentase dua nilai | Pembilang 18; pembagi 21 | 85,71% |
 
-- Anak 1: jumlah unit = 0 (tidak dipakai rumus Excel).
-- Anak 2: target unit = 0 (tidak dipakai rumus Excel).
-- Anak 3: jumlah layanan = 5 (pembilang).
-- Anak 4: target layanan = 6 (pembagi).
-- Jika kode anak berbeda, pilih metode eksplisit dan pilih sumber layanan yang benar, bukan mengganti datanya.
+### Struktur lain
+
+- Pilih **Isi sendiri / struktur yang ada**. Pada **Cara menghitung induk**, pilih manual, jumlah, rasio, gabungan berbobot, nilai × pengali, atau nilai dasar + persentase.
+- Tombol **+ Tambah rincian** menambah anak langsung di dalam form. Tombol **+ Rincian di bawah ini** menambah cucu pada bagian yang bersangkutan. Baris baru boleh dihapus sebelum disimpan.
+- Pada gabungan berbobot, bobot diisi di sebelah target/satuan anak. Bobot 40% diisi 40, bukan 0,4.
+- Untuk kelompok seperti Bobot 60% di IKK 4, pola sudah mengatur pengali 60 atas nilai dokumen 1; Bobot 40% memakai rasio 2/3 × 40. Pada IKK 5, pengali terhadap nilai persen adalah 0,4 dan 0,6. Jangan menyamakan dua operasi ini.
+- Nama, kode, satuan kelompok, dan rumus rincian dapat diubah melalui **Ubah rincian / rumus** pada bagian itu. Isian ini tertutup supaya pengisian angka tetap ringkas. Pengali dan pemilihan sumber hanya perlu dibuka untuk susunan yang berbeda dari pola.
+- Target persen diisi 91,45 atau 91.45, bukan 0,9145. Angka besar diisi tanpa pemisah ribuan, misalnya 15450000000. Satuan setiap baris tetap mengikuti isian sendiri.
+- Rumus boleh disimpan sebagai susunan yang belum lengkap. Nilai sumber kosong, pembagi nol, atau bobot yang belum diisi menghasilkan — dengan petunjuk, bukan nol palsu. Nol yang benar tetap dihitung.
+- Pada realisasi, isi sumber manual yang dipakai rumus. Hasil induk dihitung dari sumber tersebut; capaian adalah hasil realisasi ÷ hasil target × 100.
+- Data lama yang belum diedit memakai profil Excel 2026. Ketika disimpan melalui form lengkap, metode dan sumber yang ditampilkan disimpan eksplisit memakai ID. Mengganti kode/nama kemudian tidak mengganti rumus.
+
+### IKK 24
+
+Pola baru langsung membuat dua rincian layanan yang dipakai rumus, berkode 3 dan 4. Pada data lama, rincian unit 1 dan 2 (0/0) tetap dipertahankan, tetapi tidak ikut dihitung karena formula Excel memang hanya memakai layanan. Nilai dasar 50 masih perlu konfirmasi kebijakan sebagaimana dijelaskan berikut.
 
 ## Bagian Excel yang perlu keputusan pemilik indikator
 
@@ -113,3 +123,5 @@ Migrasi menambahkan pengaturan nullable, mempertahankan target yang sudah ada, d
 ## Verifikasi
 
 `tests/Fixtures/cascading_2026.json` mencatat lokasi sel, formula, nilai hasil tersimpan, dan hierarki sumber. Pengujian membandingkan seluruh target bernilai angka dengan workbook, mencakup target rupiah/desimal, realisasi agregat, satuan terpisah, rumus eksplisit, sumber tidak valid, dan pembagi nol. Pengujian HTTP memakai database SQLite sementara; tidak memakai database pengguna.
+
+Form lengkap juga diuji melalui HTTP untuk seluruh 34 indikator yang sudah ada, penyimpanan atomik, penolakan sumber di luar cabang, dan pemeliharaan ID/realisasi. Browser memeriksa pembuatan IKK 4/5/14/16/24 dalam satu kali Simpan, penerapan pola pada struktur lama yang belum lengkap, serta scroll dan penyimpanan di ponsel.

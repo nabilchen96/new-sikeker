@@ -240,3 +240,21 @@ table.dataTable thead .sorting_desc::before {
 #calculation_settings summary {
     cursor: pointer;
 }
+
+/* Keep the complete indicator editor readable inside the ordinary modal. */
+#modalTambahBagian .quick-node {
+    border: 1px solid #dce1eb;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: #fff;
+}
+#modalTambahBagian .quick-node .quick-node { padding: 8px; }
+#modalTambahBagian .quick-node-heading { display: grid; grid-template-columns: 65px minmax(0, 1fr); gap: 8px; }
+#modalTambahBagian .quick-node-values { display: flex; flex-wrap: wrap; gap: 8px; }
+#modalTambahBagian .quick-node-values .quick-field { flex: 1 1 90px; min-width: 0; }
+#modalTambahBagian .quick-field { font-size: 12px; margin-bottom: 10px; }
+#modalTambahBagian .quick-field .form-control { margin-top: 4px; padding: 8px; }
+#modalTambahBagian .quick-node-formula { font-size: 12px; }
+#modalTambahBagian .quick-node-formula summary { cursor: pointer; margin-bottom: 8px; }
+#modalTambahBagian .quick-result { color: #4b49ac; font-weight: 600; }

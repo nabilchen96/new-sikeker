@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\KontrakBagianRequest;
+use App\Http\Requests\KontrakTreeRequest;
 use App\Models\Kontrak;
 use App\Models\Realisasi;
 use App\Services\KontrakCalculator;
+use App\Services\KontrakTreeWriter;
 use DB;
 use Illuminate\Http\Request;
 use Validator;
@@ -121,6 +123,7 @@ class KontrakController extends Controller
                 $row['total_realisasi'] = $result['actual'];
                 $row['satuan_tampilan'] = $result['unit'];
                 $row['calculation'] = $result;
+                $row['editor_tree'] = $this->editorTree($kontrak, $calculated);
                 $row['calculation_children'] = $kontrak->childrenRecursive->sort(fn ($a, $b) => strnatcasecmp((string) $a->kode, (string) $b->kode))->map(fn ($child) => [
                     'id' => (string) $child->id,
                     'label' => trim($child->kode.' — '.$child->nama),
@@ -144,6 +147,7 @@ class KontrakController extends Controller
             'data' => $data,
             'calculationForms' => $data->flatMap(fn ($group) => collect($group['rows'])->map(fn ($row) => [
                 'id' => (string) $row['model']->id,
+                'tree' => $row['editor_tree'],
                 'type' => $row['model']->calculation_type,
                 'config' => $row['model']->calculation_config,
                 'effective_type' => $row['calculation']['type'],
@@ -228,6 +232,43 @@ class KontrakController extends Controller
         ];
 
         return response()->json($data);
+    }
+
+    public function saveTree(KontrakTreeRequest $request, KontrakTreeWriter $writer)
+    {
+        $data = $request->validated();
+        $root = $writer->save((int) $data['id_parent'], $data['jenis'], $data['root']);
+        $result = (new KontrakCalculator)->calculateTree($root)[(string) $root->id];
+
+        return response()->json(['responCode' => 1, 'respon' => 'Indikator dan seluruh rinciannya berhasil disimpan.', 'id' => $root->id, 'target' => $result['target']]);
+    }
+
+    private function editorTree($node, array $results): array
+    {
+        $result = $results[(string) $node->id];
+        $config = $result['config'];
+        foreach (['source_id', 'numerator_id', 'denominator_id'] as $field) {
+            if (isset($config[$field])) {
+                $config[$field] = 'id-'.$config[$field];
+            }
+        }
+        if (isset($config['weights'])) {
+            $weights = [];
+            foreach ($config['weights'] as $id => $weight) {
+                $weights['id-'.$id] = $weight;
+            }
+            $config['weights'] = $weights;
+        }
+        if (isset($config['child_ids'])) {
+            $config['child_ids'] = array_map(fn ($id) => $id === null ? null : 'id-'.$id, $config['child_ids']);
+        }
+
+        return [
+            'key' => 'id-'.$node->id, 'id' => $node->id, 'kode' => $node->kode,
+            'nama' => $node->nama, 'target' => $node->target, 'jenis_target' => $result['unit'],
+            'calculation_type' => $result['type'], 'calculation_config' => $config,
+            'children' => $node->childrenRecursive->sort(fn ($a, $b) => strnatcasecmp((string) $a->kode, (string) $b->kode))->map(fn ($child) => $this->editorTree($child, $results))->values()->all(),
+        ];
     }
 
     public function storeBagian(KontrakBagianRequest $request)
