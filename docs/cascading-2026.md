@@ -138,3 +138,11 @@ Migrasi menambahkan pengaturan nullable, mempertahankan target yang sudah ada, d
 `tests/Fixtures/cascading_2026.json` mencatat lokasi sel, formula, nilai hasil tersimpan, dan hierarki sumber. Pengujian membandingkan seluruh target bernilai angka dengan workbook, mencakup target rupiah/desimal, realisasi agregat, satuan terpisah, rumus eksplisit, sumber tidak valid, dan pembagi nol. Pengujian HTTP memakai database SQLite sementara; tidak memakai database pengguna.
 
 Tabel Excel diuji untuk seluruh 34 indikator yang sudah ada, penyimpanan atomik, referensi ID yang stabil, penolakan rumus siklik, dan pemeliharaan ID/realisasi. Browser memeriksa hitung ulang, Tab/Enter, tempel beberapa baris, simpan/muat ulang, tampilan ponsel, serta form per baris yang dipulihkan.
+
+## Tampilan dan penyimpanan realisasi
+
+Target, realisasi, dan satuan dipisahkan ke kolom masing-masing pada ringkasan PK/KPI; tabel rincian juga memiliki kolom Satuan sendiri. Angka target tidak dibulatkan ke bilangan bulat: target Margin EBITDA 1,79 tetap ditampilkan 1,79. Angka bulat ditampilkan tanpa tambahan nol desimal, misalnya 107, dan nominal besar tetap memakai pemisah ribuan.
+
+Form Simpan, filter Cari, dan tautan tab membawa jenis PK/KPI, bulan, serta tahun yang dipilih. Setelah menyimpan KPI, pengguna tetap berada di tab KPI dengan periode yang sama. Kiriman lama tanpa parameter jenis menggunakan jenis indikator sebagai acuan. Kiriman dengan tab/indikator yang tidak sesuai atau mencampur PK dan KPI ditolak sebelum penulisan.
+
+Menyimpan ulang indikator pada bulan yang sama memperbarui catatan periode tersebut; tidak membuat baris duplikat. Bulan lain tetap disimpan sebagai periode yang berbeda.

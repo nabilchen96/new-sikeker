@@ -186,6 +186,7 @@ class RealisasiController extends Controller
         $validated = $request->validate([
             'bulan' => ['required', 'integer', 'between:1,12'],
             'tahun' => ['required', 'integer', 'between:2000,2100'],
+            'jenis' => ['nullable', 'in:PK,KPI'],
             'realisasi' => ['required', 'array'],
             'realisasi.*' => ['nullable', 'numeric', 'min:0'],
             'dokumen' => ['nullable', 'array'],
@@ -197,6 +198,15 @@ class RealisasiController extends Controller
             ],
         ]);
 
+        $types = Kontrak::whereIn('id', array_keys($validated['realisasi']))->pluck('jenis')->unique()->values();
+        if ($types->count() !== 1 || ! in_array($types->first(), ['PK', 'KPI'], true)) {
+            throw ValidationException::withMessages(['realisasi' => 'Isi realisasi dari satu tab PK atau KPI.']);
+        }
+        $jenis = $types->first();
+        if (isset($validated['jenis']) && $validated['jenis'] !== $jenis) {
+            throw ValidationException::withMessages(['jenis' => 'Tab tidak sesuai dengan indikator yang diisi. Muat ulang halaman.']);
+        }
+
         $bulan = (int) $validated['bulan'];
         $tahun = (int) $validated['tahun'];
 
@@ -206,8 +216,8 @@ class RealisasiController extends Controller
 
         DB::transaction(function () use (
             $validated,
-            $periode
-
+            $periode,
+            $jenis
         ) {
             $nilaiInput = $validated['realisasi'];
             $dokumenInput = $validated['dokumen'] ?? [];
@@ -217,7 +227,7 @@ class RealisasiController extends Controller
 
             $calculator = new KontrakCalculator;
             $allowedIds = [];
-            $roots = Kontrak::whereNull('id_parent')
+            $roots = Kontrak::whereNull('id_parent')->where('jenis', $jenis)
                 ->whereIn('id_tahun', DB::table('tahuns')->where('status', 'Aktif')->pluck('id'))
                 ->with('childrenRecursive')->get();
             foreach ($roots as $root) {
@@ -268,14 +278,9 @@ class RealisasiController extends Controller
                     continue;
                 }
 
-                $realisasi = Realisasi::updateOrCreate(
-                    [
-                        'id_kontrak' => $indikatorId,
-                        'periode' => $periode,
-                    ],
-                    [
-                        'nilai' => $nilai,
-                    ]
+                $realisasi = Realisasi::whereDate('periode', $periode)->updateOrCreate(
+                    ['id_kontrak' => $indikatorId],
+                    ['periode' => $periode, 'nilai' => $nilai]
                 );
 
                 $realisasi->aksiProkers()->sync(
@@ -291,6 +296,7 @@ class RealisasiController extends Controller
 
         return redirect()
             ->to(url('/realisasi').'?'.http_build_query([
+                'jenis' => $jenis,
                 'bulan' => $bulan,
                 'tahun' => $tahun,
             ]))
