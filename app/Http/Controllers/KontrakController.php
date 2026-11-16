@@ -116,21 +116,28 @@ class KontrakController extends Controller
              * ======================================================
              */
 
-            // Rumus khusus IKK 4 mengikuti spreadsheet cascading:
-            // A = akreditasi lembaga × 60; B = prodi terakreditasi / seluruh prodi × 40.
-            $targetAkreditasi = [];
+            // Target berbobot IKK 4 dan IKK 5 mengikuti spreadsheet cascading.
+            $targetBerbobot = [];
             foreach ($rows as $candidate) {
                 $ikk = $candidate['model'];
-                if (strtoupper(trim($ikk->kode ?? '')) !== 'IKK 4') {
+                $ikkKode = strtoupper(trim($ikk->kode ?? ''));
+                if (!in_array($ikkKode, ['IKK 4', 'IKK 5'], true)) {
                     continue;
                 }
 
-                $targets = $this->hitungTargetAkreditasi($ikk, $realisasiTerakhir);
-                $targetAkreditasi[$ikk->id] = $targets['IKK'];
+                $targets = $ikkKode === 'IKK 4'
+                    ? $this->hitungTargetAkreditasi($ikk, $realisasiTerakhir)
+                    : $this->hitungTargetPeningkatanSdm($ikk, $realisasiTerakhir);
+                $targetBerbobot[$ikk->id] = $targets['IKK'];
                 foreach ($ikk->childrenRecursive as $child) {
                     $childKode = strtoupper(trim($child->kode ?? ''));
                     if (array_key_exists($childKode, $targets)) {
-                        $targetAkreditasi[$child->id] = $targets[$childKode];
+                        $targetBerbobot[$child->id] = $targets[$childKode];
+                        if ($ikkKode === 'IKK 5') {
+                            foreach ($child->childrenRecursive as $rincian) {
+                                $targetBerbobot[$rincian->id] = $this->hitungTotalNode($rincian, $realisasiTerakhir)['target'];
+                            }
+                        }
                     }
                 }
             }
@@ -332,8 +339,8 @@ class KontrakController extends Controller
                     $row['total_realisasi'] =
                         $row['hasil_persentase'];
                 }
-                if (array_key_exists($kontrak->id, $targetAkreditasi)) {
-                    $row['total_target'] = $targetAkreditasi[$kontrak->id];
+                if (array_key_exists($kontrak->id, $targetBerbobot)) {
+                    $row['total_target'] = $targetBerbobot[$kontrak->id];
                     $row['satuan_tampilan'] = 'persen';
                 }
             }
@@ -578,6 +585,32 @@ class KontrakController extends Controller
         }
     }
 
+
+    // Anak A/B berisi persentase mentah; baris A/B menampilkan kontribusi berbobot.
+    private function hitungTargetPeningkatanSdm($ikk, $realisasiTerakhir): array
+    {
+        $sub = $ikk->childrenRecursive->keyBy(function ($child) {
+            return strtoupper(trim($child->kode ?? ''));
+        });
+        $targets = ['A' => null, 'B' => null];
+        foreach (['A' => 0.4, 'B' => 0.6] as $kode => $bobot) {
+            if (!$sub->has($kode)) {
+                continue;
+            }
+            $child = $sub->get($kode);
+            if ($child->childrenRecursive->isNotEmpty()) {
+                $targets[$kode] = $this->hitungTotalNode($child, $realisasiTerakhir)['target'] * $bobot;
+            } elseif (is_numeric($child->target)) {
+                // Tanpa rincian, target tersimpan sudah berupa kontribusi berbobot.
+                $targets[$kode] = (float) $child->target;
+            }
+        }
+        $targets['IKK'] = $targets['A'] !== null && $targets['B'] !== null
+            ? $targets['A'] + $targets['B']
+            : null;
+
+        return $targets;
+    }
 
     // Target berbobot khusus akreditasi; nilai mentah tetap dipakai untuk realisasi.
     private function hitungTargetAkreditasi($ikk, $realisasiTerakhir): array
