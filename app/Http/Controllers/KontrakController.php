@@ -283,9 +283,22 @@ class KontrakController extends Controller
 
                     $row['total_target'] = null;
 
+                    $pasangan = null;
                     if ($subIkk->has('A') && $subIkk->has('B')) {
-                        $targetA = $this->hitungTotalNode($subIkk->get('A'), $realisasiTerakhir)['target'];
-                        $targetB = $this->hitungTotalNode($subIkk->get('B'), $realisasiTerakhir)['target'];
+                        $pasangan = ['A', 'B'];
+                    } elseif (
+                        $subIkk->count() === 2 &&
+                        $subIkk->has('1') && $subIkk->has('2') &&
+                        $subIkk->get('1')->childrenRecursive->isEmpty() &&
+                        $subIkk->get('2')->childrenRecursive->isEmpty()
+                    ) {
+                        // Dua sub langsung tanpa rincian: 1 / 2 × 100 (contoh IKK 10).
+                        $pasangan = ['1', '2'];
+                    }
+
+                    if ($pasangan !== null) {
+                        $targetA = $this->hitungTotalNode($subIkk->get($pasangan[0]), $realisasiTerakhir)['target'];
+                        $targetB = $this->hitungTotalNode($subIkk->get($pasangan[1]), $realisasiTerakhir)['target'];
 
                         if ($targetB > 0) {
                             $row['total_target'] = ($targetA / $targetB) * 100;
