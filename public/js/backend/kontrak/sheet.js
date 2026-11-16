@@ -8,7 +8,7 @@
     const el=(tag,className,text)=>{const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e;};
     const value=(row,col)=>col===2?(row.parent_key?String(rows.findIndex(r=>r.key===row.parent_key)+1):''):String(row[columns[col]]??'');
     const set=(index,col,text)=>{
-        if(col===2){if(rows[index].id||index===0)return;const parent=rows[Number(text)-1];if(parent&&parent!==rows[index])rows[index].parent_key=parent.key;}
+        if(col===2){if(index===0)return;const parent=rows[Number(text)-1];if(parent&&parent!==rows[index])rows[index].parent_key=parent.key;}
         else rows[index][columns[col]]=text;
     };
     function mark(){dirty=true;status.textContent='Perubahan belum disimpan. Menghitung…';schedule();}
@@ -21,7 +21,7 @@
             event.preventDefault();const next=row+(event.key==='ArrowUp'?-1:1);if(next>=0&&next<rows.length)focusCell(next,col);
         }
     }
-    function syncBar(){document.getElementById('sheet_address').textContent=String.fromCharCode(65+active.col)+(active.row+1);bar.value=value(rows[active.row],active.col);bar.disabled=active.col===2&&(rows[active.row].id||active.row===0);}
+    function syncBar(){document.getElementById('sheet_address').textContent=String.fromCharCode(65+active.col)+(active.row+1);bar.value=value(rows[active.row],active.col);bar.disabled=active.col===2&&active.row===0;}
     function render(){
         body.replaceChildren();
         rows.forEach((row,index)=>{
@@ -32,8 +32,8 @@
                     input=el('select');
                     if(col===2){
                         input.add(new Option(index===0?'Sasaran':'Pilih induk',''));
-                        rows.forEach((parent,i)=>{if(i!==index)input.add(new Option((i+1)+' — '+(parent.kode||'baru'),parent.key));});
-                        input.value=row.parent_key||'';input.disabled=Boolean(row.id)||index===0;
+                        rows.forEach((parent,i)=>{if(i!==index)input.add(new Option((i+1)+' — '+(parent.kode||'baru')+' · '+(parent.nama||''),parent.key));});
+                        input.value=row.parent_key||'';input.disabled=index===0;
                     }else{[...new Set([...units,row.jenis_target||''])].forEach(unit=>input.add(new Option(unit||'Pilih satuan',unit)));input.value=row.jenis_target||'';}
                 }else{input=el(col===1?'textarea':'input',col===4?'sheet-input':'');if(col!==1)input.type='text';input.value=row[column]??'';if(col===1)input.rows=2;input.autocomplete='off';}
                 input.dataset.row=index;input.dataset.col=col;input.setAttribute('aria-label',String.fromCharCode(65+col)+(index+1));
@@ -89,6 +89,7 @@
         if(rows.length<2||rows[rows.length-1].id)return;
         rows.pop();active.row=Math.min(active.row,rows.length-1);render();mark();
     });
+    document.getElementById('sheet_parent').addEventListener('change',mark);
     document.getElementById('sheet_indicator').addEventListener('change',event=>{const url=new URL(location.href);url.searchParams.set('indikator',event.target.value);location.href=url.toString();});
     document.getElementById('sheet_save').addEventListener('click',async event=>{
         const button=event.currentTarget;button.disabled=true;errors.textContent='';clearTimeout(timer);++version;
@@ -96,7 +97,7 @@
             const response=await axios.post('/save-kontrak-sheet',{jenis:initial.jenis,id_parent:document.getElementById('sheet_parent').value,rows});
             rows=response.data.rows;dirty=false;render();status.textContent='Tabel berhasil disimpan.';
             const url=new URL(location.href);url.searchParams.set('indikator',response.data.id);history.replaceState({},'',url);
-            const selector=document.getElementById('sheet_indicator');if(![...selector.options].some(option=>option.value===String(response.data.id)))selector.add(new Option(rows[0].kode+' — '+rows[0].nama,response.data.id));selector.value=String(response.data.id);document.getElementById('sheet_parent').disabled=true;
+            const selector=document.getElementById('sheet_indicator');if(![...selector.options].some(option=>option.value===String(response.data.id)))selector.add(new Option(rows[0].kode+' — '+rows[0].nama,response.data.id));selector.value=String(response.data.id);selector.selectedOptions[0].textContent=rows[0].kode+' — '+rows[0].nama;
             schedule();
         }catch(error){errors.textContent=error.response?.data?.errors?Object.values(error.response.data.errors).flat().join(' '):'Tabel belum tersimpan. Periksa koneksi lalu coba lagi.';status.textContent='Perubahan belum disimpan.';}
         finally{button.disabled=false;}

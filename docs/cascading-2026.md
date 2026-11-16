@@ -76,7 +76,7 @@ Jika baris memakai rumus tabel, nama dan satuannya masih bisa diedit melalui mod
 3. Isi atau ubah angka pada kolom E. Untuk hasil perhitungan, tulis rumus yang diawali `=`. Hasil muncul pada kolom F; tidak perlu memilih metode rumus atau pembilang/pembagi melalui beberapa form.
 4. Gunakan Tab untuk pindah sel, Enter atau panah atas/bawah untuk pindah baris. Bar formula di atas tabel memperlihatkan dan dapat mengedit sel aktif.
 5. Dukung tempel TSV dari Excel. Misalnya salin tiga angka 55, 100, 80,95 lalu tempel mulai E2; ketiganya mengisi E2:E4. Tempel beberapa kolom mengikuti urutan kolom tabel. Hasil F tidak bisa ditimpa.
-6. **+ Tambah baris** menambah baris baru di bawah tabel; kolom C menentukan induknya. Baris lama mempertahankan induk dan ID. Baris baru terakhir yang belum disimpan boleh dibatalkan dengan tombol yang tersedia.
+6. **+ Tambah baris** menambah baris baru di bawah tabel; kolom C menentukan induknya. Induk baris lama dapat dikoreksi melalui kolom C, dan Sasaran kinerja dapat diganti di pilihan atas. ID baris, realisasi, serta kaitan program kerja tetap dipertahankan. Perpindahan dibatasi pada susunan indikator yang sedang dibuka dan sasaran dalam jenis/tahun yang sama. Baris baru terakhir yang belum disimpan boleh dibatalkan dengan tombol yang tersedia.
 7. Klik **Simpan tabel** untuk menyimpan seluruh indikator dan rinciannya sebagai satu transaksi. Jika suatu isian/rumus gagal, data tidak ditulis sebagian. Catatan realisasi dan ID lama tetap dipertahankan.
 
 | Contoh | Isian rumus |

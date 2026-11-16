@@ -19,10 +19,16 @@ class KontrakTreeWriter
 
     private int $count = 0;
 
-    public function save(int $parentId, string $jenis, array $tree): Kontrak
+    private bool $allowReparent = false;
+
+    private array $movableModels = [];
+
+    public function save(int $parentId, string $jenis, array $tree, bool $allowReparent = false): Kontrak
     {
         $this->keys = $this->ids = $this->saved = [];
         $this->count = 0;
+        $this->allowReparent = $allowReparent;
+        $this->movableModels = [];
         $tree = $this->validateNode($tree, 'root', 0);
         $this->validateDependencies($tree);
 
@@ -30,6 +36,9 @@ class KontrakTreeWriter
             $parent = Kontrak::whereKey($parentId)->where('jenis', $jenis)->lockForUpdate()->first();
             if (! $parent || ! DB::table('tahuns')->where('id', $parent->id_tahun)->where('status', 'Aktif')->exists()) {
                 $this->fail('id_parent', 'Induk harus berasal dari jenis dan tahun aktif yang sama.');
+            }
+            if ($this->allowReparent) {
+                $this->prepareReparenting($tree, $parent);
             }
             $root = $this->persist($tree, $parent);
             foreach ($this->saved as [$model, $data]) {
@@ -223,13 +232,50 @@ class KontrakTreeWriter
         return (float) $value;
     }
 
+    private function prepareReparenting(array $tree, Kontrak $parent): void
+    {
+        if ($parent->id_parent !== null) {
+            $this->fail('id_parent', 'Pilih sasaran kinerja pada tingkat teratas.');
+        }
+        if (! empty($tree['id'])) {
+            $root = Kontrak::whereKey($tree['id'])->where('jenis', $parent->jenis)->where('id_tahun', $parent->id_tahun)->lockForUpdate()->first();
+            if (! $root || ! Kontrak::whereKey($root->id_parent)->whereNull('id_parent')->where('jenis', $parent->jenis)->where('id_tahun', $parent->id_tahun)->lockForUpdate()->exists()) {
+                $this->fail('root', 'Indikator harus berasal dari jenis dan tahun yang sama.');
+            }
+            $pending = [$root];
+            while ($pending) {
+                $model = array_pop($pending);
+                if (isset($this->movableModels[(string) $model->id])) {
+                    $this->fail('root', 'Susunan lama mengandung siklus.');
+                }
+                if ($model->jenis !== $parent->jenis || (string) $model->id_tahun !== (string) $parent->id_tahun) {
+                    $this->fail('root', 'Rincian harus berasal dari jenis dan tahun yang sama.');
+                }
+                $this->movableModels[(string) $model->id] = $model;
+                foreach (Kontrak::where('id_parent', $model->id)->lockForUpdate()->get() as $child) {
+                    $pending[] = $child;
+                }
+            }
+        }
+        $existing = array_map('strval', array_keys($this->movableModels));
+        $submitted = array_map('strval', array_keys($this->ids));
+        if (array_diff($existing, $submitted)) {
+            $this->fail('root', 'Rincian tersimpan harus tetap disertakan. Muat ulang bila struktur berubah.');
+        }
+        if (array_diff($submitted, $existing)) {
+            $this->fail('root', 'Baris dari indikator lain tidak boleh dipindahkan ke tabel ini.');
+        }
+    }
+
     private function persist(array $node, Kontrak $parent): Kontrak
     {
-        $model = ! empty($node['id']) ? Kontrak::whereKey($node['id'])->where('id_parent', $parent->id)->where('jenis', $parent->jenis)->where('id_tahun', $parent->id_tahun)->lockForUpdate()->first() : new Kontrak;
+        $model = empty($node['id']) ? new Kontrak : ($this->allowReparent
+            ? ($this->movableModels[(string) $node['id']] ?? null)
+            : Kontrak::whereKey($node['id'])->where('id_parent', $parent->id)->where('jenis', $parent->jenis)->where('id_tahun', $parent->id_tahun)->lockForUpdate()->first());
         if (! $model) {
             $this->fail('root', 'Ada baris di luar induk ini atau struktur telah berubah. Muat ulang halaman.');
         }
-        if ($model->exists) {
+        if ($model->exists && ! $this->allowReparent) {
             $existing = Kontrak::where('id_parent', $model->id)->lockForUpdate()->pluck('id')->map(fn ($id) => (string) $id)->all();
             $submitted = array_map('strval', array_filter(array_column($node['children'], 'id')));
             if (array_diff($existing, $submitted)) {

@@ -263,7 +263,7 @@ class KontrakController extends Controller
     public function saveSheet(KontrakSheetRequest $request, KontrakSheet $sheet, KontrakTreeWriter $writer)
     {
         $data = $request->validated();
-        $root = $writer->save((int) $data['id_parent'], $data['jenis'], $sheet->compile($data['rows']));
+        $root = $writer->save((int) $data['id_parent'], $data['jenis'], $sheet->compile($data['rows']), true);
 
         return response()->json(['id' => $root->id, 'rows' => $sheet->rows($root), 'message' => 'Tabel berhasil disimpan.']);
     }

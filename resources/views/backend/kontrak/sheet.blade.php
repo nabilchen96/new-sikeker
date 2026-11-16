@@ -18,7 +18,7 @@
             </select>
         </label>
         <label>Sasaran kinerja
-            <select id="sheet_parent" class="form-control" {{ $selected ? 'disabled' : '' }}>
+            <select id="sheet_parent" class="form-control">
                 @foreach($parents as $parent)
                     <option value="{{ $parent->id }}" {{ $selected?->id_parent == $parent->id ? 'selected' : '' }}>{{ $parent->nama }}</option>
                 @endforeach
@@ -39,7 +39,7 @@
         <button type="button" class="btn btn-outline-secondary mr-3 mb-2" id="sheet_remove" disabled>Hapus baris baru terakhir</button>
         <span id="sheet_status" class="text-muted mb-2" aria-live="polite">Siap diisi.</span>
     </div>
-    <small class="text-muted">Tab berpindah sel; Enter atau panah atas/bawah berpindah baris. Bisa menempel beberapa baris dari Excel. Angka biasa boleh memakai koma desimal; rumus memakai titik desimal atau persen. Referensi mengikuti nomor baris tabel ini. Sel kosong belum dihitung.</small>
+    <small class="text-muted">Tab berpindah sel; Enter atau panah atas/bawah berpindah baris. Bisa menempel beberapa baris dari Excel. Angka biasa boleh memakai koma desimal; rumus memakai titik desimal atau persen. Referensi mengikuti nomor baris tabel ini. Sel kosong belum dihitung. Data tersimpan, termasuk induk dan sasaran kinerja, dapat dikoreksi lalu disimpan kembali.</small>
 </div></div></div></div>
 @endsection
 @push('style')
