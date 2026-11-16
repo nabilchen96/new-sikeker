@@ -182,7 +182,7 @@
                                                                                 data-bs-level="{{ $level }}"
                                                                                 data-bs-indikator_induk="{{ $item['sasaran']->nama }}"
                                                                                 data-bs-target="{{ $kontrak->target }}"
-                                                                                data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
+                                                                                data-bs-jenis_target="">
                                                                                 <i class="bi bi-plus-circle"></i> &nbsp; Add
                                                                                 Sub
                                                                             </a>
@@ -266,8 +266,14 @@
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $row['satuan_tampilan'] === 'persen' ? '%' : '' }}
+                                                                        —
                                                                     </strong>
+                                                                @endif
+                                                            @endif
+                                                            @if ($kontrak->id_parent)
+                                                                <small class="d-block text-muted">{{ ['manual' => 'Manual', 'sum' => 'Jumlah anak', 'ratio' => 'Rasio', 'weighted_sum' => 'Jumlah berbobot', 'scale' => 'Nilai × pengali', 'offset_ratio' => 'Nilai dasar + rasio'][$row['calculation']['type']] ?? 'Periksa rumus' }}</small>
+                                                                @if ($row['calculation']['error'])
+                                                                    <small class="d-block text-danger">{{ $row['calculation']['error'] }}</small>
                                                                 @endif
                                                             @endif
                                                         </td>
@@ -287,7 +293,7 @@
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $level === 0 ? '%' : '' }}
+                                                                        —
                                                                     </strong>
                                                                 @endif
                                                             @endif
@@ -326,7 +332,7 @@
                                                                             data-bs-level="{{ $level + 1 }}"
                                                                             data-bs-indikator_induk="{{ $kontrak->nama }}"
                                                                             data-bs-target="{{ $kontrak->target }}"
-                                                                            data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
+                                                                            data-bs-jenis_target="">
                                                                             <i class="bi bi-plus-circle"></i> &nbsp; Add
                                                                             Sub
                                                                         </a>
@@ -504,7 +510,7 @@
                                                                                 data-bs-level="{{ $level }}"
                                                                                 data-bs-indikator_induk="{{ $item['sasaran']->nama }}"
                                                                                 data-bs-target="{{ $kontrak->target }}"
-                                                                                data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
+                                                                                data-bs-jenis_target="">
                                                                                 <i class="bi bi-plus-circle"></i> &nbsp;
                                                                                 Add
                                                                                 Sub
@@ -591,8 +597,14 @@
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $row['satuan_tampilan'] === 'persen' ? '%' : '' }}
+                                                                        —
                                                                     </strong>
+                                                                @endif
+                                                            @endif
+                                                            @if ($kontrak->id_parent)
+                                                                <small class="d-block text-muted">{{ ['manual' => 'Manual', 'sum' => 'Jumlah anak', 'ratio' => 'Rasio', 'weighted_sum' => 'Jumlah berbobot', 'scale' => 'Nilai × pengali', 'offset_ratio' => 'Nilai dasar + rasio'][$row['calculation']['type']] ?? 'Periksa rumus' }}</small>
+                                                                @if ($row['calculation']['error'])
+                                                                    <small class="d-block text-danger">{{ $row['calculation']['error'] }}</small>
                                                                 @endif
                                                             @endif
                                                         </td>
@@ -612,7 +624,7 @@
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $level === 0 ? '%' : '' }}
+                                                                        —
                                                                     </strong>
                                                                 @endif
                                                             @endif
@@ -652,7 +664,7 @@
                                                                             data-bs-level="{{ $level + 1 }}"
                                                                             data-bs-indikator_induk="{{ $kontrak->nama }}"
                                                                             data-bs-target="{{ $kontrak->target }}"
-                                                                            data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
+                                                                            data-bs-jenis_target="">
                                                                             <i class="bi bi-plus-circle"></i> &nbsp; Add
                                                                             Sub
                                                                         </a>
@@ -759,7 +771,7 @@
     </div>
 
     <div class="modal fade" id="modalTambahBagian" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <form id="formTambahBagian">
                     <div class="modal-header p-3">
@@ -791,15 +803,17 @@
                                 placeholder="Kode / Urutan">
                         </div>
 
-                        <div class="form-group">
-                            <label>Target</label>
+                        @include('backend.kontrak._calculation_fields')
+                        <div class="form-group" id="manual_target_group">
+                            <label>Target manual</label>
                             <input type="text" class="form-control" name="target" id="target"
-                                placeholder="Target">
+                                placeholder="Contoh: 95,57 atau 15450000000" inputmode="decimal">
                         </div>
 
                         <div class="form-group">
                             <label>Satuan</label>
                             <select name="jenis_target" id="jenis_target" class="form-control">
+                                <option value="">Pilih satuan</option>
                                 <option>orang</option>
                                 <option>dokumen</option>
                                 <option>file</option>
@@ -811,6 +825,7 @@
                                 <option>indeks</option>
                                 <option>unit</option>
                                 <option>layanan</option>
+                                <option>jumlah</option>
                             </select>
                         </div>
                     </div>
@@ -882,5 +897,6 @@
     </script>
 @endsection
 @push('script')
+    <script>window.kontrakCalculationForms = @json($calculationForms);</script>
     <script src="{{ asset('js/backend/kontrak/index.js') }}"></script>
 @endpush

@@ -19,6 +19,13 @@ class Kontrak extends Model
         'id_tahun',
         'target',
         'jenis_target',
+        'calculation_type',
+        'calculation_config',
+    ];
+
+    protected $casts = [
+        'calculation_config' => 'array',
+        'target' => 'decimal:6',
     ];
 
     /**
@@ -38,7 +45,7 @@ class Kontrak extends Model
             ->orderBy('kode');
     }
 
-     /**
+    /**
      * Child secara recursive.
      *
      * Contoh:
@@ -79,7 +86,6 @@ class Kontrak extends Model
             'id_kontrak'
         );
     }
-
 
     public function users()
     {

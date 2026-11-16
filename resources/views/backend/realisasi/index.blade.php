@@ -150,12 +150,16 @@
                                                             <strong>
                                                                 {{ $item['ikk']->kode }}
                                                                 {{ $item['ikk']->nama }}
+                                                                <small class="d-block">Target: {{ $item['total_target'] !== null ? number_format($item['total_target'], 2, ',', '.') : '—' }} {{ $item['unit'] }};
+                                                                    Realisasi: {{ $item['total_realisasi_kumulatif'] !== null ? number_format($item['total_realisasi_kumulatif'], 2, ',', '.') : '—' }} {{ $item['unit'] }}</small>
+                                                                @if ($item['calculation_error'])
+                                                                    <small class="d-block">{{ $item['calculation_error'] }}</small>
+                                                                @endif
                                                             </strong>
                                                         </th>
 
                                                         <th class="text-center align-middle">
-                                                            {{ number_format($item['persentase'], 2, ',', '.') }}
-                                                            %
+                                                            {{ $item['persentase'] !== null ? number_format($item['persentase'], 2, ',', '.') . ' %' : '—' }}
                                                         </th>
                                                     </tr>
                                                 </thead>
@@ -211,7 +215,7 @@
 
                                                             <td class="text-center">
                                                                 {{ number_format($indikator->target, 0, ',', '.') }}
-                                                                {{-- {{ $indikator->jenis_target }} --}}
+                                                                {{ $indikator->jenis_target }}
                                                             </td>
 
                                                             <td class="text-center">
@@ -455,12 +459,16 @@
                                                             <strong>
                                                                 {{ $item['ikk']->kode }}
                                                                 {{ $item['ikk']->nama }}
+                                                                <small class="d-block">Target: {{ $item['total_target'] !== null ? number_format($item['total_target'], 2, ',', '.') : '—' }} {{ $item['unit'] }};
+                                                                    Realisasi: {{ $item['total_realisasi_kumulatif'] !== null ? number_format($item['total_realisasi_kumulatif'], 2, ',', '.') : '—' }} {{ $item['unit'] }}</small>
+                                                                @if ($item['calculation_error'])
+                                                                    <small class="d-block">{{ $item['calculation_error'] }}</small>
+                                                                @endif
                                                             </strong>
                                                         </th>
 
                                                         <th class="text-center align-middle">
-                                                            {{ number_format($item['persentase'], 2, ',', '.') }}
-                                                            %
+                                                            {{ $item['persentase'] !== null ? number_format($item['persentase'], 2, ',', '.') . ' %' : '—' }}
                                                         </th>
                                                     </tr>
                                                 </thead>
@@ -516,7 +524,7 @@
 
                                                             <td class="text-center">
                                                                 {{ number_format($indikator->target, 0, ',', '.') }}
-                                                                {{-- {{ $indikator->jenis_target }} --}}
+                                                                {{ $indikator->jenis_target }}
                                                             </td>
 
                                                             <td class="text-center">

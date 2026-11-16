@@ -66,22 +66,116 @@ $('#modalTambahBagian').on('show.bs.modal', function (event) {
         console.log(level);
 
 
-        if (level === 0) {
-            document.getElementById('target').closest('.form-group').style.display = 'none';
-            document.getElementById('jenis_target').closest('.form-group').style.display = 'none';
-        } else {
-
-            document.getElementById('target').closest('.form-group').style.display = '';
-            document.getElementById('jenis_target').closest('.form-group').style.display = '';
-
-            modal.find('#target').val(target);
-            modal.find('#jenis_target').val(jenis_target);
+        modal.find('#target').val(id ? target : '');
+        modal.find('#jenis_target').val(id ? jenis_target : 'orang');
+        if (id && jenis_target && !modal.find('#jenis_target').val()) {
+            modal.find('#jenis_target').append(new Option(jenis_target, jenis_target, true, true));
         }
+
 
 
     }
 });
 
+
+// Calculation controls are scoped to this modal so duplicate legacy IDs do not leak.
+const calculationForm = document.getElementById('formTambahBagian');
+let calculationChildren = [];
+let effectiveCalculationType = 'manual';
+const calculationLabels = {manual: 'Nilai manual', sum: 'Jumlah anak', ratio: 'Pembilang ÷ pembagi × pengali', weighted_sum: 'Jumlah berbobot', scale: 'Nilai anak × pengali', offset_ratio: 'Nilai dasar + rasio'};
+const decimal = value => Number(String(value).replace(',', '.'));
+function updateCalculationPreview() {
+    const selected = calculationForm.querySelector('#calculation_type').value;
+    const type = selected || effectiveCalculationType;
+    calculationForm.querySelectorAll('.calculation-parameter').forEach(group => {
+        const visible = group.dataset.calculationTypes.split(' ').includes(type);
+        group.hidden = !visible;
+        group.querySelectorAll('input, select').forEach(input => input.disabled = !visible || !selected);
+    });
+    calculationForm.querySelector('#manual_target_group').hidden = type !== 'manual';
+    const preview = calculationForm.querySelector('#calculation_preview');
+    const read = selector => {
+        const child = calculationChildren.find(item => String(item.id) === calculationForm.querySelector(selector).value);
+        if (!child || child.target === null) throw new Error('Pilih sumber yang memiliki target lengkap.');
+        return Number(child.target);
+    };
+    try {
+        let result;
+        if (type === 'manual') result = calculationForm.querySelector('#target').value === '' ? null : decimal(calculationForm.querySelector('#target').value);
+        else if (type === 'sum') {
+            if (!calculationChildren.length) throw new Error('Tambahkan anak sebagai sumber.');
+            // A legacy profile can select a subset of direct children.
+            const profile = calculationForm.dataset.profileIds ? JSON.parse(calculationForm.dataset.profileIds) : null;
+            const sources = !selected && profile ? calculationChildren.filter(child => profile.includes(String(child.id))) : calculationChildren;
+            if (sources.some(child => child.target === null)) throw new Error('Lengkapi target sumber.');
+            if (!sources.length || (!selected && profile && sources.length !== profile.length)) throw new Error('Sumber profil belum lengkap.');
+            result = sources.reduce((sum, child) => sum + Number(child.target), 0);
+        } else if (type === 'weighted_sum') {
+            result = 0;
+            calculationForm.querySelectorAll('#calculation_weights input').forEach(input => {
+                const weight = decimal(input.value || 0);
+                const child = calculationChildren.find(item => String(item.id) === input.dataset.childId);
+                if (weight && child.target === null) throw new Error('Target anak berbobot belum lengkap.');
+                result += Number(child.target) * weight / 100;
+            });
+        } else {
+            const factor = decimal(calculationForm.querySelector('#calculation_factor').value);
+            if (type === 'scale') result = read('#calculation_source') * factor;
+            else {
+                const denominator = read('#calculation_denominator');
+                if (!denominator) throw new Error('Pembagi nol; hasil belum dapat dihitung.');
+                result = read('#calculation_numerator') / denominator * factor;
+                if (type === 'offset_ratio') result += decimal(calculationForm.querySelector('#calculation_baseline').value);
+            }
+        }
+        if (result !== null && !Number.isFinite(result)) throw new Error('Isi angka yang valid.');
+        const unit = calculationForm.querySelector('#jenis_target').value;
+        preview.textContent = (selected ? '' : 'Profil Excel 2026 — ') + calculationLabels[type] + ': ' + (result === null ? 'belum diisi' : result.toLocaleString('id-ID', {maximumFractionDigits: 2}) + (unit === 'persen' ? '%' : ' ' + unit));
+    } catch (error) {
+        preview.textContent = calculationLabels[type] + ': ' + error.message;
+    }
+}
+$('#modalTambahBagian').on('show.bs.modal', function (event) {
+    const id = $(event.relatedTarget).data('bs-id');
+    const settings = id ? window.kontrakCalculationForms[String(id)] : null;
+    calculationChildren = settings ? settings.children : [];
+    effectiveCalculationType = settings ? settings.effective_type : 'manual';
+    if (settings && !calculationForm.querySelector('#jenis_target').value) {
+        calculationForm.querySelector('#jenis_target').value = settings.unit || '';
+    }
+    const config = settings ? (settings.config || settings.effective_config || {}) : {};
+    calculationForm.querySelector('#calculation_type').value = settings ? (settings.type || '') : 'manual';
+    calculationForm.dataset.profileIds = config.child_ids ? JSON.stringify(config.child_ids.map(String)) : '';
+    calculationForm.querySelectorAll('.calculation-source').forEach(select => {
+        select.replaceChildren(new Option('Pilih anak langsung', ''));
+        calculationChildren.forEach(child => select.add(new Option(child.label, child.id)));
+    });
+    calculationForm.querySelector('#calculation_numerator').value = config.numerator_id || '';
+    calculationForm.querySelector('#calculation_denominator').value = config.denominator_id || '';
+    calculationForm.querySelector('#calculation_source').value = config.source_id || '';
+    calculationForm.querySelector('#calculation_factor').value = config.factor ?? 100;
+    calculationForm.querySelector('#calculation_baseline').value = config.baseline ?? 0;
+    const weights = calculationForm.querySelector('#calculation_weights');
+    weights.replaceChildren();
+    calculationChildren.forEach(child => {
+        const label = document.createElement('label');
+        label.className = 'd-block';
+        label.append(document.createTextNode(child.label + ' (%)'));
+        const input = document.createElement('input');
+        input.className = 'form-control';
+        input.name = 'calculation_config[weights][' + child.id + ']';
+        input.inputMode = 'decimal';
+        input.dataset.childId = String(child.id);
+        input.value = config.weights?.[child.id] ?? 0;
+        label.append(input);
+        weights.append(label);
+    });
+    calculationForm.querySelectorAll('.calculation-source').forEach(select => select.disabled = false);
+    calculationForm.querySelector('#respon_error').textContent = '';
+    updateCalculationPreview();
+});
+calculationForm.addEventListener('input', updateCalculationPreview);
+calculationForm.addEventListener('change', updateCalculationPreview);
 
 // =========================
 // FORM SUBMIT (AJAX)
@@ -135,15 +229,15 @@ formTambahBagian.onsubmit = function (e) {
 
     let formData = new FormData(formTambahBagian);
 
-    $("#respon_error").html("");
-    $("#tombol_kirim").prop("disabled", true);
+    $(formTambahBagian).find("#respon_error").html("");
+    $(formTambahBagian).find("#tombol_kirim").prop("disabled", true);
 
     axios.post(
         formData.get('id') == "" ? "/store-bagian" : "/update-bagian",
         formData
     )
         .then(res => {
-            $("#tombol_kirim").prop("disabled", false);
+            $(formTambahBagian).find("#tombol_kirim").prop("disabled", false);
 
             if (res.data.responCode == 1) {
                 Swal.fire({
@@ -162,12 +256,14 @@ formTambahBagian.onsubmit = function (e) {
                 Object.entries(res.data.respon).forEach(([field, msg]) => {
                     msg.forEach(m => err += `<li>${m}</li>`);
                 });
-                $("#respon_error").html(err);
+                $(formTambahBagian).find("#respon_error").html(err);
             }
         })
         .catch(err => {
-            $("#tombol_kirim").prop("disabled", false);
-            console.error(err);
+            $(formTambahBagian).find("#tombol_kirim").prop("disabled", false);
+            const errors = err.response?.data?.errors;
+            const box = formTambahBagian.querySelector('#respon_error');
+            box.textContent = errors ? Object.values(errors).flat().join(' ') : 'Data belum tersimpan. Periksa koneksi lalu coba lagi.';
         });
 }
 
