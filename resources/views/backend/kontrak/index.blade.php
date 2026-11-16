@@ -266,7 +266,7 @@
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $level === 0 ?? '%' }}
+                                                                        0 {{ $row['satuan_tampilan'] === 'persen' ? '%' : '' }}
                                                                     </strong>
                                                                 @endif
                                                             @endif
@@ -591,7 +591,7 @@
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $level === 0 ?? '%' }}
+                                                                        0 {{ $row['satuan_tampilan'] === 'persen' ? '%' : '' }}
                                                                     </strong>
                                                                 @endif
                                                             @endif
