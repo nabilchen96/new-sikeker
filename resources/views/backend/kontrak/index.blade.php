@@ -46,6 +46,9 @@
                 <div class="card-body">
 
 
+                    @if(Auth::user()->role == 'Admin' || Auth::user()->role_kontrak == 'PK' || Auth::user()->role_kontrak == 'KPI')
+                        <a class="btn btn-outline-primary mb-3" href="{{ url('kontrak-sheet') }}?jenis={{ request('jenis', 'PK') }}">Edit seperti Excel</a>
+                    @endif
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a href="{{ url('kontrak') }}?jenis=PK"
@@ -182,9 +185,8 @@
                                                                                 data-bs-level="{{ $level }}"
                                                                                 data-bs-indikator_induk="{{ $item['sasaran']->nama }}"
                                                                                 data-bs-target="{{ $kontrak->target }}"
-                                                                                data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
-                                                                                <i class="bi bi-plus-circle"></i> &nbsp; Add
-                                                                                Sub
+                                                                                data-bs-jenis_target="">
+                                                                                <i class="bi bi-plus-circle"></i> &nbsp; Tambah IKK
                                                                             </a>
                                                                             <a class="dropdown-item text-success"
                                                                                 data-toggle="modal" data-target="#modalSk"
@@ -193,9 +195,9 @@
                                                                                 data-bs-nama="{{ $item['sasaran']->nama }}">
                                                                                 <i class="bi bi-grid"></i> &nbsp; Edit
                                                                             </a>
-                                                                            @if ($kontrak->childrenRecursive->isEmpty())
+                                                                            @if ($item['sasaran']->childrenRecursive->isEmpty())
                                                                                 <a class="dropdown-item text-danger"
-                                                                                    onclick="hapusDataSasaranKinerja({{ $kontrak->id }})">
+                                                                                    onclick="hapusDataSasaranKinerja({{ $item['sasaran']->id }})">
                                                                                     <i class="bi bi-trash"></i> &nbsp; Hapus
                                                                                 </a>
                                                                             @endif
@@ -258,16 +260,21 @@
                                                                 @if ($row['total_target'] !== null)
                                                                     <strong>
 
-                                                                        {{ rtrim(rtrim(number_format(floor($row['total_target'] * 100) / 100, 2, ',', '.'), '0'), ',') }}
-                                                                        @if (strtoupper(trim($kontrak->kode ?? '')) && str_starts_with(strtoupper(trim($kontrak->kode ?? '')), 'IKK'))
+                                                                        {{ rtrim(rtrim(number_format($row['total_target'], 2, ',', '.'), '0'), ',') }}
+                                                                        @if ($row['satuan_tampilan'] === 'persen')
                                                                             %
                                                                         @endif
 
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $level === 0 ?? '%' }}
+                                                                        —
                                                                     </strong>
+                                                                @endif
+                                                            @endif
+                                                            @if ($kontrak->id_parent)
+                                                                @if ($row['calculation']['error'])
+                                                                    <small class="d-block text-danger">{{ $row['calculation']['error'] }}</small>
                                                                 @endif
                                                             @endif
                                                         </td>
@@ -287,7 +294,7 @@
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $level === 0 ? '%' : '' }}
+                                                                        —
                                                                     </strong>
                                                                 @endif
                                                             @endif
@@ -326,9 +333,8 @@
                                                                             data-bs-level="{{ $level + 1 }}"
                                                                             data-bs-indikator_induk="{{ $kontrak->nama }}"
                                                                             data-bs-target="{{ $kontrak->target }}"
-                                                                            data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
-                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Add
-                                                                            Sub
+                                                                            data-bs-jenis_target="">
+                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Tambah rincian
                                                                         </a>
                                                                         @if ($level === 0)
                                                                             {{-- <a class="dropdown-item text-info" data-toggle="modal"
@@ -499,15 +505,13 @@
                                                                                 data-target="#modalTambahBagian"
                                                                                 href="javascript:void(0)"
                                                                                 {{-- data-bs-id="{{ $kontrak->id }}" --}}
-                                                                                {{-- data-bs-id_parent="{{ $kontrak->id_parent }}" --}}
-                                                                                data-bs-id_parent="{{ $kontrak->id }}"
+                                                                                data-bs-id_parent="{{ $item['sasaran']->id }}"
                                                                                 data-bs-level="{{ $level }}"
                                                                                 data-bs-indikator_induk="{{ $item['sasaran']->nama }}"
                                                                                 data-bs-target="{{ $kontrak->target }}"
-                                                                                data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
+                                                                                data-bs-jenis_target="">
                                                                                 <i class="bi bi-plus-circle"></i> &nbsp;
-                                                                                Add
-                                                                                Sub
+                                                                                Tambah IKU
                                                                             </a>
                                                                             <a class="dropdown-item text-success"
                                                                                 data-toggle="modal" data-target="#modalSk"
@@ -516,9 +520,9 @@
                                                                                 data-bs-nama="{{ $item['sasaran']->nama }}">
                                                                                 <i class="bi bi-grid"></i> &nbsp; Edit
                                                                             </a>
-                                                                            @if ($kontrak->childrenRecursive->isEmpty())
+                                                                            @if ($item['sasaran']->childrenRecursive->isEmpty())
                                                                                 <a class="dropdown-item text-danger"
-                                                                                    onclick="hapusDataSasaranKinerja({{ $kontrak->id }})">
+                                                                                    onclick="hapusDataSasaranKinerja({{ $item['sasaran']->id }})">
                                                                                     <i class="bi bi-trash"></i> &nbsp;
                                                                                     Hapus
                                                                                 </a>
@@ -584,15 +588,20 @@
 
                                                                         {{ rtrim(rtrim(number_format($row['total_target'], 2, ',', '.'), '0'), ',') }}
 
-                                                                        @if (strtoupper(trim($kontrak->kode ?? '')) && str_starts_with(strtoupper(trim($kontrak->kode ?? '')), 'IKK'))
+                                                                        @if ($row['satuan_tampilan'] === 'persen')
                                                                             %
                                                                         @endif
 
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $level === 0 ?? '%' }}
+                                                                        —
                                                                     </strong>
+                                                                @endif
+                                                            @endif
+                                                            @if ($kontrak->id_parent)
+                                                                @if ($row['calculation']['error'])
+                                                                    <small class="d-block text-danger">{{ $row['calculation']['error'] }}</small>
                                                                 @endif
                                                             @endif
                                                         </td>
@@ -612,7 +621,7 @@
                                                                     </strong>
                                                                 @else
                                                                     <strong>
-                                                                        0 {{ $level === 0 ? '%' : '' }}
+                                                                        —
                                                                     </strong>
                                                                 @endif
                                                             @endif
@@ -652,9 +661,8 @@
                                                                             data-bs-level="{{ $level + 1 }}"
                                                                             data-bs-indikator_induk="{{ $kontrak->nama }}"
                                                                             data-bs-target="{{ $kontrak->target }}"
-                                                                            data-bs-jenis_target="{{ $kontrak->jenis_kontrak }}">
-                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Add
-                                                                            Sub
+                                                                            data-bs-jenis_target="">
+                                                                            <i class="bi bi-plus-circle"></i> &nbsp; Tambah rincian
                                                                         </a>
                                                                         @if ($level === 0)
                                                                             {{-- <a class="dropdown-item text-info" data-toggle="modal"
@@ -678,6 +686,10 @@
                                                                             data-bs-kode="{{ $kontrak->kode }}">
                                                                             <i class="bi bi-grid"></i> &nbsp; Edit
                                                                         </a>
+                                                                        @if ($level > 0)
+                                                                            <a class="dropdown-item text-primary" href="javascript:void(0)"
+                                                                                onclick="pindahkanKeSasaran({{ $kontrak->id }})">Pindahkan langsung ke sasaran</a>
+                                                                        @endif
                                                                         @if ($kontrak->childrenRecursive->isEmpty())
                                                                             <a class="dropdown-item text-danger"
                                                                                 onclick="hapusDataBagian({{ $kontrak->id }})">
@@ -758,12 +770,13 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalTambahBagian" tabindex="-1">
+    <div class="modal fade" id="modalTambahBagian" tabindex="-1" role="dialog" aria-labelledby="bagianModalTitle">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="formTambahBagian">
                     <div class="modal-header p-3">
-                        <h5 class="modal-title m-2">Form Sub Bagian</h5>
+                        <h5 class="modal-title m-2" id="bagianModalTitle">Data Indikator</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><span aria-hidden="true">&times;</span></button>
                     </div>
 
                     <div class="modal-body">
@@ -775,13 +788,13 @@
 
                         <div class="form-group">
                             <label>Indikator Induk</label>
-                            <textarea id="indikator_induk" class="form-control" cols="30" rows="5" placeholder="Sasaran Kinerja"
+                            <textarea id="indikator_induk" class="form-control" cols="30" rows="2" placeholder="Sasaran Kinerja"
                                 readonly></textarea>
                         </div>
 
                         <div class="form-group">
                             <label>Sub Indikator</label>
-                            <textarea name="sub_indikator" id="sub_indikator" class="form-control" cols="30" rows="5"
+                            <textarea name="sub_indikator" id="sub_indikator" class="form-control" cols="30" rows="2"
                                 placeholder="Sub Indikator"></textarea>
                         </div>
 
@@ -791,15 +804,16 @@
                                 placeholder="Kode / Urutan">
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="manual_target_group">
                             <label>Target</label>
                             <input type="text" class="form-control" name="target" id="target"
-                                placeholder="Target">
+                                placeholder="Contoh: 95,57 atau 15450000000" inputmode="decimal">
                         </div>
 
                         <div class="form-group">
                             <label>Satuan</label>
                             <select name="jenis_target" id="jenis_target" class="form-control">
+                                <option value="">Pilih satuan</option>
                                 <option>orang</option>
                                 <option>dokumen</option>
                                 <option>file</option>
@@ -811,13 +825,15 @@
                                 <option>indeks</option>
                                 <option>unit</option>
                                 <option>layanan</option>
+                                <option>jumlah</option>
                             </select>
                         </div>
+                        @include('backend.kontrak._calculation_fields')
                     </div>
 
                     <div class="modal-footer p-3">
-                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
-                        <button id="tombol_kirim" class="btn btn-primary btn-sm">Submit</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
+                        <button type="submit" id="tombol_kirim" class="btn btn-primary btn-sm">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -882,5 +898,6 @@
     </script>
 @endsection
 @push('script')
-    <script src="{{ asset('js/backend/kontrak/index.js') }}"></script>
+    <script>window.kontrakCalculationForms = @json($calculationForms);</script>
+    <script src="{{ asset('js/backend/kontrak/index.js') }}?v={{ filemtime(public_path('js/backend/kontrak/index.js')) }}"></script>
 @endpush

@@ -1,0 +1,1442 @@
+{
+  "source": "Cascading PK dan KPI 2026, E7:E126",
+  "nodes": [
+    {
+      "id": "7",
+      "kode": "IKK 1",
+      "nama": "Tingkat Penyerapan Diklat Pembentukan SDM Transportasi Udara yang Berkompetensi",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 91.45299145299145,
+      "cell": "E7",
+      "formula": "=E8/E9*100",
+      "children": [
+        {
+          "id": "8",
+          "kode": "A",
+          "nama": "Jumlah Lulusan Diklat Pembentukan pada Tahun 2025 yang telah bekerja pada tahun 2026",
+          "jenis": "PK",
+          "target": 107.0,
+          "jenis_target": "orang",
+          "expected": 107.0,
+          "cell": "E8",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "9",
+          "kode": "B",
+          "nama": "Jumlah Lulusan Diklat Pembentukan Transportasi Tahun 2024 yang Telah Bekerja pada Tahun 2025",
+          "jenis": "PK",
+          "target": 117.0,
+          "jenis_target": "orang",
+          "expected": 117.0,
+          "cell": "E9",
+          "formula": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "kode": "IKK 2",
+      "nama": "Tingkat Lulusan SOM Transportasi yang Bersertifikat Kompetensi",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 95.57109557109557,
+      "cell": "E10",
+      "formula": "=E11/E16*100",
+      "children": [
+        {
+          "id": "11",
+          "kode": "A",
+          "nama": "Jumlah Lulusan Diklat Transportasi pada Tahun 2026",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 820.0,
+          "cell": "E11",
+          "formula": "=E12+E13+E14+E15",
+          "children": [
+            {
+              "id": "12",
+              "kode": "1",
+              "nama": "Diklat Pembentukan",
+              "jenis": "PK",
+              "target": 54.0,
+              "jenis_target": null,
+              "expected": 54.0,
+              "cell": "E12",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "13",
+              "kode": "2",
+              "nama": "Diklat Teknis",
+              "jenis": "PK",
+              "target": 106.0,
+              "jenis_target": null,
+              "expected": 106.0,
+              "cell": "E13",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "14",
+              "kode": "3",
+              "nama": "Diklat Pemberdayaan Masyarakat",
+              "jenis": "PK",
+              "target": 660.0,
+              "jenis_target": null,
+              "expected": 660.0,
+              "cell": "E14",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "15",
+              "kode": "4",
+              "nama": "Diklat Peningkatan Kapasitas SDM",
+              "jenis": "PK",
+              "target": 0.0,
+              "jenis_target": null,
+              "expected": 0.0,
+              "cell": "E15",
+              "formula": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "16",
+          "kode": "B",
+          "nama": "Target Lulusan Diklat Transportasi pada Tahun 2026",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 858.0,
+          "cell": "E16",
+          "formula": "=E17+E18+E19+E20",
+          "children": [
+            {
+              "id": "17",
+              "kode": "1",
+              "nama": "Diklat Pembentukan",
+              "jenis": "PK",
+              "target": 54.0,
+              "jenis_target": null,
+              "expected": 54.0,
+              "cell": "E17",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "18",
+              "kode": "2",
+              "nama": "Diklat Teknis Diklat Teknis",
+              "jenis": "PK",
+              "target": 144.0,
+              "jenis_target": null,
+              "expected": 144.0,
+              "cell": "E18",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "19",
+              "kode": "3",
+              "nama": "Diklat Pemberdayaan Masyarakat",
+              "jenis": "PK",
+              "target": 660.0,
+              "jenis_target": null,
+              "expected": 660.0,
+              "cell": "E19",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "20",
+              "kode": "4",
+              "nama": "Diklat Peningkatan Kapasitas SDM",
+              "jenis": "PK",
+              "target": 0.0,
+              "jenis_target": null,
+              "expected": 0.0,
+              "cell": "E20",
+              "formula": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "21",
+      "kode": "IKK 3",
+      "nama": "Persentase Peserta Diklat Transportasi",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 93.51851851851852,
+      "cell": "E21",
+      "formula": "=E22/E26*100",
+      "children": [
+        {
+          "id": "22",
+          "kode": "A",
+          "nama": "Jumlah Lulusan Diklat Pembentukan Program Pola Pembibitan  Pada Tahun 2025",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 1010.0,
+          "cell": "E22",
+          "formula": "=SUM(E23:E25)",
+          "children": [
+            {
+              "id": "23",
+              "kode": "1",
+              "nama": "Diklat Pembentukan",
+              "jenis": "PK",
+              "target": 206.0,
+              "jenis_target": null,
+              "expected": 206.0,
+              "cell": "E23",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "24",
+              "kode": "2",
+              "nama": "Diklat Teknis",
+              "jenis": "PK",
+              "target": 144.0,
+              "jenis_target": null,
+              "expected": 144.0,
+              "cell": "E24",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "25",
+              "kode": "3",
+              "nama": "Diklat Pemberdayaan Masyarakat",
+              "jenis": "PK",
+              "target": 660.0,
+              "jenis_target": null,
+              "expected": 660.0,
+              "cell": "E25",
+              "formula": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "26",
+          "kode": "B",
+          "nama": "Jumlah Peserta Diklat Transportasi pada Tahun 2026",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 1080.0,
+          "cell": "E26",
+          "formula": "=SUM(E27:E29)",
+          "children": [
+            {
+              "id": "27",
+              "kode": "1",
+              "nama": "Diklat Pembentukan",
+              "jenis": "PK",
+              "target": 276.0,
+              "jenis_target": null,
+              "expected": 276.0,
+              "cell": "E27",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "28",
+              "kode": "2",
+              "nama": "Diklat Teknis",
+              "jenis": "PK",
+              "target": 144.0,
+              "jenis_target": null,
+              "expected": 144.0,
+              "cell": "E28",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "29",
+              "kode": "3",
+              "nama": "Diklat Pemberdayaan Masyarakat",
+              "jenis": "PK",
+              "target": 660.0,
+              "jenis_target": null,
+              "expected": 660.0,
+              "cell": "E29",
+              "formula": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "30",
+      "kode": "IKK 4",
+      "nama": "Tingkat Pemenuhan Akreditasi dan Sertifikasi",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 86.6666666666667,
+      "cell": "E30",
+      "formula": "=E31+E33",
+      "children": [
+        {
+          "id": "31",
+          "kode": "A",
+          "nama": "Bobot 60%",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "persen",
+          "expected": 60.0,
+          "cell": "E31",
+          "formula": "=E32*60",
+          "children": [
+            {
+              "id": "32",
+              "kode": "1",
+              "nama": "Akreditasi Lembaga",
+              "jenis": "PK",
+              "target": 1.0,
+              "jenis_target": "dokumen",
+              "expected": 1.0,
+              "cell": "E32",
+              "formula": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "33",
+          "kode": "B",
+          "nama": "Bobor 40%",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "persen",
+          "expected": 26.666666666666664,
+          "cell": "E33",
+          "formula": "=E34/E35*40",
+          "children": [
+            {
+              "id": "34",
+              "kode": "1",
+              "nama": "Jumlah Program Studi Terakreditasi Minimal \"Baik Sekali\"",
+              "jenis": "PK",
+              "target": 2.0,
+              "jenis_target": "jumlah",
+              "expected": 2.0,
+              "cell": "E34",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "35",
+              "kode": "2",
+              "nama": "Jumlah Seluruh Program Studi",
+              "jenis": "PK",
+              "target": 3.0,
+              "jenis_target": "jumlah",
+              "expected": 3.0,
+              "cell": "E35",
+              "formula": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "36",
+      "kode": "IKK 5",
+      "nama": "lndeks Peningkatan SOM Transportasi",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 93.922,
+      "cell": "E36",
+      "formula": "=E37+E39",
+      "children": [
+        {
+          "id": "37",
+          "kode": "A",
+          "nama": "Bobot 40%",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "persen",
+          "expected": 36.580000000000005,
+          "cell": "E37",
+          "formula": "=E38*40%",
+          "children": [
+            {
+              "id": "38",
+              "kode": "1",
+              "nama": "Persentase Penyerapan Lulusan Diklat Pembentukan",
+              "jenis": "PK",
+              "target": 91.45,
+              "jenis_target": null,
+              "expected": 91.45,
+              "cell": "E38",
+              "formula": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "39",
+          "kode": "B",
+          "nama": "Bobot 60%",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "persen",
+          "expected": 57.34199999999999,
+          "cell": "E39",
+          "formula": "=E40*60%",
+          "children": [
+            {
+              "id": "40",
+              "kode": "1",
+              "nama": "Persentase Tingkat Lulusan SOM Transportasi yang bersertifkat Kompetensi",
+              "jenis": "PK",
+              "target": 95.57,
+              "jenis_target": null,
+              "expected": 95.57,
+              "cell": "E40",
+              "formula": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "41",
+      "kode": "IKK 6",
+      "nama": "Tingkat Pemenuhan ASN Transportasi Program Pembentukan",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 100.0,
+      "cell": "E41",
+      "formula": "=E42/E46*100",
+      "children": [
+        {
+          "id": "42",
+          "kode": "A",
+          "nama": "Jumlah Lulusan Diklat Pembentukan Program Pola Pembibitan pada tahun 2026",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 46.0,
+          "cell": "E42",
+          "formula": "=E43+E44+E45",
+          "children": [
+            {
+              "id": "43",
+              "kode": "1",
+              "nama": "Diploma IV Teknologi Rekayasa Bandar Udara",
+              "jenis": "PK",
+              "target": 22.0,
+              "jenis_target": null,
+              "expected": 22.0,
+              "cell": "E43",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "44",
+              "kode": "2",
+              "nama": "Diploma III Manajemen Bandar Udara",
+              "jenis": "PK",
+              "target": 0.0,
+              "jenis_target": null,
+              "expected": 0.0,
+              "cell": "E44",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "45",
+              "kode": "3",
+              "nama": "Diploma III Penyelamatan dan Pemadaman Kebakaran Penerbangan",
+              "jenis": "PK",
+              "target": 24.0,
+              "jenis_target": null,
+              "expected": 24.0,
+              "cell": "E45",
+              "formula": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "46",
+          "kode": "B",
+          "nama": "Target Lulusan Diklat Pembentukan Program Pola Pembibitan pada tahun 2026",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 46.0,
+          "cell": "E46",
+          "formula": "=E47+E48+E49",
+          "children": [
+            {
+              "id": "47",
+              "kode": "1",
+              "nama": "Diploma IV Teknologi Rekayasa Bandar Udara",
+              "jenis": "PK",
+              "target": 22.0,
+              "jenis_target": null,
+              "expected": 22.0,
+              "cell": "E47",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "48",
+              "kode": "2",
+              "nama": "Diploma III Manajemen Bandar Udara",
+              "jenis": "PK",
+              "target": 0.0,
+              "jenis_target": null,
+              "expected": 0.0,
+              "cell": "E48",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "49",
+              "kode": "3",
+              "nama": "Diploma III Penyelamatan dan Pemadaman Kebakaran Penerbangan",
+              "jenis": "PK",
+              "target": 24.0,
+              "jenis_target": null,
+              "expected": 24.0,
+              "cell": "E49",
+              "formula": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "50",
+      "kode": "IKK 7",
+      "nama": "Tingkat Pemenuhan ASN Transportasi Program Pelatihan",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 100.0,
+      "cell": "E50",
+      "formula": "=E51/E52*100",
+      "children": [
+        {
+          "id": "51",
+          "kode": "A",
+          "nama": "Jumlah Lulusan Program Pelatihan ASN Tahun 2026",
+          "jenis": "PK",
+          "target": 60.0,
+          "jenis_target": "orang",
+          "expected": 60.0,
+          "cell": "E51",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "52",
+          "kode": "B",
+          "nama": "Target Lulusan Program Pelatihan ASN Tahun 2026",
+          "jenis": "PK",
+          "target": 60.0,
+          "jenis_target": "orang",
+          "expected": 60.0,
+          "cell": "E52",
+          "formula": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "53",
+      "kode": "IKK 8",
+      "nama": "Tingkat Pemenuhan SDM Transportasi Program Pembentukan",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 87.5,
+      "cell": "E53",
+      "formula": "=E54/E58*100",
+      "children": [
+        {
+          "id": "54",
+          "kode": "A",
+          "nama": "Jumlah Lulusan Diktat Pembentukan Jalur Non Pola Pembibitan pada tahun 2026",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 7.0,
+          "cell": "E54",
+          "formula": "=SUM(E55:E57)",
+          "children": [
+            {
+              "id": "55",
+              "kode": "1",
+              "nama": "Diploma IV Teknologi Rekayasa Bandar Udara",
+              "jenis": "PK",
+              "target": 0.0,
+              "jenis_target": null,
+              "expected": 0.0,
+              "cell": "E55",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "56",
+              "kode": "2",
+              "nama": "Diploma III Manajemen Bandar Udara",
+              "jenis": "PK",
+              "target": 3.0,
+              "jenis_target": null,
+              "expected": 3.0,
+              "cell": "E56",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "57",
+              "kode": "3",
+              "nama": "Diploma III Penyelamatan dan Pemadaman Kebakaran Penerbangan",
+              "jenis": "PK",
+              "target": 4.0,
+              "jenis_target": null,
+              "expected": 4.0,
+              "cell": "E57",
+              "formula": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "58",
+          "kode": "B",
+          "nama": "Target Lulusan Diklat Pembentukan Jalur Non Pola Pembibitanpada tahun 2026",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 8.0,
+          "cell": "E58",
+          "formula": "=SUM(E59:E61)",
+          "children": [
+            {
+              "id": "59",
+              "kode": "1",
+              "nama": "Diploma IV Teknologi Rekayasa Bandar Udara",
+              "jenis": "PK",
+              "target": 0.0,
+              "jenis_target": null,
+              "expected": 0.0,
+              "cell": "E59",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "60",
+              "kode": "2",
+              "nama": "Diploma III Manajemen Bandar Udara",
+              "jenis": "PK",
+              "target": 4.0,
+              "jenis_target": null,
+              "expected": 4.0,
+              "cell": "E60",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "61",
+              "kode": "3",
+              "nama": "Diploma III Penyelamatan dan Pemadaman Kebakaran Penerbangan",
+              "jenis": "PK",
+              "target": 4.0,
+              "jenis_target": null,
+              "expected": 4.0,
+              "cell": "E61",
+              "formula": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "62",
+      "kode": "IKK 9",
+      "nama": "Tingkat Pemenuhan SDM Transportasi Program Pelatihan",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 95.27363184079603,
+      "cell": "E62",
+      "formula": "=E63/E66*100",
+      "children": [
+        {
+          "id": "63",
+          "kode": "A",
+          "nama": "Jumlah Lulusan Pelatihan Tahun 2026",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 766.0,
+          "cell": "E63",
+          "formula": "=SUM(E64:E65)",
+          "children": [
+            {
+              "id": "64",
+              "kode": "1",
+              "nama": "Diklat Teknis",
+              "jenis": "PK",
+              "target": 106.0,
+              "jenis_target": null,
+              "expected": 106.0,
+              "cell": "E64",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "65",
+              "kode": "2",
+              "nama": "Diktat Pemberdayaan Masyarakat",
+              "jenis": "PK",
+              "target": 660.0,
+              "jenis_target": null,
+              "expected": 660.0,
+              "cell": "E65",
+              "formula": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "66",
+          "kode": "B",
+          "nama": "Target Lulusan Pelatihan Tahun 2026",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "orang",
+          "expected": 804.0,
+          "cell": "E66",
+          "formula": "=SUM(E67:E68)",
+          "children": [
+            {
+              "id": "67",
+              "kode": "1",
+              "nama": "Diklat Teknis",
+              "jenis": "PK",
+              "target": 144.0,
+              "jenis_target": null,
+              "expected": 144.0,
+              "cell": "E67",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "68",
+              "kode": "2",
+              "nama": "Diktat Pemberdayaan Masyarakat",
+              "jenis": "PK",
+              "target": 660.0,
+              "jenis_target": null,
+              "expected": 660.0,
+              "cell": "E68",
+              "formula": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "69",
+      "kode": "IKK 10",
+      "nama": "Tingkat Pemenuhan Sertifikasi Pelatihan Oleh Lembaga Yang Berwenang",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 85.71428571428571,
+      "cell": "E69",
+      "formula": "=E70/E71*100",
+      "children": [
+        {
+          "id": "70",
+          "kode": "1",
+          "nama": "Jumlah Pelatihan yang Tersertifikasi pada Tahun 2026",
+          "jenis": "PK",
+          "target": 18.0,
+          "jenis_target": "kegiatan",
+          "expected": 18.0,
+          "cell": "E70",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "71",
+          "kode": "2",
+          "nama": "Jumlah Seluruh Pelatihan pada Tahun 2026",
+          "jenis": "PK",
+          "target": 21.0,
+          "jenis_target": "kegiatan",
+          "expected": 21.0,
+          "cell": "E71",
+          "formula": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "72",
+      "kode": "IKK 11",
+      "nama": "Persentase penelitian, HAKI dan Prociuk lnovasi Dosen dan Mahasiswa",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 80.34,
+      "cell": "E72",
+      "formula": "=E73+E74+E75",
+      "children": [
+        {
+          "id": "73",
+          "kode": "1",
+          "nama": "Realisasi jumlah Penelitian yang dihasilkan",
+          "jenis": "PK",
+          "target": 22.5,
+          "jenis_target": "persen",
+          "expected": 22.5,
+          "cell": "E73",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "74",
+          "kode": "2",
+          "nama": "Realisasi Penelitian yang dipublikasikan",
+          "jenis": "PK",
+          "target": 31.59,
+          "jenis_target": "persen",
+          "expected": 31.59,
+          "cell": "E74",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "75",
+          "kode": "3",
+          "nama": "Realisasi Karya HAKI berupa Hak Cipta/Paten, dan/atau Produk lnovasi",
+          "jenis": "PK",
+          "target": 26.25,
+          "jenis_target": "persen",
+          "expected": 26.25,
+          "cell": "E75",
+          "formula": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "76",
+      "kode": "IKK 12",
+      "nama": "Persentase Magang Dosen di Bidang Transportasi",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 9.523809523809524,
+      "cell": "E76",
+      "formula": "=E77/E78*100",
+      "children": [
+        {
+          "id": "77",
+          "kode": "1",
+          "nama": "Jumlah Dosen Vokasi yang Magang pada Tahun 2026",
+          "jenis": "PK",
+          "target": 2.0,
+          "jenis_target": "orang",
+          "expected": 2.0,
+          "cell": "E77",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "78",
+          "kode": "2",
+          "nama": "Jumlah Seluruh Dosen Vokasi pada T ahun 2026",
+          "jenis": "PK",
+          "target": 21.0,
+          "jenis_target": "orang",
+          "expected": 21.0,
+          "cell": "E78",
+          "formula": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "79",
+      "kode": "IKK 13",
+      "nama": "Persentase kegiatan pengabdian Masyarakat yang berdampak di bidang transportasi",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 86.66666666666667,
+      "cell": "E79",
+      "formula": "=E80/E81*100",
+      "children": [
+        {
+          "id": "80",
+          "kode": "1",
+          "nama": "Jumlah Pengabdian Masyarakat di Bidang Transportasi pada tahun 2026",
+          "jenis": "PK",
+          "target": 13.0,
+          "jenis_target": "kegiatan",
+          "expected": 13.0,
+          "cell": "E80",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "81",
+          "kode": "2",
+          "nama": "Jumlah Kegiatan Pengabdian Masvarakat pada tahun 2026",
+          "jenis": "PK",
+          "target": 15.0,
+          "jenis_target": "kegiatan",
+          "expected": 15.0,
+          "cell": "E81",
+          "formula": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "82",
+      "kode": "IKK 14",
+      "nama": "Persentase Kualitas dan Kuantitas Dosen",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 78.19,
+      "cell": "E82",
+      "formula": "=E83*40%+E84*40%+E85*20%",
+      "children": [
+        {
+          "id": "83",
+          "kode": "1",
+          "nama": "Realisasi Rasio Dosen terhadap T aruna Diklat Pembentukan",
+          "jenis": "PK",
+          "target": 55.0,
+          "jenis_target": "persen",
+          "expected": 55.0,
+          "cell": "E83",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "84",
+          "kode": "2",
+          "nama": "Realisasi persentase dosen tetap berkualifikasi S3 dan/atau berprestasi internasional dan/atau sertifikat keahlian untuk matra darat dan udara atau ANT-I/ATT-I untuk matra laut",
+          "jenis": "PK",
+          "target": 100.0,
+          "jenis_target": "persen",
+          "expected": 100.0,
+          "cell": "E84",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "85",
+          "kode": "3",
+          "nama": "Realisasi persentase dosen tetap dengan background pendidikan yang linier",
+          "jenis": "PK",
+          "target": 80.95,
+          "jenis_target": "persen",
+          "expected": 80.95,
+          "cell": "E85",
+          "formula": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "86",
+      "kode": "IKK 15",
+      "nama": "Tingkat Kualitas Layanan Pendidikan dan Pelatihan SDM",
+      "jenis": "PK",
+      "target": 3.62,
+      "jenis_target": "nilai",
+      "expected": 3.62,
+      "cell": "E86",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "87",
+      "kode": "IKK 16",
+      "nama": "Persentase Kerjasama di Bidang Pendidikan dan Pelatihan dengan Stackholder Transportasi dan Pendidikan",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 90.8270676691729,
+      "cell": "E87",
+      "formula": "=E88+E91",
+      "children": [
+        {
+          "id": "88",
+          "kode": "A",
+          "nama": "Bobot 60%",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "persen",
+          "expected": 53.68421052631579,
+          "cell": "E88",
+          "formula": "=E89/E90*60",
+          "children": [
+            {
+              "id": "89",
+              "kode": "1",
+              "nama": "Jumlah Kerjasama yang sudah ditindaklanjuti sampai dengan tahun 2026",
+              "jenis": "PK",
+              "target": 17.0,
+              "jenis_target": "dokumen",
+              "expected": 17.0,
+              "cell": "E89",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "90",
+              "kode": "2",
+              "nama": "Jumlah kerja sama yang berlaku sampai dengan Tahun 2026",
+              "jenis": "PK",
+              "target": 19.0,
+              "jenis_target": "dokumen",
+              "expected": 19.0,
+              "cell": "E90",
+              "formula": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "91",
+          "kode": "B",
+          "nama": "Bobot 40%",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": "persen",
+          "expected": 37.142857142857146,
+          "cell": "E91",
+          "formula": "=E92/E93*40",
+          "children": [
+            {
+              "id": "92",
+              "kode": "1",
+              "nama": "Jumlah kerja sama yang disusun pada tahun 2026",
+              "jenis": "PK",
+              "target": 13.0,
+              "jenis_target": "dokumen",
+              "expected": 13.0,
+              "cell": "E92",
+              "formula": null,
+              "children": []
+            },
+            {
+              "id": "93",
+              "kode": "2",
+              "nama": "Target kerja sama yang disusun pada tahun 2026",
+              "jenis": "PK",
+              "target": 14.0,
+              "jenis_target": "dokumen",
+              "expected": 14.0,
+              "cell": "E93",
+              "formula": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "94",
+      "kode": "IKK 22",
+      "nama": "Indeks Profesionalisme ASN",
+      "jenis": "PK",
+      "target": 82.0,
+      "jenis_target": "nilai",
+      "expected": 82.0,
+      "cell": "E94",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "95",
+      "kode": "IKK 24",
+      "nama": "Persentase Pemenuhan Akuntabilitas di Lingkungan BPSDMP",
+      "jenis": "PK",
+      "target": null,
+      "jenis_target": "persen",
+      "expected": 91.6666666666667,
+      "cell": "E95",
+      "formula": "=50+E98/E99*50",
+      "children": [
+        {
+          "id": "96",
+          "kode": "1",
+          "nama": "Jumlah Unit yang Diadakan Pad a T ahun 2026",
+          "jenis": "PK",
+          "target": 0.0,
+          "jenis_target": "unit",
+          "expected": 0.0,
+          "cell": "E96",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "97",
+          "kode": "2",
+          "nama": "Target Unit yang Diadakan Pada T ahun 2026",
+          "jenis": "PK",
+          "target": 0.0,
+          "jenis_target": null,
+          "expected": 0.0,
+          "cell": "E97",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "98",
+          "kode": "3",
+          "nama": "Jumlah Layanan yang dilaksanakan Pada Tahun 2026",
+          "jenis": "PK",
+          "target": 5.0,
+          "jenis_target": "layanan",
+          "expected": 5.0,
+          "cell": "E98",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "99",
+          "kode": "4",
+          "nama": "Target Layanan yang dilaksanakan Pada Tahun 2026",
+          "jenis": "PK",
+          "target": 6.0,
+          "jenis_target": null,
+          "expected": 6.0,
+          "cell": "E99",
+          "formula": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "100",
+      "kode": "IKK 25",
+      "nama": "Indikator Kinerja Pelaksanaan Anggaran (IKPA)",
+      "jenis": "PK",
+      "target": 90.5,
+      "jenis_target": "nilai",
+      "expected": 90.5,
+      "cell": "E100",
+      "formula": null,
+      "children": [
+        {
+          "id": "101",
+          "kode": "1",
+          "nama": "Revisi Dipa",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": null,
+          "expected": null,
+          "cell": "E101",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "102",
+          "kode": "2",
+          "nama": "Deviasi Halaman III DIPA",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": null,
+          "expected": null,
+          "cell": "E102",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "103",
+          "kode": "3",
+          "nama": "Penyerapan Anggaran",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": null,
+          "expected": null,
+          "cell": "E103",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "104",
+          "kode": "4",
+          "nama": "Belanja Kontraktual",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": null,
+          "expected": null,
+          "cell": "E104",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "105",
+          "kode": "5",
+          "nama": "Penyelesaian Tagihan",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": null,
+          "expected": null,
+          "cell": "E105",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "106",
+          "kode": "6",
+          "nama": "Pengelolaan UP dan TUP",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": null,
+          "expected": null,
+          "cell": "E106",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "107",
+          "kode": "7",
+          "nama": "Dispensasi SPM",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": null,
+          "expected": null,
+          "cell": "E107",
+          "formula": null,
+          "children": []
+        },
+        {
+          "id": "108",
+          "kode": "8",
+          "nama": "Capaian Output",
+          "jenis": "PK",
+          "target": null,
+          "jenis_target": null,
+          "expected": null,
+          "cell": "E108",
+          "formula": null,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "109",
+      "kode": "IKK 26",
+      "nama": "Nilai SAKIP BPSDMP",
+      "jenis": "PK",
+      "target": 84.15,
+      "jenis_target": "nilai",
+      "expected": 84.15,
+      "cell": "E109",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "113",
+      "kode": "1",
+      "nama": "Margin EBITDA (%)",
+      "jenis": "KPI",
+      "target": 1.79,
+      "jenis_target": "persen",
+      "expected": 1.79,
+      "cell": "E113",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "114",
+      "kode": "2",
+      "nama": "Realisasi pendapatan BLU",
+      "jenis": "KPI",
+      "target": 15450000000.0,
+      "jenis_target": "rupiah",
+      "expected": 15450000000.0,
+      "cell": "E114",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "115",
+      "kode": "3",
+      "nama": "Realisasi pendapatan dari optimalisasi aset",
+      "jenis": "KPI",
+      "target": 1850000000.0,
+      "jenis_target": "rupiah",
+      "expected": 1850000000.0,
+      "cell": "E115",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "116",
+      "kode": "4",
+      "nama": "Persentase penyelesaian modernisasi pengelolaan BLU",
+      "jenis": "KPI",
+      "target": 100.0,
+      "jenis_target": "persen",
+      "expected": 100.0,
+      "cell": "E116",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "117",
+      "kode": "5",
+      "nama": "Tingkat Perencanaan dan Pengelolaan Rekening Badan Layanan Umum",
+      "jenis": "KPI",
+      "target": 4.0,
+      "jenis_target": "indeks",
+      "expected": 4.0,
+      "cell": "E117",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "118",
+      "kode": "6",
+      "nama": "Indeks Peningkatan Efisiensi Layanan BLU",
+      "jenis": "KPI",
+      "target": 2.0,
+      "jenis_target": "indeks",
+      "expected": 2.0,
+      "cell": "E118",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "119",
+      "kode": "7",
+      "nama": "Kuantitas dan Kualitas Penelitian, HaKI, dan Produk Inovasi",
+      "jenis": "KPI",
+      "target": 54.3,
+      "jenis_target": "nilai",
+      "expected": 54.3,
+      "cell": "E119",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "120",
+      "kode": "8",
+      "nama": "Kegiatan pengabdian pada masyarakat",
+      "jenis": "KPI",
+      "target": 15.0,
+      "jenis_target": "jumlah",
+      "expected": 15.0,
+      "cell": "E120",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "121",
+      "kode": "9",
+      "nama": "Kuantitas dan Kualitas Dosen",
+      "jenis": "KPI",
+      "target": 88.75,
+      "jenis_target": "persen",
+      "expected": 88.75,
+      "cell": "E121",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "122",
+      "kode": "10",
+      "nama": "Pendidikan Vokasi Berbasis Kerja Sama dengan Industri dan Dunia Kerja",
+      "jenis": "KPI",
+      "target": 51.25,
+      "jenis_target": "persen",
+      "expected": 51.25,
+      "cell": "E122",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "123",
+      "kode": "11",
+      "nama": "Beasiswa",
+      "jenis": "KPI",
+      "target": 20.65,
+      "jenis_target": "persen",
+      "expected": 20.65,
+      "cell": "E123",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "124",
+      "kode": "12",
+      "nama": "Serapan Lulusan dan Tingkat Kepuasan Pengguna Lulusan",
+      "jenis": "KPI",
+      "target": 100.0,
+      "jenis_target": "persen",
+      "expected": 100.0,
+      "cell": "E124",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "125",
+      "kode": "13",
+      "nama": "Kerjasama",
+      "jenis": "KPI",
+      "target": 49.5,
+      "jenis_target": "nilai",
+      "expected": 49.5,
+      "cell": "E125",
+      "formula": null,
+      "children": []
+    },
+    {
+      "id": "126",
+      "kode": "14",
+      "nama": "Peningkatan Kualitas Kelembagaan",
+      "jenis": "KPI",
+      "target": 2.33,
+      "jenis_target": "nilai",
+      "expected": 2.33,
+      "cell": "E126",
+      "formula": null,
+      "children": []
+    }
+  ]
+}

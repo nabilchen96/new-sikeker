@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\KontrakBagianRequest;
+use App\Http\Requests\KontrakSheetRequest;
+use App\Http\Requests\KontrakTreeRequest;
 use App\Models\Kontrak;
 use App\Models\Realisasi;
-use Illuminate\Http\Request;
-use Validator;
+use App\Services\KontrakCalculator;
+use App\Services\KontrakFormula;
+use App\Services\KontrakSheet;
+use App\Services\KontrakTreeWriter;
 use DB;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Validator;
 
 class KontrakController extends Controller
 {
@@ -29,7 +37,6 @@ class KontrakController extends Controller
             ->select('kontraks.*')
             ->get();
 
-
         /*
          * ==========================================================
          * KUMPULKAN SEMUA ID KONTRAK
@@ -47,7 +54,6 @@ class KontrakController extends Controller
                 $kontrakIds
             );
         }
-
 
         /*
          * ==========================================================
@@ -76,7 +82,6 @@ class KontrakController extends Controller
                 return $items->first();
             });
 
-
         /*
          * ==========================================================
          * BENTUK DATA TREE
@@ -87,7 +92,6 @@ class KontrakController extends Controller
 
             $rows = [];
 
-
             /*
              * Semua child dimasukkan ke rows
              */
@@ -96,7 +100,6 @@ class KontrakController extends Controller
                 0,
                 $rows
             );
-
 
             /*
              * Kalau sasaran tidak mempunyai child
@@ -109,201 +112,29 @@ class KontrakController extends Controller
                 ];
             }
 
-
             /*
              * ======================================================
              * HITUNG TARGET / REALISASI SETIAP BARIS
              * ======================================================
              */
 
+            $actuals = $realisasiTerakhir->map(fn ($record) => (float) $record->nilai)->all();
+            $calculated = (new KontrakCalculator)->calculateTree($item, $actuals);
             foreach ($rows as &$row) {
-
                 $kontrak = $row['model'];
-
-                /*
-                 * Kode kontrak
-                 */
-                $kode = strtoupper(
-                    trim($kontrak->kode ?? '')
-                );
-
-
-                /*
-                 * --------------------------------------------------
-                 * DEFAULT
-                 * --------------------------------------------------
-                 */
-
-                $row['total_target'] = null;
-
-                $row['total_realisasi'] = null;
-
-                $row['realisasi_terakhir'] =
-                    $realisasiTerakhir->get($kontrak->id);
-
-                $row['satuan_tampilan'] =
-                    $kontrak->jenis_target;
-
-                $row['hasil_persentase'] = null;
-
-
-                /*
-                 * ==================================================
-                 * 1. LEAF / INDIKATOR TERBAWAH
-                 * ==================================================
-                 *
-                 * Tidak punya anak.
-                 *
-                 * Target diambil langsung dari kontraks.
-                 * Realisasi diambil dari realisasis.
-                 */
-
-                if ($kontrak->childrenRecursive->isEmpty()) {
-
-                    /*
-                     * TARGET
-                     */
-                    if (
-                        $kontrak->target !== null &&
-                        $kontrak->target !== '' &&
-                        is_numeric($kontrak->target)
-                    ) {
-
-                        $row['total_target'] =
-                            (float) $kontrak->target;
-                    }
-
-
-                    /*
-                     * REALISASI TERAKHIR
-                     */
-                    if ($row['realisasi_terakhir']) {
-
-                        $row['total_realisasi'] =
-                            (float)
-                            $row['realisasi_terakhir']->nilai;
-                    }
-                }
-
-
-                /*
-                 * ==================================================
-                 * 2. NODE YANG MEMPUNYAI ANAK
-                 * ==================================================
-                 *
-                 * Contoh:
-                 *
-                 * A
-                 * ├── 1
-                 * ├── 2
-                 * ├── 3
-                 * └── 4
-                 *
-                 * B
-                 * ├── 1
-                 * ├── 2
-                 * ├── 3
-                 * └── 4
-                 *
-                 * IKK
-                 * ├── A
-                 * └── B
-                 */
-
-                if ($kontrak->childrenRecursive->isNotEmpty()) {
-
-                    $total = $this->hitungTotalNode(
-                        $kontrak,
-                        $realisasiTerakhir
-                    );
-
-
-                    $row['total_target'] =
-                        $total['target'];
-
-                    $row['total_realisasi'] =
-                        $total['realisasi'];
-
-
-                    /*
-                     * Ambil satuan dari leaf
-                     */
-                    $row['satuan_tampilan'] =
-                        $this->ambilSatuanLeaf($kontrak);
-                }
-
-
-                /*
-                 * ==================================================
-                 * 3. KHUSUS IKK
-                 * ==================================================
-                 *
-                 * IKK selalu berupa persentase.
-                 *
-                 * Target = 100%
-                 *
-                 * Realisasi =
-                 *
-                 * total realisasi
-                 * ---------------- × 100
-                 * total target
-                 */
-
-                if (str_starts_with($kode, 'IKK')) {
-
-                    $row['satuan_tampilan'] =
-                        'persen';
-
-
-                    /*
-                     * Target IKK
-                     */
-                    $row['total_target'] = 100;
-
-
-                    /*
-                     * Hitung persentase
-                     */
-                    if (
-                        $row['total_realisasi'] !== null &&
-                        $row['total_target'] !== null
-                    ) {
-
-                        /*
-                         * Kita hitung kembali total target
-                         * sebenarnya karena total_target
-                         * untuk IKK sudah diubah menjadi 100.
-                         */
-
-                        $total = $this->hitungTotalNode(
-                            $kontrak,
-                            $realisasiTerakhir
-                        );
-
-
-                        if ($total['target'] > 0) {
-
-                            $row['hasil_persentase'] =
-                                (
-                                    $total['realisasi']
-                                    /
-                                    $total['target']
-                                ) * 100;
-                        }
-                    }
-
-
-                    /*
-                     * Untuk IKK, nilai realisasi yang ditampilkan
-                     * adalah hasil persentase.
-                     */
-                    $row['total_realisasi'] =
-                        $row['hasil_persentase'];
-                }
+                $result = $calculated[(string) $kontrak->id];
+                $row['total_target'] = $result['target'];
+                $row['total_realisasi'] = $result['actual'];
+                $row['satuan_tampilan'] = $result['unit'];
+                $row['calculation'] = $result;
+                $row['editor_tree'] = $this->editorTree($kontrak, $calculated);
+                $row['calculation_children'] = $kontrak->childrenRecursive->sort(fn ($a, $b) => strnatcasecmp((string) $a->kode, (string) $b->kode))->map(fn ($child) => [
+                    'id' => (string) $child->id,
+                    'label' => trim($child->kode.' — '.$child->nama),
+                    'target' => $calculated[(string) $child->id]['target'],
+                ])->values()->all();
             }
-
             unset($row);
-
 
             return [
                 'sasaran' => $item,
@@ -318,62 +149,75 @@ class KontrakController extends Controller
 
         return view('backend.kontrak.index', [
             'data' => $data,
+            'calculationForms' => $data->flatMap(fn ($group) => collect($group['rows'])->map(fn ($row) => [
+                'id' => (string) $row['model']->id,
+                'tree' => $row['editor_tree'],
+                'type' => $row['model']->calculation_type,
+                'config' => $row['model']->calculation_config,
+                'effective_type' => $row['calculation']['type'],
+                'computed_target' => $row['calculation']['target'],
+                'unit' => $row['satuan_tampilan'],
+                'effective_config' => $row['calculation']['config'],
+                'children' => $row['calculation_children'],
+            ]))->keyBy('id'),
         ]);
     }
 
-    public function storeSasaranKinerja(Request $request){
-         $validator = Validator::make($request->all(), [
-            'nama'      => 'required',
-            'jenis'     => 'required'
+    public function storeSasaranKinerja(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required',
+            'jenis' => 'required',
         ]);
 
         if ($validator->fails()) {
             $data = [
                 'responCode' => 0,
-                'respon' => $validator->errors()
+                'respon' => $validator->errors(),
             ];
         } else {
             Kontrak::create([
-               'id_parent'      => null,
-               'kode'           => 0,
-               'nama'           => $request->nama,
-               'jenis'          => $request->jenis,
-               'target'         => null,
-               'jenis_target'   => null,
-               'id_tahun'       => DB::table('tahuns')->where('status', 'Aktif')->value('id')
+                'id_parent' => null,
+                'kode' => 0,
+                'nama' => $request->nama,
+                'jenis' => $request->jenis,
+                'target' => null,
+                'jenis_target' => null,
+                'id_tahun' => DB::table('tahuns')->where('status', 'Aktif')->value('id'),
             ]);
 
             $data = [
                 'responCode' => 1,
-                'respon' => 'Data Sukses Disimpan'
+                'respon' => 'Data Sukses Disimpan',
             ];
         }
 
         return response()->json($data);
     }
 
-    public function updateSasaranKinerja(Request $request){
-         $validator = Validator::make($request->all(), [
-            'id'        => 'required',
-            'nama'      => 'required',
-            'jenis'     => 'required'
+    public function updateSasaranKinerja(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'nama' => 'required',
+            'jenis' => 'required',
         ]);
 
         if ($validator->fails()) {
             $data = [
                 'responCode' => 0,
-                'respon' => $validator->errors()
+                'respon' => $validator->errors(),
             ];
         } else {
 
             $kontrak = Kontrak::find($request->id);
             $kontrak->update([
-               'nama'   => $request->nama,
+                'nama' => $request->nama,
             ]);
 
             $data = [
                 'responCode' => 1,
-                'respon' => 'Data Sukses Disimpan'
+                'respon' => 'Data Sukses Disimpan',
             ];
         }
 
@@ -389,78 +233,151 @@ class KontrakController extends Controller
 
         $data = [
             'responCode' => 1,
-            'respon' => 'Data Sukses Dihapus'
+            'respon' => 'Data Sukses Dihapus',
         ];
 
         return response()->json($data);
     }
 
-    public function storeBagian(Request $request){
-         $validator = Validator::make($request->all(), [
-            'sub_indikator'      => 'required',
-            'id_parent'     => 'required',
-            'kode'     => 'required',
+    public function sheet(Request $request, KontrakSheet $sheet)
+    {
+        $jenis = $request->query('jenis') === 'KPI' ? 'KPI' : 'PK';
+        $parents = Kontrak::whereNull('id_parent')->where('jenis', $jenis)
+            ->whereIn('id_tahun', DB::table('tahuns')->where('status', 'Aktif')->pluck('id'))->get();
+        $indicators = Kontrak::whereIn('id_parent', $parents->pluck('id'))->with('childrenRecursive')->get()
+            ->sort(fn ($a, $b) => strnatcasecmp((string) $a->kode, (string) $b->kode))->values();
+        $selected = $request->query('indikator') === 'baru' ? null : ($indicators->firstWhere('id', $request->query('indikator')) ?? $indicators->first());
+
+        return view('backend.kontrak.sheet', [
+            'jenis' => $jenis, 'parents' => $parents, 'indicators' => $indicators, 'selected' => $selected,
+            'sheetRows' => $selected ? $sheet->rows($selected) : [['key' => 'new-root', 'id' => null, 'parent_key' => null, 'kode' => '', 'nama' => '', 'jenis_target' => 'persen', 'input' => '']],
         ]);
-
-        if ($validator->fails()) {
-            $data = [
-                'responCode' => 0,
-                'respon' => $validator->errors()
-            ];
-        } else {
-            Kontrak::create([
-               'id_parent'      => $request->id_parent,
-               'kode'           => $request->kode,
-               'nama'           => $request->sub_indikator,
-               'jenis'          => $request->jenis,
-               'target'         => $request->target ?? null,
-               'jenis_target'   => $request->jenis_target ?? null,
-               'id_tahun'       => DB::table('tahuns')->where('status', 'Aktif')->value('id')
-            ]);
-
-            $data = [
-                'responCode' => 1,
-                'respon' => 'Data Sukses Disimpan'
-            ];
-        }
-
-        return response()->json($data);
     }
 
-        public function updateBagian(Request $request){
-         $validator = Validator::make($request->all(), [
-            'sub_indikator'      => 'required',
-            'id_parent'     => 'required',
-            'kode'     => 'required',
-        ]);
+    public function previewSheet(KontrakSheetRequest $request, KontrakSheet $sheet)
+    {
+        $data = $request->validated();
 
-        if ($validator->fails()) {
-            $data = [
-                'responCode' => 0,
-                'respon' => $validator->errors()
-            ];
-        } else {
-            
-            $kontrak = Kontrak::find($request->id);
-            $kontrak->update([
+        return response()->json(['rows' => $sheet->preview($data['rows'], $data['jenis'])]);
+    }
 
-               'id_parent'      => $request->id_parent,
-               'kode'           => $request->kode,
-               'nama'           => $request->sub_indikator,
-               'jenis'          => $request->jenis,
-               'target'         => $request->target ?? null,
-               'jenis_target'   => $request->jenis_target ?? null,
-               'id_tahun'       => DB::table('tahuns')->where('status', 'Aktif')->value('id')
-               
-            ]);
+    public function saveSheet(KontrakSheetRequest $request, KontrakSheet $sheet, KontrakTreeWriter $writer)
+    {
+        $data = $request->validated();
+        $root = $writer->save((int) $data['id_parent'], $data['jenis'], $sheet->compile($data['rows']), true);
 
-            $data = [
-                'responCode' => 1,
-                'respon' => 'Data Sukses Disimpan'
-            ];
+        return response()->json(['id' => $root->id, 'rows' => $sheet->rows($root), 'message' => 'Tabel berhasil disimpan.']);
+    }
+
+    public function saveTree(KontrakTreeRequest $request, KontrakTreeWriter $writer)
+    {
+        $data = $request->validated();
+        $root = $writer->save((int) $data['id_parent'], $data['jenis'], $data['root']);
+        $result = (new KontrakCalculator)->calculateTree($root)[(string) $root->id];
+
+        return response()->json(['responCode' => 1, 'respon' => 'Indikator dan seluruh rinciannya berhasil disimpan.', 'id' => $root->id, 'target' => $result['target']]);
+    }
+
+    private function editorTree($node, array $results): array
+    {
+        $result = $results[(string) $node->id];
+        $config = $result['config'];
+        foreach (['source_id', 'numerator_id', 'denominator_id'] as $field) {
+            if (isset($config[$field])) {
+                $config[$field] = 'id-'.$config[$field];
+            }
+        }
+        if (isset($config['ast'])) {
+            $config['ast'] = (new KontrakFormula)->mapReferences($config['ast'], fn ($id) => 'id-'.$id);
+        }
+        if (isset($config['weights'])) {
+            $weights = [];
+            foreach ($config['weights'] as $id => $weight) {
+                $weights['id-'.$id] = $weight;
+            }
+            $config['weights'] = $weights;
+        }
+        if (isset($config['child_ids'])) {
+            $config['child_ids'] = array_map(fn ($id) => $id === null ? null : 'id-'.$id, $config['child_ids']);
         }
 
-        return response()->json($data);
+        return [
+            'key' => 'id-'.$node->id, 'id' => $node->id, 'kode' => $node->kode,
+            'nama' => $node->nama, 'target' => $node->target, 'jenis_target' => $result['unit'],
+            'calculation_type' => $result['type'], 'calculation_config' => $config,
+            'children' => $node->childrenRecursive->sort(fn ($a, $b) => strnatcasecmp((string) $a->kode, (string) $b->kode))->map(fn ($child) => $this->editorTree($child, $results))->values()->all(),
+        ];
+    }
+
+    public function storeBagian(KontrakBagianRequest $request)
+    {
+        Kontrak::create($this->bagianAttributes($request));
+
+        return response()->json(['responCode' => 1, 'respon' => 'Data sukses disimpan.']);
+    }
+
+    public function updateBagian(KontrakBagianRequest $request)
+    {
+        Kontrak::findOrFail($request->id)->update($this->bagianAttributes($request));
+
+        return response()->json(['responCode' => 1, 'respon' => 'Data sukses disimpan.']);
+    }
+
+    private function bagianAttributes(KontrakBagianRequest $request): array
+    {
+        return array_merge([
+            'id_parent' => $request->id_parent,
+            'kode' => $request->kode,
+            'nama' => $request->sub_indikator,
+            'jenis' => $request->jenis,
+            'target' => $request->target,
+            'jenis_target' => $request->jenis_target,
+            'id_tahun' => DB::table('tahuns')->where('status', 'Aktif')->value('id'),
+        ], $request->calculationSettings());
+    }
+
+    public function promoteKpi(Request $request)
+    {
+        $data = $request->validate(['id' => ['required', 'integer', 'exists:kontraks,id']]);
+
+        return DB::transaction(function () use ($data) {
+            $node = Kontrak::whereKey($data['id'])->lockForUpdate()->firstOrFail();
+            if ($node->jenis !== 'KPI' || ! DB::table('tahuns')->where('id', $node->id_tahun)->where('status', 'Aktif')->exists()) {
+                throw ValidationException::withMessages(['id' => 'Pilih IKU pada tahun aktif di tab KPI.']);
+            }
+            $root = $node;
+            $visited = [];
+            while ($root->id_parent !== null) {
+                if (isset($visited[$root->id])) {
+                    throw ValidationException::withMessages(['id' => 'Susunan induk mengandung siklus.']);
+                }
+                $visited[$root->id] = true;
+                $root = Kontrak::whereKey($root->id_parent)->where('jenis', 'KPI')->where('id_tahun', $node->id_tahun)->lockForUpdate()->first();
+                if (! $root) {
+                    throw ValidationException::withMessages(['id' => 'Sasaran kinerja tidak ditemukan.']);
+                }
+            }
+            if ($root->id === $node->id) {
+                throw ValidationException::withMessages(['id' => 'Pilih IKU, bukan sasaran kinerja.']);
+            }
+            if ((string) $node->id_parent !== (string) $root->id) {
+                $root->load('childrenRecursive');
+                $node->load('childrenRecursive');
+                $ids = collect([$node->id]);
+                $this->collectKontrakIds($node->childrenRecursive, $ids);
+                $moved = array_fill_keys($ids->map(fn ($id) => (string) $id)->all(), true);
+                foreach ((new KontrakCalculator)->calculateTree($root) as $id => $result) {
+                    foreach ($result['source_ids'] as $source) {
+                        if (isset($moved[(string) $id]) !== isset($moved[(string) $source])) {
+                            throw ValidationException::withMessages(['id' => 'Baris ini masih terkait rumus di luar bagiannya. Perbaiki referensi rumus sebelum dipindahkan.']);
+                        }
+                    }
+                }
+                $node->update(['id_parent' => $root->id]);
+            }
+
+            return response()->json(['responCode' => 1, 'respon' => 'IKU dipindahkan langsung ke sasaran kinerja.']);
+        });
     }
 
     public function deleteBagian(Request $request)
@@ -472,14 +389,11 @@ class KontrakController extends Controller
 
         $data = [
             'responCode' => 1,
-            'respon' => 'Data Sukses Dihapus'
+            'respon' => 'Data Sukses Dihapus',
         ];
 
         return response()->json($data);
     }
-
-
-
 
     /*
      * ==========================================================
@@ -492,7 +406,7 @@ class KontrakController extends Controller
         &$ids
     ): void {
 
-        foreach ($nodes as $node) {
+        foreach ($nodes->sort(fn ($a, $b) => strnatcasecmp((string) $a->kode, (string) $b->kode)) as $node) {
 
             $ids->push($node->id);
 
@@ -508,7 +422,6 @@ class KontrakController extends Controller
         }
     }
 
-
     /*
      * ==========================================================
      * FLATTEN TREE UNTUK BLADE
@@ -521,13 +434,12 @@ class KontrakController extends Controller
         array &$rows
     ): void {
 
-        foreach ($nodes as $node) {
+        foreach ($nodes->sort(fn ($a, $b) => strnatcasecmp((string) $a->kode, (string) $b->kode)) as $node) {
 
             $rows[] = [
                 'model' => $node,
                 'level' => $level,
             ];
-
 
             if (
                 $node->childrenRecursive->isNotEmpty()
@@ -540,174 +452,5 @@ class KontrakController extends Controller
                 );
             }
         }
-    }
-
-
-    /*
-     * ==========================================================
-     * HITUNG TOTAL NODE
-     * ==========================================================
-     *
-     * Fungsi ini digunakan untuk A, B, maupun IKK.
-     *
-     * Kalau leaf:
-     *
-     * target      = target leaf
-     * realisasi   = realisasi terakhir
-     *
-     * Kalau parent:
-     *
-     * target      = total seluruh anak
-     * realisasi   = total seluruh anak
-     */
-
-    private function hitungTotalNode(
-        $kontrak,
-        $realisasiTerakhir
-    ): array {
-
-        $totalTarget = 0;
-
-        $totalRealisasi = 0;
-
-
-        /*
-         * ======================================================
-         * LEAF
-         * ======================================================
-         */
-
-        if (
-            $kontrak->childrenRecursive->isEmpty()
-        ) {
-
-            /*
-             * TARGET
-             */
-            if (
-                $kontrak->target !== null &&
-                $kontrak->target !== '' &&
-                is_numeric($kontrak->target)
-            ) {
-
-                $totalTarget =
-                    (float) $kontrak->target;
-            }
-
-
-            /*
-             * REALISASI TERAKHIR
-             */
-            $realisasi =
-                $realisasiTerakhir->get(
-                    $kontrak->id
-                );
-
-
-            if ($realisasi) {
-
-                $totalRealisasi =
-                    (float) $realisasi->nilai;
-            }
-
-
-            return [
-                'target' => $totalTarget,
-                'realisasi' => $totalRealisasi,
-            ];
-        }
-
-
-        /*
-         * ======================================================
-         * PARENT
-         * ======================================================
-         */
-
-        foreach (
-            $kontrak->childrenRecursive
-            as $child
-        ) {
-
-            $hasil =
-                $this->hitungTotalNode(
-                    $child,
-                    $realisasiTerakhir
-                );
-
-
-            $totalTarget +=
-                $hasil['target'];
-
-
-            $totalRealisasi +=
-                $hasil['realisasi'];
-        }
-
-
-        return [
-            'target' => $totalTarget,
-            'realisasi' => $totalRealisasi,
-        ];
-    }
-
-
-    /*
-     * ==========================================================
-     * AMBIL SATUAN DARI LEAF
-     * ==========================================================
-     *
-     * Contoh:
-     *
-     * A
-     * └── 1 → orang
-     *
-     * Maka A → orang
-     */
-
-    private function ambilSatuanLeaf(
-        $kontrak
-    ) {
-
-        foreach (
-            $kontrak->childrenRecursive
-            as $child
-        ) {
-
-            /*
-             * Kalau masih parent,
-             * turun lagi.
-             */
-
-            if (
-                $child->childrenRecursive->isNotEmpty()
-            ) {
-
-                $satuan =
-                    $this->ambilSatuanLeaf(
-                        $child
-                    );
-
-
-                if ($satuan) {
-                    return $satuan;
-                }
-            }
-
-
-            /*
-             * Sudah sampai leaf
-             */
-            if (
-                $child->jenis_target !== null &&
-                $child->jenis_target !== ''
-            ) {
-
-                return $child->jenis_target;
-            }
-        }
-
-
-        return null;
     }
 }

@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Kontrak;
 use App\Models\Realisasi;
 use App\Models\RencanaProker;
+use App\Services\KontrakCalculator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -50,17 +50,12 @@ class RealisasiController extends Controller
 
         $data = [];
 
+        $calculator = new KontrakCalculator;
         foreach ($roots as $root) {
+            $targetResults = $calculator->calculateTree($root);
             foreach ($root->childrenRecursive as $ikk) {
-                $indikators = collect();
-
-                $this->collectDescendants($ikk, $indikators);
-
-                $indikators = $indikators
-                    ->filter(fn ($item) =>
-                        $item->target !== null
-                        && (float) $item->target > 0
-                    )
+                $indikators = collect($calculator->inputNodes($ikk, $targetResults))
+                    ->filter(fn ($item) => $targetResults[(string) $item->id]['target'] !== null)
                     ->values();
 
                 $ids = $indikators->pluck('id');
@@ -79,8 +74,7 @@ class RealisasiController extends Controller
                         ->groupBy('id_kontrak');
                 }
 
-                $totalTarget = 0;
-                $totalRealisasiTerakhir = 0;
+                $actuals = [];
 
                 foreach ($indikators as $indikator) {
                     $rows = $realisasiRows->get(
@@ -94,8 +88,7 @@ class RealisasiController extends Controller
                     );
 
                     $realisasiSebelumnya = $rows
-                        ->filter(fn ($r) =>
-                            $r->periode->lt($awalBulan)
+                        ->filter(fn ($r) => $r->periode->lt($awalBulan)
                         )
                         ->last();
 
@@ -147,24 +140,26 @@ class RealisasiController extends Controller
                                 ->all()
                             : [];
 
-                    $totalTarget += (float) $indikator->target;
-
-                    $totalRealisasiTerakhir +=
-                        $indikator->nilai_realisasi_terakhir;
+                    if ($realisasiTerakhir) {
+                        $actuals[(string) $indikator->id] = (float) $realisasiTerakhir->nilai;
+                    }
                 }
 
-                $persentase = $totalTarget > 0
-                    ? ($totalRealisasiTerakhir / $totalTarget) * 100
-                    : 0;
+                $result = $calculator->calculateTree($root, $actuals, true)[(string) $ikk->id];
+                $totalTarget = $result['target'];
+                // No entries earns no progress, including formulas with a constant baseline.
+                $totalRealisasiTerakhir = $actuals ? $result['actual'] : 0.0;
+                $persentase = (new \App\Services\KontrakAchievement)->percentage($ikk, $targetResults, $actuals);
 
                 $data[] = [
                     'root' => $root,
                     'ikk' => $ikk,
                     'indikators' => $indikators,
                     'total_target' => $totalTarget,
-                    'total_realisasi_kumulatif' =>
-                        $totalRealisasiTerakhir,
+                    'total_realisasi_kumulatif' => $totalRealisasiTerakhir,
                     'persentase' => $persentase,
+                    'calculation_error' => $result['error'] ?? $result['actual_error'],
+                    'unit' => $result['unit'],
                 ];
             }
         }
@@ -185,22 +180,12 @@ class RealisasiController extends Controller
         ]);
     }
 
-    private function collectDescendants(
-        Kontrak $parent,
-        Collection &$result
-    ): void {
-        foreach ($parent->childrenRecursive as $child) {
-            $result->push($child);
-
-            $this->collectDescendants($child, $result);
-        }
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
             'bulan' => ['required', 'integer', 'between:1,12'],
             'tahun' => ['required', 'integer', 'between:2000,2100'],
+            'jenis' => ['nullable', 'in:PK,KPI'],
             'realisasi' => ['required', 'array'],
             'realisasi.*' => ['nullable', 'numeric', 'min:0'],
             'dokumen' => ['nullable', 'array'],
@@ -212,6 +197,15 @@ class RealisasiController extends Controller
             ],
         ]);
 
+        $types = Kontrak::whereIn('id', array_keys($validated['realisasi']))->pluck('jenis')->unique()->values();
+        if ($types->count() !== 1 || ! in_array($types->first(), ['PK', 'KPI'], true)) {
+            throw ValidationException::withMessages(['realisasi' => 'Isi realisasi dari satu tab PK atau KPI.']);
+        }
+        $jenis = $types->first();
+        if (isset($validated['jenis']) && $validated['jenis'] !== $jenis) {
+            throw ValidationException::withMessages(['jenis' => 'Tab tidak sesuai dengan indikator yang diisi. Muat ulang halaman.']);
+        }
+
         $bulan = (int) $validated['bulan'];
         $tahun = (int) $validated['tahun'];
 
@@ -222,8 +216,7 @@ class RealisasiController extends Controller
         DB::transaction(function () use (
             $validated,
             $periode,
-            $bulan,
-            $tahun
+            $jenis
         ) {
             $nilaiInput = $validated['realisasi'];
             $dokumenInput = $validated['dokumen'] ?? [];
@@ -231,18 +224,26 @@ class RealisasiController extends Controller
             $ids = collect(array_keys($nilaiInput))
                 ->map(fn ($id) => (int) $id);
 
-            $indikatorValid = Kontrak::query()
-                ->whereIn('id', $ids)
-                ->whereNotNull('target')
-                ->where('target', '>', 0)
-                ->pluck('id')
-                ->map(fn ($id) => (int) $id)
-                ->all();
+            $calculator = new KontrakCalculator;
+            $allowedIds = [];
+            $roots = Kontrak::whereNull('id_parent')->where('jenis', $jenis)
+                ->whereIn('id_tahun', DB::table('tahuns')->where('status', 'Aktif')->pluck('id'))
+                ->with('childrenRecursive')->get();
+            foreach ($roots as $root) {
+                $results = $calculator->calculateTree($root);
+                foreach ($root->childrenRecursive as $ikk) {
+                    foreach ($calculator->inputNodes($ikk, $results) as $input) {
+                        if ($results[(string) $input->id]['target'] !== null) {
+                            $allowedIds[] = (int) $input->id;
+                        }
+                    }
+                }
+            }
+            $indikatorValid = array_values(array_intersect($ids->unique()->all(), array_unique($allowedIds)));
 
             if (count($indikatorValid) !== $ids->unique()->count()) {
                 throw ValidationException::withMessages([
-                    'realisasi' =>
-                        'Ada indikator yang tidak valid atau tidak memiliki target.',
+                    'realisasi' => 'Realisasi hanya diisi pada sumber manual yang memiliki target, termasuk target nol.',
                 ]);
             }
 
@@ -263,8 +264,7 @@ class RealisasiController extends Controller
 
                 if ($aksiValid !== count(array_unique($aksiIds ?? []))) {
                     throw ValidationException::withMessages([
-                        "dokumen.$indikatorId" =>
-                            'Dokumen dukung tidak sesuai dengan indikator PK.',
+                        "dokumen.$indikatorId" => 'Dokumen dukung tidak sesuai dengan indikator PK.',
                     ]);
                 }
             }
@@ -277,14 +277,9 @@ class RealisasiController extends Controller
                     continue;
                 }
 
-                $realisasi = Realisasi::updateOrCreate(
-                    [
-                        'id_kontrak' => $indikatorId,
-                        'periode' => $periode,
-                    ],
-                    [
-                        'nilai' => $nilai,
-                    ]
+                $realisasi = Realisasi::whereDate('periode', $periode)->updateOrCreate(
+                    ['id_kontrak' => $indikatorId],
+                    ['periode' => $periode, 'nilai' => $nilai]
                 );
 
                 $realisasi->aksiProkers()->sync(
@@ -299,14 +294,16 @@ class RealisasiController extends Controller
         });
 
         return redirect()
-            ->to(url('/realisasi') . '?' . http_build_query([
+            ->to(url('/realisasi').'?'.http_build_query([
+                'jenis' => $jenis,
                 'bulan' => $bulan,
                 'tahun' => $tahun,
             ]))
             ->with('success', 'Realisasi berhasil disimpan.');
     }
 
-    public function detail(Request $request, int $id) {
+    public function detail(Request $request, int $id)
+    {
         $tahun = (int) $request->query('tahun', now()->year);
 
         abort_if($tahun < 2000 || $tahun > 2100, 404);
@@ -314,12 +311,12 @@ class RealisasiController extends Controller
         $indikator = \App\Models\Kontrak::query()
             ->where('id', $id)
             ->whereNotNull('target')
-            ->where('target', '>', 0)
+            ->where('target', '>=', 0)
             ->with([
                 'realisasis' => function ($query) use ($tahun) {
                     $query->whereYear('periode', $tahun)
                         ->orderBy('periode');
-                }
+                },
             ])
             ->firstOrFail();
 

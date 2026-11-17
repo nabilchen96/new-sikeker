@@ -19,7 +19,7 @@
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css" />
     <link href="{{ url('ilanding/assets/img/pandu3.png') }}" rel="icon">
     <link href="{{ url('ilanding/assets/img/pandu3.png') }}" rel="apple-touch-icon">
-    <link rel="stylesheet" href="{{ asset('css/backend/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/backend/app.css') }}?v={{ filemtime(public_path('css/backend/app.css')) }}">
     <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
     @stack('style')
     <style>

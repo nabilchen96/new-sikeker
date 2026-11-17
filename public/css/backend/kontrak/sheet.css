@@ -1,0 +1,32 @@
+.sheet-toolbar { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.sheet-toolbar label { display:block; min-width:0; }
+.sheet-scroll { max-height:65vh; overflow:auto; border:1px solid #ccd5e2; }
+table.sheet-grid { border-collapse:separate; border-spacing:0; min-width:1020px; width:100%; table-layout:fixed; }
+.sheet-grid th, .sheet-grid td { padding:0 !important; border-right:1px solid #d7dfeb; border-bottom:1px solid #d7dfeb; vertical-align:top; }
+.sheet-grid th { position:sticky; top:0; background:#edf2fa; z-index:2; padding:7px 4px !important; text-align:center; color:#344765; }
+.sheet-grid th:nth-child(1) { width:42px; }
+.sheet-grid th:nth-child(2) { width:80px; }
+.sheet-grid th:nth-child(3) { width:300px; }
+.sheet-grid th:nth-child(4) { width:120px; }
+.sheet-grid th:nth-child(5) { width:100px; }
+.sheet-grid th:nth-child(6) { width:230px; }
+.sheet-grid th:nth-child(7) { width:140px; }
+.sheet-grid td:first-child { position:sticky; left:0; background:#edf2fa; z-index:1; text-align:center; padding:10px 2px !important; }
+.sheet-grid td input, .sheet-grid td select, .sheet-grid td textarea { width:100%; border:0; border-radius:0; background:transparent; padding:8px; min-height:42px; margin:0; color:#24344e; font:inherit; }
+.sheet-grid td textarea { resize:vertical; height:64px; }
+.sheet-grid td input:focus, .sheet-grid td select:focus, .sheet-grid td textarea:focus { outline:2px solid #4b49ac; outline-offset:-2px; background:#fff; }
+.sheet-grid .sheet-input { font-family:Consolas,monospace; }
+.sheet-grid tr.sheet-root td { background:#fff2cc; }
+.sheet-grid td.sheet-result { padding:8px !important; background:#f5f8fc; }
+.sheet-grid .sheet-invalid { box-shadow:inset 0 0 0 2px #dc3545; }
+.sheet-formula-bar { display:flex; align-items:center; gap:10px; }
+#sheet_address { min-width:45px; font-weight:600; }
+.sheet-formula-bar input { font-family:Consolas,monospace; }
+@media(max-width:768px) {
+    .sheet-toolbar { grid-template-columns:1fr; gap:4px; }
+    table.sheet-grid thead { display:table-header-group !important; }
+    table.sheet-grid tbody { display:table-row-group !important; }
+    table.sheet-grid tr { display:table-row !important; border:0 !important; padding:0 !important; margin:0 !important; }
+    table.sheet-grid th, table.sheet-grid td, table.sheet-grid td:first-child { display:table-cell !important; }
+    table.sheet-grid td:before { content:none !important; }
+}

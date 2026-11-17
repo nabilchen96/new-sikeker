@@ -48,13 +48,13 @@
 
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a href="{{ url('realisasi') }}?jenis=PK"
+                            <a href="{{ url('realisasi') }}?{{ http_build_query(['jenis'=>'PK','bulan'=>$bulan,'tahun'=>$tahun]) }}"
                                 class="nav-link {{ Request('jenis') == 'PK' || Request('jenis') == null ? 'active' : '' }}">
                                 Perjanjian Kinerja
                             </a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a href="{{ url('realisasi') }}?jenis=KPI"
+                            <a href="{{ url('realisasi') }}?{{ http_build_query(['jenis'=>'KPI','bulan'=>$bulan,'tahun'=>$tahun]) }}"
                                 class="nav-link {{ Request('jenis') == 'KPI' ? 'active' : '' }}" type="button"
                                 role="tab" aria-controls="profile" aria-selected="false">
                                 KPI
@@ -94,6 +94,8 @@
 
 
                                 <form method="GET" action="{{ url('realisasi') }}">
+                                    <input type="hidden" name="jenis" value="{{ request('jenis') === 'KPI' ? 'KPI' : 'PK' }}">
+                                    <input type="hidden" name="tahun" value="{{ $tahun }}">
                                     <div class="input-group mb-3">
                                         {{-- <input type="text" class="form-control" id="searchInput" placeholder="Cari ..."> --}}
                                         <select name="bulan" id="bulan" class="form-control">
@@ -130,6 +132,7 @@
 
                                     <input type="hidden" name="bulan" value="{{ $bulan }}">
                                     <input type="hidden" name="tahun" value="{{ $tahun }}">
+                                    <input type="hidden" name="jenis" value="{{ request('jenis') === 'KPI' ? 'KPI' : 'PK' }}">
 
                                     {{-- Letakkan seluruh tabel IKK dan indikator di dalam form ini. --}}
                                     @forelse ($data as $item)
@@ -141,6 +144,8 @@
                                                 <thead class="bg-success text-white">
                                                     <tr>
                                                         <th>Indikator Kinerja</th>
+                                                        <th class="text-center">Target</th>
+                                                        <th class="text-center">Satuan</th>
                                                         <th width="1%" class="text-center align-middle">
                                                             % Capaian
                                                         </th>
@@ -150,12 +155,16 @@
                                                             <strong>
                                                                 {{ $item['ikk']->kode }}
                                                                 {{ $item['ikk']->nama }}
+                                                                @if ($item['calculation_error'])
+                                                                    <small class="d-block">{{ $item['calculation_error'] }}</small>
+                                                                @endif
                                                             </strong>
                                                         </th>
 
+                                                        <th class="text-center align-middle">@include('backend.realisasi._number', ['value'=>$item['total_target']])</th>
+                                                        <th class="text-center align-middle">{{ $item['unit'] ?: '—' }}</th>
                                                         <th class="text-center align-middle">
-                                                            {{ number_format($item['persentase'], 2, ',', '.') }}
-                                                            %
+                                                            {{ $item['persentase'] !== null ? number_format($item['persentase'], 2, ',', '.') . ' %' : '—' }}
                                                         </th>
                                                     </tr>
                                                 </thead>
@@ -176,7 +185,8 @@
                                                         </th>
                                                         <th width="10%" class="text-center">
                                                             Target <br> Realisasi
-                                                        </th class="text-center">
+                                                        </th>
+                                                        <th width="8%" class="text-center">Satuan</th>
                                                         <th width="10%" class="text-center">
                                                             Realisasi <br> s.d Lalu
                                                         </th>
@@ -210,14 +220,12 @@
                                                             </td>
 
                                                             <td class="text-center">
-                                                                {{ number_format($indikator->target, 0, ',', '.') }}
-                                                                {{-- {{ $indikator->jenis_target }} --}}
+                                                                @include('backend.realisasi._number', ['value'=>$indikator->target])
                                                             </td>
+                                                            <td class="text-center">{{ $indikator->jenis_target ?: '—' }}</td>
 
                                                             <td class="text-center">
-                                                                {{ $indikator->realisasi_sebelumnya !== null
-                                                                    ? number_format($indikator->realisasi_sebelumnya, 2, ',', '.')
-                                                                    : '-' }}
+                                                                @include('backend.realisasi._number', ['value'=>$indikator->realisasi_sebelumnya])
                                                             </td>
 
 
@@ -342,7 +350,7 @@
                                                         </tr>
                                                     @empty
                                                         <tr>
-                                                            <td colspan="6" class="text-center text-muted">
+                                                            <td colspan="8" class="text-center text-muted">
                                                                 Belum ada indikator dengan target
                                                                 pada IKK ini.
                                                             </td>
@@ -399,6 +407,8 @@
 
 
                                 <form method="GET" action="{{ url('realisasi') }}">
+                                    <input type="hidden" name="jenis" value="{{ request('jenis') === 'KPI' ? 'KPI' : 'PK' }}">
+                                    <input type="hidden" name="tahun" value="{{ $tahun }}">
                                     <div class="input-group mb-3">
                                         {{-- <input type="text" class="form-control" id="searchInput" placeholder="Cari ..."> --}}
                                         <select name="bulan" id="bulan" class="form-control">
@@ -435,6 +445,7 @@
 
                                     <input type="hidden" name="bulan" value="{{ $bulan }}">
                                     <input type="hidden" name="tahun" value="{{ $tahun }}">
+                                    <input type="hidden" name="jenis" value="{{ request('jenis') === 'KPI' ? 'KPI' : 'PK' }}">
 
                                     {{-- Letakkan seluruh tabel IKK dan indikator di dalam form ini. --}}
                                     @forelse ($data as $item)
@@ -446,6 +457,8 @@
                                                 <thead class="bg-success text-white">
                                                     <tr>
                                                         <th>Indikator Kinerja</th>
+                                                        <th class="text-center">Target</th>
+                                                        <th class="text-center">Satuan</th>
                                                         <th width="1%" class="text-center align-middle">
                                                             % Capaian
                                                         </th>
@@ -455,12 +468,16 @@
                                                             <strong>
                                                                 {{ $item['ikk']->kode }}
                                                                 {{ $item['ikk']->nama }}
+                                                                @if ($item['calculation_error'])
+                                                                    <small class="d-block">{{ $item['calculation_error'] }}</small>
+                                                                @endif
                                                             </strong>
                                                         </th>
 
+                                                        <th class="text-center align-middle">@include('backend.realisasi._number', ['value'=>$item['total_target']])</th>
+                                                        <th class="text-center align-middle">{{ $item['unit'] ?: '—' }}</th>
                                                         <th class="text-center align-middle">
-                                                            {{ number_format($item['persentase'], 2, ',', '.') }}
-                                                            %
+                                                            {{ $item['persentase'] !== null ? number_format($item['persentase'], 2, ',', '.') . ' %' : '—' }}
                                                         </th>
                                                     </tr>
                                                 </thead>
@@ -481,7 +498,8 @@
                                                         </th>
                                                         <th width="10%" class="text-center">
                                                             Target <br> Realisasi
-                                                        </th class="text-center">
+                                                        </th>
+                                                        <th width="8%" class="text-center">Satuan</th>
                                                         <th width="10%" class="text-center">
                                                             Realisasi <br> s.d Lalu
                                                         </th>
@@ -515,14 +533,12 @@
                                                             </td>
 
                                                             <td class="text-center">
-                                                                {{ number_format($indikator->target, 0, ',', '.') }}
-                                                                {{-- {{ $indikator->jenis_target }} --}}
+                                                                @include('backend.realisasi._number', ['value'=>$indikator->target])
                                                             </td>
+                                                            <td class="text-center">{{ $indikator->jenis_target ?: '—' }}</td>
 
                                                             <td class="text-center">
-                                                                {{ $indikator->realisasi_sebelumnya !== null
-                                                                    ? number_format($indikator->realisasi_sebelumnya, 2, ',', '.')
-                                                                    : '-' }}
+                                                                @include('backend.realisasi._number', ['value'=>$indikator->realisasi_sebelumnya])
                                                             </td>
 
 
@@ -557,7 +573,7 @@
                                                         </tr>
                                                     @empty
                                                         <tr>
-                                                            <td colspan="6" class="text-center text-muted">
+                                                            <td colspan="7" class="text-center text-muted">
                                                                 Belum ada indikator dengan target
                                                                 pada IKK ini.
                                                             </td>
@@ -658,6 +674,3 @@
         // });
     </script>
 @endsection
-@push('script')
-    <script src="{{ asset('js/backend/kontrak/index.js') }}"></script>
-@endpush
