@@ -145,7 +145,6 @@
                                                     <tr>
                                                         <th>Indikator Kinerja</th>
                                                         <th class="text-center">Target</th>
-                                                        <th class="text-center">Realisasi</th>
                                                         <th class="text-center">Satuan</th>
                                                         <th width="1%" class="text-center align-middle">
                                                             % Capaian
@@ -163,7 +162,6 @@
                                                         </th>
 
                                                         <th class="text-center align-middle">@include('backend.realisasi._number', ['value'=>$item['total_target']])</th>
-                                                        <th class="text-center align-middle">@include('backend.realisasi._number', ['value'=>$item['total_realisasi_kumulatif']])</th>
                                                         <th class="text-center align-middle">{{ $item['unit'] ?: '—' }}</th>
                                                         <th class="text-center align-middle">
                                                             {{ $item['persentase'] !== null ? number_format($item['persentase'], 2, ',', '.') . ' %' : '—' }}
@@ -460,7 +458,6 @@
                                                     <tr>
                                                         <th>Indikator Kinerja</th>
                                                         <th class="text-center">Target</th>
-                                                        <th class="text-center">Realisasi</th>
                                                         <th class="text-center">Satuan</th>
                                                         <th width="1%" class="text-center align-middle">
                                                             % Capaian
@@ -478,7 +475,6 @@
                                                         </th>
 
                                                         <th class="text-center align-middle">@include('backend.realisasi._number', ['value'=>$item['total_target']])</th>
-                                                        <th class="text-center align-middle">@include('backend.realisasi._number', ['value'=>$item['total_realisasi_kumulatif']])</th>
                                                         <th class="text-center align-middle">{{ $item['unit'] ?: '—' }}</th>
                                                         <th class="text-center align-middle">
                                                             {{ $item['persentase'] !== null ? number_format($item['persentase'], 2, ',', '.') . ' %' : '—' }}

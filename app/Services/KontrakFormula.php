@@ -236,6 +236,33 @@ class KontrakFormula
         return $value;
     }
 
+    /** Progress uses actual numerators against the planned reference denominator. */
+    public function evaluateProgress(array $ast, callable $readActual, callable $readTarget): float
+    {
+        $freeze = function (array $node, int $depth = 0) use (&$freeze, $readTarget): array {
+            if ($depth > 80) {
+                throw new \DomainException('Rumus terlalu dalam.');
+            }
+            if (($node['op'] ?? '') === 'div') {
+                $node['left'] = $freeze($node['left'], $depth + 1);
+                $node['right'] = ['op' => 'number', 'value' => $this->evaluate($node['right'], $readTarget)];
+            } else {
+                foreach (['left', 'right', 'value'] as $field) {
+                    if (isset($node[$field]) && is_array($node[$field])) {
+                        $node[$field] = $freeze($node[$field], $depth + 1);
+                    }
+                }
+                if (isset($node['items'])) {
+                    $node['items'] = array_map(fn ($item) => $freeze($item, $depth + 1), $node['items']);
+                }
+            }
+
+            return $node;
+        };
+
+        return $this->evaluate($freeze($ast), $readActual);
+    }
+
     private function divide(float $a, float $b): float
     {
         if ($b == 0) {

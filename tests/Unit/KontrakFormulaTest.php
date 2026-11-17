@@ -59,4 +59,16 @@ class KontrakFormulaTest extends TestCase
         $this->expectException(\DomainException::class);
         $engine->evaluate($ast, fn ($id) => $id === 'a' ? 18.0 : 0.0);
     }
+
+    public function test_progress_freezes_the_entire_divisor_to_its_target_without_mutating_the_formula(): void
+    {
+        $engine = new KontrakFormula;
+        $ast = $engine->parse('=SUM(E2:E3)/SUM(E4:E5)*100', ['root', 'a', 'b', 'c', 'd']);
+        $before = $ast;
+        $actual = ['a' => 20, 'b' => 0, 'c' => 1, 'd' => 0];
+        $target = ['a' => 50, 'b' => 70, 'c' => 80, 'd' => 120];
+        $this->assertSame(10.0, $engine->evaluateProgress($ast, fn ($id) => (float) $actual[$id], fn ($id) => (float) $target[$id]));
+        $this->assertSame($before, $ast);
+        $this->assertSame(2000.0, $engine->evaluate($ast, fn ($id) => (float) $actual[$id]));
+    }
 }

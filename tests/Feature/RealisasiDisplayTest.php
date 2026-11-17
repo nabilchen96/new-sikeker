@@ -44,10 +44,10 @@ class RealisasiDisplayTest extends TestCase
         $this->assertSame('1,5', trim($cells->item(4)->textContent));
         $summary = $xpath->query('//thead[contains(@class,"bg-success")]/tr[2]')->item(0);
         $values = $xpath->query('./th', $summary);
-        $this->assertSame(5, $values->length);
+        $this->assertSame(4, $values->length);
         $this->assertSame('1,79', trim($values->item(1)->textContent));
-        $this->assertSame('1,79', trim($values->item(2)->textContent));
-        $this->assertSame('persen', trim($values->item(3)->textContent));
+        $this->assertSame('persen', trim($values->item(2)->textContent));
+        $this->assertSame('100,00 %', trim($values->item(3)->textContent));
         $large = $xpath->query('//input[@name="realisasi[114]"]/ancestor::tr[1]/td');
         $this->assertSame('15.450.000.000', trim($large->item(2)->textContent));
         $this->assertSame('rupiah', trim($large->item(3)->textContent));
@@ -63,7 +63,7 @@ class RealisasiDisplayTest extends TestCase
         $summary = $xpath->query('//thead[contains(@class,"bg-success")]/tr[2]')->item(0);
         $values = $xpath->query('./th', $summary);
         $this->assertSame('91,45', trim($values->item(1)->textContent));
-        $this->assertSame('persen', trim($values->item(3)->textContent));
+        $this->assertSame('persen', trim($values->item(2)->textContent));
     }
 
     public function test_save_keeps_kpi_tab_and_selected_period(): void

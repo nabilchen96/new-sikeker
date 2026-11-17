@@ -7,13 +7,13 @@ class KontrakCalculator
 {
     public const TYPES = ['manual', 'sum', 'ratio', 'weighted_sum', 'scale', 'offset_ratio', 'formula'];
 
-    public function calculateTree($root, array $actuals = []): array
+    public function calculateTree($root, array $actuals = [], bool $progress = false): array
     {
         $metadata = [];
         $this->prepare($root, $metadata, null, []);
         $results = [];
         $visiting = [];
-        $resolve = function (string $id) use (&$resolve, &$results, &$visiting, $metadata, $actuals): array {
+        $resolve = function (string $id) use (&$resolve, &$results, &$visiting, $metadata, $actuals, $progress): array {
             if (isset($results[$id])) {
                 return $results[$id];
             }
@@ -42,14 +42,18 @@ class KontrakCalculator
                         if (! is_array($base['config']['ast'] ?? null)) {
                             throw new \DomainException('Isi rumus melalui tabel Excel.');
                         }
-                        $value = (new KontrakFormula)->evaluate($base['config']['ast'], function ($source) use (&$resolve, $metric) {
+                        $read = function ($source, $sourceMetric) use (&$resolve) {
                             $result = $resolve($source);
-                            if ($result[$metric] === null) {
+                            if ($result[$sourceMetric] === null) {
                                 throw new \DomainException('Nilai sumber belum lengkap atau rumus sumber belum valid.');
                             }
 
-                            return $result[$metric];
-                        });
+                            return $result[$sourceMetric];
+                        };
+                        $formula = new KontrakFormula;
+                        $value = $progress && $metric === 'actual'
+                            ? $formula->evaluateProgress($base['config']['ast'], fn ($source) => $read($source, 'actual'), fn ($source) => $read($source, 'target'))
+                            : $formula->evaluate($base['config']['ast'], fn ($source) => $read($source, $metric));
                         $values[$metric] = [$value, null];
                     } catch (\DomainException $error) {
                         $values[$metric] = [null, $error->getMessage()];
@@ -58,8 +62,8 @@ class KontrakCalculator
                 [$target, $error] = $values['target'];
                 [$actual, $actualError] = $values['actual'];
             } else {
-                [$target, $error] = $this->evaluate($base['type'], $base['config'], $children, 'target', $item['node']->target);
-                [$actual, $actualError] = $this->evaluate($base['type'], $base['config'], $children, 'actual', $actuals[$id] ?? null);
+                [$target, $error] = $this->evaluate($base['type'], $base['config'], $children, 'target', $item['node']->target, $progress);
+                [$actual, $actualError] = $this->evaluate($base['type'], $base['config'], $children, 'actual', $actuals[$id] ?? null, $progress);
             }
             unset($visiting[$id]);
 
@@ -144,16 +148,20 @@ class KontrakCalculator
         ];
     }
 
-    public function evaluate(string $type, array $config, array $children, string $metric, $manual): array
+    public function evaluate(string $type, array $config, array $children, string $metric, $manual, bool $progress = false): array
     {
         if ($type === 'manual') {
+            if ($progress && $metric === 'actual' && ! is_numeric($manual)) {
+                return [0.0, null];
+            }
+
             return [is_numeric($manual) ? (float) $manual : null, is_numeric($manual) ? null : 'Nilai belum diisi.'];
         }
-        $read = function ($id) use ($children, $metric) {
+        $read = function ($id, ?string $sourceMetric = null) use ($children, $metric) {
             if ($id === null || ! isset($children[(string) $id])) {
                 throw new \DomainException('Pilih sumber dari anak langsung indikator ini.');
             }
-            $value = $children[(string) $id][$metric];
+            $value = $children[(string) $id][$sourceMetric ?? $metric];
             if ($value === null) {
                 throw new \DomainException('Nilai sumber belum lengkap atau rumus sumber belum valid.');
             }
@@ -189,7 +197,7 @@ class KontrakCalculator
             } elseif ($type === 'scale') {
                 $value = $read($config['source_id'] ?? null) * (float) ($config['factor'] ?? 1);
             } elseif (in_array($type, ['ratio', 'offset_ratio'], true)) {
-                $denominator = $read($config['denominator_id'] ?? null);
+                $denominator = $read($config['denominator_id'] ?? null, $progress && $metric === 'actual' ? 'target' : null);
                 if ($denominator == 0) {
                     throw new \DomainException('Pembagi nol; hasil belum dapat dihitung.');
                 }

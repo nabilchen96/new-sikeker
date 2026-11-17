@@ -145,9 +145,10 @@ class RealisasiController extends Controller
                     }
                 }
 
-                $result = $calculator->calculateTree($root, $actuals)[(string) $ikk->id];
+                $result = $calculator->calculateTree($root, $actuals, true)[(string) $ikk->id];
                 $totalTarget = $result['target'];
-                $totalRealisasiTerakhir = $result['actual'];
+                // No entries earns no progress, including formulas with a constant baseline.
+                $totalRealisasiTerakhir = $actuals ? $result['actual'] : 0.0;
                 $persentase = $totalTarget !== null && $totalTarget > 0 && $totalRealisasiTerakhir !== null
                     ? ($totalRealisasiTerakhir / $totalTarget) * 100
                     : null;

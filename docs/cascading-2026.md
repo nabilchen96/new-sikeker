@@ -105,9 +105,9 @@ Referensi mengikuti **nomor baris tabel yang sedang dibuka**, bukan nomor baris 
 
 Angka biasa boleh memakai koma desimal (`80,95`). Di dalam rumus gunakan titik (`0.4`) atau persen (`40%`). SUM mendukung rentang, titik koma, dan koma pemisah referensi. Pengisian ini mendukung aritmetika `+ - * /`, tanda persen, kurung, dan SUM; bukan seluruh fungsi Excel atau referensi lintas indikator/file.
 
-Sel kosong menghasilkan — sampai sumbernya lengkap. Pembagi nol, referensi di luar tabel, fungsi yang tidak didukung, dan rumus siklik diberi penjelasan; siklus dan formula tidak valid ditolak saat menyimpan. Nol yang benar tetap dihitung sebagai nol. Satuan setiap baris mengikuti isian sendiri, tanpa dipaksa persen.
+Pada target/tabel Excel, sel sumber kosong menghasilkan — sampai sumbernya lengkap. Pembagi target nol, referensi di luar tabel, fungsi yang tidak didukung, dan rumus siklik diberi penjelasan; siklus dan formula tidak valid ditolak saat menyimpan. Nol yang benar tetap dihitung sebagai nol. Satuan setiap baris mengikuti isian sendiri, tanpa dipaksa persen.
 
-Rumus yang disimpan juga digunakan dalam perhitungan realisasi dan capaian. Sumber realisasi manual ditelusuri dari referensi rumus, tanpa menjumlahkan induk dan anak dua kali.
+Sumber realisasi manual ditelusuri dari referensi rumus, tanpa menjumlahkan induk dan anak dua kali. Untuk capaian, isian yang belum pernah dilaporkan dihitung 0, dan setiap bagian pembagi memakai nilai target acuannya. Nilai terakhir bulan sebelumnya tetap dibawa jika bulan berjalan belum diisi. Aturan ini hanya untuk progres/capaian; target dan rumus Excel yang disimpan tidak diubah.
 
 ## Bagian Excel yang perlu keputusan pemilik indikator
 
@@ -141,8 +141,14 @@ Tabel Excel diuji untuk seluruh 34 indikator yang sudah ada, penyimpanan atomik,
 
 ## Tampilan dan penyimpanan realisasi
 
-Target, realisasi, dan satuan dipisahkan ke kolom masing-masing pada ringkasan PK/KPI; tabel rincian juga memiliki kolom Satuan sendiri. Angka target tidak dibulatkan ke bilangan bulat: target Margin EBITDA 1,79 tetap ditampilkan 1,79. Angka bulat ditampilkan tanpa tambahan nol desimal, misalnya 107, dan nominal besar tetap memakai pemisah ribuan.
+Ringkasan hijau PK/KPI menampilkan Indikator Kinerja, Target, Satuan, dan % Capaian. Kolom Realisasi agregat dihapus dari ringkasan. Input realisasi per rincian, realisasi s.d. lalu, dan satuan pada tabel rincian tetap tersedia. Label metode seperti Manual/Rumus Excel/Jumlah anak di bawah target halaman Kontrak tidak ditampilkan. Angka target tidak dibulatkan ke bilangan bulat: target Margin EBITDA 1,79 tetap ditampilkan 1,79. Angka bulat ditampilkan tanpa tambahan nol desimal, misalnya 107, dan nominal besar tetap memakai pemisah ribuan.
 
 Form Simpan, filter Cari, dan tautan tab membawa jenis PK/KPI, bulan, serta tahun yang dipilih. Setelah menyimpan KPI, pengguna tetap berada di tab KPI dengan periode yang sama. Kiriman lama tanpa parameter jenis menggunakan jenis indikator sebagai acuan. Kiriman dengan tab/indikator yang tidak sesuai atau mencampur PK dan KPI ditolak sebelum penulisan.
 
 Menyimpan ulang indikator pada bulan yang sama memperbarui catatan periode tersebut; tidak membuat baris duplikat. Bulan lain tetap disimpan sebagai periode yang berbeda.
+
+### Capaian saat data belum lengkap
+
+Capaian memakai progres terhadap target acuan. Bagian pembagi dari rasio memakai target, agar pembagi realisasi yang kecil atau belum diisi tidak membuat hasil melonjak. Untuk IKK 2 pada contoh: jumlah realisasi lulusan 1.070 dibanding target lulusan 820 menghasilkan capaian 130,49%; isian realisasi pada bagian target B tidak menjadi pembagi capaian. Untuk IKK 3 yang baru melaporkan 206 dari target lulusan 1.010, capaian tetap muncul 20,40%.
+
+Rincian yang belum pernah dilaporkan bernilai 0 hanya dalam perhitungan capaian, bukan disimpan sebagai catatan nol baru. Jika belum ada satu pun catatan realisasi, capaian mulai dari 0%, termasuk indikator dengan konstanta dasar. Jika sudah ada laporan bulan sebelumnya, nilai terakhir tetap dipakai. Target yang tidak valid atau pembagi target nol tetap diberi keterangan, bukan persentase palsu. Bobot tetap diterapkan; capaian yang melampaui target boleh lebih dari 100%.
