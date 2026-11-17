@@ -273,7 +273,6 @@
                                                                 @endif
                                                             @endif
                                                             @if ($kontrak->id_parent)
-                                                                <small class="d-block text-muted">{{ ['formula' => 'Rumus Excel', 'manual' => 'Manual', 'sum' => 'Jumlah anak', 'ratio' => 'Rasio', 'weighted_sum' => 'Jumlah berbobot', 'scale' => 'Nilai × pengali', 'offset_ratio' => 'Nilai dasar + rasio'][$row['calculation']['type']] ?? 'Periksa rumus' }}</small>
                                                                 @if ($row['calculation']['error'])
                                                                     <small class="d-block text-danger">{{ $row['calculation']['error'] }}</small>
                                                                 @endif
@@ -601,7 +600,6 @@
                                                                 @endif
                                                             @endif
                                                             @if ($kontrak->id_parent)
-                                                                <small class="d-block text-muted">{{ ['formula' => 'Rumus Excel', 'manual' => 'Manual', 'sum' => 'Jumlah anak', 'ratio' => 'Rasio', 'weighted_sum' => 'Jumlah berbobot', 'scale' => 'Nilai × pengali', 'offset_ratio' => 'Nilai dasar + rasio'][$row['calculation']['type']] ?? 'Periksa rumus' }}</small>
                                                                 @if ($row['calculation']['error'])
                                                                     <small class="d-block text-danger">{{ $row['calculation']['error'] }}</small>
                                                                 @endif
