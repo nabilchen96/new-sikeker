@@ -149,9 +149,7 @@ class RealisasiController extends Controller
                 $totalTarget = $result['target'];
                 // No entries earns no progress, including formulas with a constant baseline.
                 $totalRealisasiTerakhir = $actuals ? $result['actual'] : 0.0;
-                $persentase = $totalTarget !== null && $totalTarget > 0 && $totalRealisasiTerakhir !== null
-                    ? ($totalRealisasiTerakhir / $totalTarget) * 100
-                    : null;
+                $persentase = (new \App\Services\KontrakAchievement)->percentage($ikk, $targetResults, $actuals);
 
                 $data[] = [
                     'root' => $root,

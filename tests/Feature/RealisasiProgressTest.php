@@ -42,14 +42,14 @@ class RealisasiProgressTest extends TestCase
                 $this->convertToSheet(21);
             }
             $item = $this->item('IKK 3');
-            $this->assertEqualsWithDelta(206 / 1010 * 100, $item['persentase'], 0.000001);
+            $this->assertEqualsWithDelta(100 / 6, $item['persentase'], 0.000001);
             $this->assertNull($item['calculation_error']);
             $this->assertSame(1, Realisasi::count());
             $this->assertCount(6, $item['indikators']);
         }
     }
 
-    public function test_reported_denominators_do_not_inflate_progress(): void
+    public function test_all_sources_including_denominators_contribute_to_progress(): void
     {
         foreach ([12 => 54, 13 => 106, 14 => 910, 15 => 0, 17 => 10, 18 => 10, 19 => 10, 20 => 0] as $id => $value) {
             Realisasi::create(['id_kontrak' => $id, 'periode' => '2026-11-01', 'nilai' => $value]);
@@ -59,9 +59,43 @@ class RealisasiProgressTest extends TestCase
                 $this->convertToSheet(10);
             }
             $item = $this->item('IKK 2');
-            $this->assertEqualsWithDelta(1070 / 820 * 100, $item['persentase'], 0.000001);
+            $this->assertEqualsWithDelta((100 + 100 + 910 / 660 * 100 + 10 / 54 * 100 + 10 / 144 * 100 + 10 / 660 * 100) / 6, $item['persentase'], 0.000001);
             $this->assertEqualsWithDelta(820 / 858 * 100, $item['total_target'], 0.000001);
             $this->assertNull($item['calculation_error']);
+        }
+    }
+
+    public function test_screenshot_is_54_50_percent_instead_of_100(): void
+    {
+        foreach ([12 => 54, 13 => 106, 14 => 660, 15 => 0, 17 => 10, 18 => 10, 19 => 10, 20 => 0] as $id => $value) {
+            Realisasi::create(['id_kontrak' => $id, 'periode' => '2026-11-01', 'nilai' => $value]);
+        }
+        foreach ([false, true] as $sheet) {
+            if ($sheet) {
+                $this->convertToSheet(10);
+            }
+            $this->assertEqualsWithDelta(54.50, $this->item('IKK 2')['persentase'], 0.005);
+        }
+    }
+
+    public function test_all_reported_targets_give_100_and_weighted_branches_match_excel_editor(): void
+    {
+        $calculator = new \App\Services\KontrakCalculator;
+        foreach (['IKK 4', 'IKK 5', 'IKK 16'] as $code) {
+            $node = \App\Models\Kontrak::with('childrenRecursive')->where('kode', $code)->firstOrFail();
+            $results = $calculator->calculateTree($node);
+            $actuals = [];
+            foreach ($calculator->inputNodes($node, $results) as $input) {
+                $actuals[(string) $input->id] = $results[(string) $input->id]['target'];
+            }
+            $this->assertEqualsWithDelta(100, (new \App\Services\KontrakAchievement)->percentage($node, $results, $actuals), 0.000001);
+            $first = $calculator->inputNodes($node, $results)[0];
+            $partial = [(string) $first->id => $actuals[(string) $first->id]];
+            $expected = (new \App\Services\KontrakAchievement)->percentage($node, $results, $partial);
+            $this->convertToSheet($node->id);
+            $node->refresh()->load('childrenRecursive');
+            $this->assertEqualsWithDelta($expected, (new \App\Services\KontrakAchievement)->percentage($node, $calculator->calculateTree($node), $partial), 0.000001);
+
         }
     }
 
@@ -80,7 +114,7 @@ class RealisasiProgressTest extends TestCase
             if ($sheet) {
                 $this->convertToSheet(82);
             }
-            $this->assertEqualsWithDelta(22 / 78.19 * 100, $this->item('IKK 14')['persentase'], 0.000001);
+            $this->assertEqualsWithDelta(40, $this->item('IKK 14')['persentase'], 0.000001);
         }
     }
 
@@ -88,7 +122,7 @@ class RealisasiProgressTest extends TestCase
     {
         Realisasi::create(['id_kontrak' => 23, 'periode' => '2026-10-01', 'nilai' => 206]);
         $item = $this->item('IKK 3');
-        $this->assertEqualsWithDelta(206 / 1010 * 100, $item['persentase'], 0.000001);
+        $this->assertEqualsWithDelta(100 / 6, $item['persentase'], 0.000001);
         $source = $item['indikators']->firstWhere('id', 23);
         $this->assertNull($source->nilai_realisasi);
         $this->assertSame(206.0, $source->realisasi_sebelumnya);

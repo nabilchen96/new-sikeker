@@ -107,7 +107,7 @@ Angka biasa boleh memakai koma desimal (`80,95`). Di dalam rumus gunakan titik (
 
 Pada target/tabel Excel, sel sumber kosong menghasilkan — sampai sumbernya lengkap. Pembagi target nol, referensi di luar tabel, fungsi yang tidak didukung, dan rumus siklik diberi penjelasan; siklus dan formula tidak valid ditolak saat menyimpan. Nol yang benar tetap dihitung sebagai nol. Satuan setiap baris mengikuti isian sendiri, tanpa dipaksa persen.
 
-Sumber realisasi manual ditelusuri dari referensi rumus, tanpa menjumlahkan induk dan anak dua kali. Untuk capaian, isian yang belum pernah dilaporkan dihitung 0, dan setiap bagian pembagi memakai nilai target acuannya. Nilai terakhir bulan sebelumnya tetap dibawa jika bulan berjalan belum diisi. Aturan ini hanya untuk progres/capaian; target dan rumus Excel yang disimpan tidak diubah.
+Sumber realisasi manual ditelusuri dari referensi rumus, tanpa menghitung induk dan anak dua kali. Capaian dihitung per rincian terhadap target masing-masing, kemudian dirata-ratakan. Rumus target Excel tetap dipertahankan.
 
 ## Bagian Excel yang perlu keputusan pemilik indikator
 
@@ -149,6 +149,8 @@ Menyimpan ulang indikator pada bulan yang sama memperbarui catatan periode terse
 
 ### Capaian saat data belum lengkap
 
-Capaian memakai progres terhadap target acuan. Bagian pembagi dari rasio memakai target, agar pembagi realisasi yang kecil atau belum diisi tidak membuat hasil melonjak. Untuk IKK 2 pada contoh: jumlah realisasi lulusan 1.070 dibanding target lulusan 820 menghasilkan capaian 130,49%; isian realisasi pada bagian target B tidak menjadi pembagi capaian. Untuk IKK 3 yang baru melaporkan 206 dari target lulusan 1.010, capaian tetap muncul 20,40%.
+Capaian tiap rincian = realisasi terakhir ÷ target rincian × 100%. Capaian indikator adalah rata-rata capaian rincian, bukan rasio ulang antara pembilang dan pembagi realisasi. Rincian bertarget 0 dikeluarkan dari rata-rata; rincian bertarget positif yang belum dilaporkan tetap masuk dengan capaian 0%. Nilai terakhir bulan sebelumnya tetap dipakai. Tidak ada catatan nol baru yang disimpan untuk isian kosong.
 
-Rincian yang belum pernah dilaporkan bernilai 0 hanya dalam perhitungan capaian, bukan disimpan sebagai catatan nol baru. Jika belum ada satu pun catatan realisasi, capaian mulai dari 0%, termasuk indikator dengan konstanta dasar. Jika sudah ada laporan bulan sebelumnya, nilai terakhir tetap dipakai. Target yang tidak valid atau pembagi target nol tetap diberi keterangan, bukan persentase palsu. Bobot tetap diterapkan; capaian yang melampaui target boleh lebih dari 100%.
+Contoh IKK 2: target 54, 106, 660, 0, 54, 144, 660, 0 dan realisasi 54, 106, 660, 0, 10, 10, 10, 0 menghasilkan 54,50%. IKK 3 dengan satu rincian dari enam yang mencapai target menghasilkan 16,67%.
+
+Bobot khusus digunakan sebagai bobot rata-rata capaian cabang, termasuk pengaturan gabungan berbobot dan rumus Excel seperti E2*40%+E3*40%+E4*20%. Nilai target tiap cabang tetap mengikuti rumus Excel. Indikator manual memakai realisasi/target langsung. Jika seluruh target sumber 0, capaian ditampilkan sebagai tanda pisah. Capaian boleh melebihi 100% ketika realisasi melampaui target.
